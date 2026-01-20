@@ -1,0 +1,73 @@
+{
+  "characters": [
+    {
+      "id": "baby-peach",
+      "name": "Baby Peach",
+      "display": {
+        "speed": 0,
+        "handling": 6
+      },
+      "speed": {
+        "solid": 0,
+        "coarse": 0,
+        "liquid": 0
+      },
+      "handling": {
+        "solid": 6,
+        "coarse": 6,
+        "liquid": 6
+      },
+      "acceleration": 7,
+      "miniTurbo": 4,
+      "weight": 0,
+      "coinCurve": 0,
+      "requiresDisplayAdjustment": true
+    },
+    {
+      "id": "mario",
+      "name": "Mario",
+      "display": {
+        "speed": 3,
+        "handling": 3
+      },
+      "speed": {
+        "solid": 3,
+        "coarse": 4,
+        "liquid": 3
+      },
+      "handling": {
+        "solid": 3,
+        "coarse": 4,
+        "liquid": 2
+      },
+      "acceleration": 3,
+      "miniTurbo": 3,
+      "weight": 4,
+      "coinCurve": 3,
+      "requiresDisplayAdjustment": false
+    },
+    {
+      "id": "bowser",
+      "name": "Bowser",
+      "display": {
+        "speed": 6,
+        "handling": 0
+      },
+      "speed": {
+        "solid": 6,
+        "coarse": 6,
+        "liquid": 6
+      },
+      "handling": {
+        "solid": 0,
+        "coarse": 0,
+        "liquid": 0
+      },
+      "acceleration": 0,
+      "miniTurbo": 0,
+      "weight": 7,
+      "coinCurve": 6,
+      "requiresDisplayAdjustment": true
+    }
+  ]
+}

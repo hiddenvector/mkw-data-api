@@ -1,0 +1,29 @@
+{
+  "name": "mkw-data-api",
+  "version": "1.0.0",
+  "description": "Community-maintained REST API for character stats, kart data, and track information.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hiddenvector/mkw-data-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/hiddenvector/mkw-data-api/issues"
+  },
+  "homepage": "https://github.com/hiddenvector/mkw-data-api#readme",
+  "dependencies": {
+    "hono": "^4.11.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260120.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.59.2"
+  }
+}

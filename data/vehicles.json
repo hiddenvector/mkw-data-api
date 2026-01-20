@@ -1,0 +1,76 @@
+{
+  "vehicles": [
+    {
+      "id": "standard-kart",
+      "name": "Standard Kart",
+      "category": "kart",
+      "display": {
+        "speed": 5,
+        "handling": 5
+      },
+      "speed": {
+        "solid": 5,
+        "coarse": 5,
+        "liquid": 5
+      },
+      "handling": {
+        "solid": 5,
+        "coarse": 5,
+        "liquid": 5
+      },
+      "acceleration": 5,
+      "miniTurbo": 5,
+      "weight": 2,
+      "coinCurve": 5,
+      "requiresDisplayAdjustment": false
+    },
+    {
+      "id": "mach-rocket",
+      "name": "Mach Rocket",
+      "category": "kart",
+      "display": {
+        "speed": 3,
+        "handling": 7
+      },
+      "speed": {
+        "solid": 6,
+        "coarse": 1,
+        "liquid": 1
+      },
+      "handling": {
+        "solid": 10,
+        "coarse": 6,
+        "liquid": 6
+      },
+      "acceleration": 7,
+      "miniTurbo": 7,
+      "weight": 0,
+      "coinCurve": 7,
+      "requiresDisplayAdjustment": true
+    },
+    {
+      "id": "standard-bike",
+      "name": "Standard Bike",
+      "category": "bike",
+      "display": {
+        "speed": 1,
+        "handling": 7
+      },
+      "speed": {
+        "solid": 1,
+        "coarse": 1,
+        "liquid": 1
+      },
+      "handling": {
+        "solid": 7,
+        "coarse": 7,
+        "liquid": 7
+      },
+      "acceleration": 9,
+      "miniTurbo": 9,
+      "weight": 0,
+      "coinCurve": 1,
+      "requiresDisplayAdjustment": false
+    }
+  ]
+}

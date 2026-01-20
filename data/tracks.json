@@ -1,0 +1,24 @@
+{
+  "tracks": [
+    {
+      "id": "mario-circuit",
+      "name": "Mario Circuit",
+      "cup": "mushroom"
+    },
+    {
+      "id": "rainbow-road",
+      "name": "Rainbow Road",
+      "cup": "special"
+    },
+    {
+      "id": "bowsers-castle",
+      "name": "Bowser's Castle",
+      "cup": "special"
+    },
+    {
+      "id": "koopa-cape",
+      "name": "Koopa Cape",
+      "cup": "star"
+    }
+  ]
+}
