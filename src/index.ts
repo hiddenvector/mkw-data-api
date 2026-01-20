@@ -11,6 +11,11 @@ const app = new Hono().basePath('/mkw/api/v1');
 
 app.use('/*', cors());
 
+app.use('/*', async (c, next) => {
+    await next();
+    c.header('Cache-Control', 'public, max-age=3600'); // 1 hour
+});
+
 app.get('/health', (c) => {
     return c.json({
         status: 'ok',
