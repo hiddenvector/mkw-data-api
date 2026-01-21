@@ -1,3 +1,764 @@
 {
-  "vehicles": []
+  "vehicles": [
+    {
+      "id": "standard-bike",
+      "name": "Standard Bike",
+      "category": "bike",
+      "speed": {
+        "road": 1,
+        "rough": 1,
+        "water": 1
+      },
+      "handling": {
+        "road": 8,
+        "rough": 8,
+        "water": 8
+      },
+      "acceleration": 9,
+      "miniTurbo": 9,
+      "weight": 0,
+      "coinCurve": 6
+    },
+    {
+      "id": "tune-thumper",
+      "name": "Tune Thumper",
+      "category": "bike",
+      "speed": {
+        "road": 1,
+        "rough": 1,
+        "water": 1
+      },
+      "handling": {
+        "road": 8,
+        "rough": 8,
+        "water": 8
+      },
+      "acceleration": 9,
+      "miniTurbo": 9,
+      "weight": 0,
+      "coinCurve": 6
+    },
+    {
+      "id": "cute-scoot",
+      "name": "Cute Scoot",
+      "category": "bike",
+      "speed": {
+        "road": 1,
+        "rough": 1,
+        "water": 1
+      },
+      "handling": {
+        "road": 8,
+        "rough": 8,
+        "water": 8
+      },
+      "acceleration": 9,
+      "miniTurbo": 9,
+      "weight": 0,
+      "coinCurve": 6
+    },
+    {
+      "id": "pipe-frame",
+      "name": "Pipe Frame",
+      "category": "kart",
+      "speed": {
+        "road": 2,
+        "rough": 2,
+        "water": 2
+      },
+      "handling": {
+        "road": 7,
+        "rough": 7,
+        "water": 7
+      },
+      "acceleration": 8,
+      "miniTurbo": 8,
+      "weight": 1,
+      "coinCurve": 5
+    },
+    {
+      "id": "loco-moto",
+      "name": "Loco Moto",
+      "category": "kart",
+      "speed": {
+        "road": 4,
+        "rough": 4,
+        "water": 4
+      },
+      "handling": {
+        "road": 7,
+        "rough": 7,
+        "water": 7
+      },
+      "acceleration": 6,
+      "miniTurbo": 6,
+      "weight": 1,
+      "coinCurve": 5
+    },
+    {
+      "id": "standard-kart",
+      "name": "Standard Kart",
+      "category": "kart",
+      "speed": {
+        "road": 5,
+        "rough": 5,
+        "water": 5
+      },
+      "handling": {
+        "road": 6,
+        "rough": 6,
+        "water": 6
+      },
+      "acceleration": 5,
+      "miniTurbo": 5,
+      "weight": 2,
+      "coinCurve": 4
+    },
+    {
+      "id": "plushbuggy",
+      "name": "Plushbuggy",
+      "category": "kart",
+      "speed": {
+        "road": 5,
+        "rough": 5,
+        "water": 5
+      },
+      "handling": {
+        "road": 6,
+        "rough": 6,
+        "water": 6
+      },
+      "acceleration": 5,
+      "miniTurbo": 5,
+      "weight": 2,
+      "coinCurve": 4
+    },
+    {
+      "id": "blastronaut-iii",
+      "name": "Blastronaut III",
+      "category": "kart",
+      "speed": {
+        "road": 5,
+        "rough": 5,
+        "water": 5
+      },
+      "handling": {
+        "road": 4,
+        "rough": 4,
+        "water": 4
+      },
+      "acceleration": 6,
+      "miniTurbo": 6,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "w-twin-chopper",
+      "name": "W-Twin Chopper",
+      "category": "bike",
+      "speed": {
+        "road": 7,
+        "rough": 7,
+        "water": 7
+      },
+      "handling": {
+        "road": 6,
+        "rough": 6,
+        "water": 6
+      },
+      "acceleration": 3,
+      "miniTurbo": 3,
+      "weight": 2,
+      "coinCurve": 4
+    },
+    {
+      "id": "reel-racer",
+      "name": "Reel Racer",
+      "category": "kart",
+      "speed": {
+        "road": 8,
+        "rough": 8,
+        "water": 8
+      },
+      "handling": {
+        "road": 5,
+        "rough": 5,
+        "water": 5
+      },
+      "acceleration": 2,
+      "miniTurbo": 2,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "junkyard-hog",
+      "name": "Junkyard Hog",
+      "category": "kart",
+      "speed": {
+        "road": 8,
+        "rough": 8,
+        "water": 8
+      },
+      "handling": {
+        "road": 3,
+        "rough": 3,
+        "water": 3
+      },
+      "acceleration": 3,
+      "miniTurbo": 3,
+      "weight": 4,
+      "coinCurve": 2
+    },
+    {
+      "id": "dread-sled",
+      "name": "Dread Sled",
+      "category": "kart",
+      "speed": {
+        "road": 3,
+        "rough": 9,
+        "water": 5
+      },
+      "handling": {
+        "road": 4,
+        "rough": 10,
+        "water": 5
+      },
+      "acceleration": 3,
+      "miniTurbo": 3,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "stellar-sled",
+      "name": "Stellar Sled",
+      "category": "kart",
+      "speed": {
+        "road": 6,
+        "rough": 8,
+        "water": 11
+      },
+      "handling": {
+        "road": 2,
+        "rough": 3,
+        "water": 9
+      },
+      "acceleration": 0,
+      "miniTurbo": 0,
+      "weight": 5,
+      "coinCurve": 1
+    },
+    {
+      "id": "mach-rocket",
+      "name": "Mach Rocket",
+      "category": "kart",
+      "speed": {
+        "road": 6,
+        "rough": 1,
+        "water": 1
+      },
+      "handling": {
+        "road": 11,
+        "rough": 7,
+        "water": 7
+      },
+      "acceleration": 7,
+      "miniTurbo": 7,
+      "weight": 0,
+      "coinCurve": 6
+    },
+    {
+      "id": "rob-hog",
+      "name": "R.O.B. H.O.G.",
+      "category": "kart",
+      "speed": {
+        "road": 6,
+        "rough": 1,
+        "water": 1
+      },
+      "handling": {
+        "road": 11,
+        "rough": 7,
+        "water": 7
+      },
+      "acceleration": 7,
+      "miniTurbo": 7,
+      "weight": 0,
+      "coinCurve": 6
+    },
+    {
+      "id": "baby-blooper",
+      "name": "Baby Blooper",
+      "category": "kart",
+      "speed": {
+        "road": 7,
+        "rough": 2,
+        "water": 2
+      },
+      "handling": {
+        "road": 10,
+        "rough": 6,
+        "water": 6
+      },
+      "acceleration": 6,
+      "miniTurbo": 6,
+      "weight": 1,
+      "coinCurve": 5
+    },
+    {
+      "id": "roadster-royale",
+      "name": "Roadster Royale",
+      "category": "kart",
+      "speed": {
+        "road": 8,
+        "rough": 4,
+        "water": 4
+      },
+      "handling": {
+        "road": 9,
+        "rough": 4,
+        "water": 4
+      },
+      "acceleration": 4,
+      "miniTurbo": 4,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "b-dasher",
+      "name": "B-Dasher",
+      "category": "kart",
+      "speed": {
+        "road": 8,
+        "rough": 4,
+        "water": 4
+      },
+      "handling": {
+        "road": 9,
+        "rough": 4,
+        "water": 4
+      },
+      "acceleration": 4,
+      "miniTurbo": 4,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "hot-rod",
+      "name": "Hot Rod",
+      "category": "kart",
+      "speed": {
+        "road": 8,
+        "rough": 4,
+        "water": 4
+      },
+      "handling": {
+        "road": 9,
+        "rough": 4,
+        "water": 4
+      },
+      "acceleration": 4,
+      "miniTurbo": 4,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "bumble-v",
+      "name": "Bumble V",
+      "category": "kart",
+      "speed": {
+        "road": 8,
+        "rough": 4,
+        "water": 4
+      },
+      "handling": {
+        "road": 9,
+        "rough": 4,
+        "water": 4
+      },
+      "acceleration": 4,
+      "miniTurbo": 4,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "billdozer",
+      "name": "Billdozer",
+      "category": "kart",
+      "speed": {
+        "road": 9,
+        "rough": 6,
+        "water": 6
+      },
+      "handling": {
+        "road": 8,
+        "rough": 2,
+        "water": 2
+      },
+      "acceleration": 2,
+      "miniTurbo": 2,
+      "weight": 5,
+      "coinCurve": 1
+    },
+    {
+      "id": "big-horn",
+      "name": "Big Horn",
+      "category": "kart",
+      "speed": {
+        "road": 9,
+        "rough": 6,
+        "water": 6
+      },
+      "handling": {
+        "road": 8,
+        "rough": 2,
+        "water": 2
+      },
+      "acceleration": 2,
+      "miniTurbo": 2,
+      "weight": 5,
+      "coinCurve": 1
+    },
+    {
+      "id": "rallygator",
+      "name": "Rallygator",
+      "category": "kart",
+      "speed": {
+        "road": 9,
+        "rough": 6,
+        "water": 6
+      },
+      "handling": {
+        "road": 6,
+        "rough": 0,
+        "water": 0
+      },
+      "acceleration": 3,
+      "miniTurbo": 3,
+      "weight": 6,
+      "coinCurve": 0
+    },
+    {
+      "id": "rally-bike",
+      "name": "Rally Bike",
+      "category": "bike",
+      "speed": {
+        "road": 0,
+        "rough": 5,
+        "water": 0
+      },
+      "handling": {
+        "road": 7,
+        "rough": 11,
+        "water": 7
+      },
+      "acceleration": 8,
+      "miniTurbo": 8,
+      "weight": 0,
+      "coinCurve": 6
+    },
+    {
+      "id": "hyper-pipe",
+      "name": "Hyper Pipe",
+      "category": "bike",
+      "speed": {
+        "road": 0,
+        "rough": 5,
+        "water": 0
+      },
+      "handling": {
+        "road": 7,
+        "rough": 11,
+        "water": 7
+      },
+      "acceleration": 8,
+      "miniTurbo": 8,
+      "weight": 0,
+      "coinCurve": 6
+    },
+    {
+      "id": "biddybuggy",
+      "name": "Biddybuggy",
+      "category": "kart",
+      "speed": {
+        "road": 1,
+        "rough": 6,
+        "water": 1
+      },
+      "handling": {
+        "road": 6,
+        "rough": 10,
+        "water": 6
+      },
+      "acceleration": 7,
+      "miniTurbo": 7,
+      "weight": 1,
+      "coinCurve": 5
+    },
+    {
+      "id": "rally-kart",
+      "name": "Rally Kart",
+      "category": "kart",
+      "speed": {
+        "road": 4,
+        "rough": 8,
+        "water": 4
+      },
+      "handling": {
+        "road": 4,
+        "rough": 9,
+        "water": 4
+      },
+      "acceleration": 4,
+      "miniTurbo": 4,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "zoom-buggy",
+      "name": "Zoom Buggy",
+      "category": "kart",
+      "speed": {
+        "road": 4,
+        "rough": 8,
+        "water": 4
+      },
+      "handling": {
+        "road": 4,
+        "rough": 9,
+        "water": 4
+      },
+      "acceleration": 4,
+      "miniTurbo": 4,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "bowser-bruiser",
+      "name": "Bowser Bruiser",
+      "category": "kart",
+      "speed": {
+        "road": 7,
+        "rough": 10,
+        "water": 7
+      },
+      "handling": {
+        "road": 2,
+        "rough": 8,
+        "water": 2
+      },
+      "acceleration": 1,
+      "miniTurbo": 1,
+      "weight": 5,
+      "coinCurve": 1
+    },
+    {
+      "id": "lil-dumpy",
+      "name": "Li'l Dumpy",
+      "category": "kart",
+      "speed": {
+        "road": 7,
+        "rough": 10,
+        "water": 7
+      },
+      "handling": {
+        "road": 2,
+        "rough": 8,
+        "water": 2
+      },
+      "acceleration": 1,
+      "miniTurbo": 1,
+      "weight": 5,
+      "coinCurve": 1
+    },
+    {
+      "id": "chargin-truck",
+      "name": "Chargin' Truck",
+      "category": "kart",
+      "speed": {
+        "road": 7,
+        "rough": 10,
+        "water": 7
+      },
+      "handling": {
+        "road": 2,
+        "rough": 8,
+        "water": 2
+      },
+      "acceleration": 1,
+      "miniTurbo": 1,
+      "weight": 5,
+      "coinCurve": 1
+    },
+    {
+      "id": "tiny-titan",
+      "name": "Tiny Titan",
+      "category": "kart",
+      "speed": {
+        "road": 7,
+        "rough": 10,
+        "water": 7
+      },
+      "handling": {
+        "road": 2,
+        "rough": 8,
+        "water": 2
+      },
+      "acceleration": 1,
+      "miniTurbo": 1,
+      "weight": 5,
+      "coinCurve": 1
+    },
+    {
+      "id": "dolphin-dasher",
+      "name": "Dolphin Dasher",
+      "category": "kart",
+      "speed": {
+        "road": 0,
+        "rough": 0,
+        "water": 5
+      },
+      "handling": {
+        "road": 7,
+        "rough": 7,
+        "water": 11
+      },
+      "acceleration": 8,
+      "miniTurbo": 8,
+      "weight": 0,
+      "coinCurve": 6
+    },
+    {
+      "id": "fin-twin",
+      "name": "Fin Twin",
+      "category": "kart",
+      "speed": {
+        "road": 0,
+        "rough": 0,
+        "water": 5
+      },
+      "handling": {
+        "road": 7,
+        "rough": 7,
+        "water": 11
+      },
+      "acceleration": 8,
+      "miniTurbo": 8,
+      "weight": 0,
+      "coinCurve": 6
+    },
+    {
+      "id": "cloud-9",
+      "name": "Cloud 9",
+      "category": "kart",
+      "speed": {
+        "road": 4,
+        "rough": 4,
+        "water": 8
+      },
+      "handling": {
+        "road": 4,
+        "rough": 4,
+        "water": 9
+      },
+      "acceleration": 4,
+      "miniTurbo": 4,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "ribbit-revster",
+      "name": "Ribbit Revster",
+      "category": "kart",
+      "speed": {
+        "road": 4,
+        "rough": 4,
+        "water": 8
+      },
+      "handling": {
+        "road": 4,
+        "rough": 4,
+        "water": 9
+      },
+      "acceleration": 4,
+      "miniTurbo": 4,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "carpet-flyer",
+      "name": "Carpet Flyer",
+      "category": "kart",
+      "speed": {
+        "road": 4,
+        "rough": 4,
+        "water": 8
+      },
+      "handling": {
+        "road": 4,
+        "rough": 4,
+        "water": 9
+      },
+      "acceleration": 4,
+      "miniTurbo": 4,
+      "weight": 3,
+      "coinCurve": 3
+    },
+    {
+      "id": "funky-dorrie",
+      "name": "Funky Dorrie",
+      "category": "kart",
+      "speed": {
+        "road": 4,
+        "rough": 4,
+        "water": 8
+      },
+      "handling": {
+        "road": 2,
+        "rough": 2,
+        "water": 7
+      },
+      "acceleration": 5,
+      "miniTurbo": 5,
+      "weight": 4,
+      "coinCurve": 2
+    },
+    {
+      "id": "mecha-trike",
+      "name": "Mecha Trike",
+      "category": "kart",
+      "speed": {
+        "road": 7,
+        "rough": 7,
+        "water": 10
+      },
+      "handling": {
+        "road": 2,
+        "rough": 2,
+        "water": 8
+      },
+      "acceleration": 1,
+      "miniTurbo": 1,
+      "weight": 5,
+      "coinCurve": 1
+    },
+    {
+      "id": "lobster-roller",
+      "name": "Lobster Roller",
+      "category": "kart",
+      "speed": {
+        "road": 7,
+        "rough": 7,
+        "water": 10
+      },
+      "handling": {
+        "road": 0,
+        "rough": 0,
+        "water": 6
+      },
+      "acceleration": 2,
+      "miniTurbo": 2,
+      "weight": 6,
+      "coinCurve": 0
+    }
+  ]
 }

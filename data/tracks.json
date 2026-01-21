@@ -1,157 +1,152 @@
 {
   "tracks": [
     {
-      "id": "ℹ️_the_following_estimations_are_mostly_based_on_the_analysis_of_the_world_record_run_for_the_\"30_tracks_(classic)\"_speedrun_category_on_speedruncom_(27/09/2025)_the_results_are_also_reported_with_adjusted_values_so_that_the_sum_of_the_coverage_of_all_speed/handling_types_is_100%",
-      "name": "ℹ️ The following estimations are mostly based on the analysis of the World Record run for the \"30 Tracks (Classic)\" Speedrun category on Speedrun.com (27/09/2025).\nThe results are also reported with adjusted values so that the sum of the coverage of all Speed/Handling types is 100%.",
-      "cup": "Unknown Cup"
-    },
-    {
-      "id": "mario_bros_circuit",
+      "id": "mario-bros-circuit",
       "name": "Mario Bros. Circuit",
       "cup": "Mushroom Cup"
     },
     {
-      "id": "crown_city",
+      "id": "crown-city",
       "name": "Crown City",
       "cup": "Mushroom Cup"
     },
     {
-      "id": "whistlestop_summit",
+      "id": "whistlestop-summit",
       "name": "Whistlestop Summit",
       "cup": "Mushroom Cup"
     },
     {
-      "id": "dk_spaceport",
+      "id": "dk-spaceport",
       "name": "DK Spaceport",
       "cup": "Mushroom Cup"
     },
     {
-      "id": "desert_hills",
+      "id": "desert-hills",
       "name": "Desert Hills",
       "cup": "Flower Cup"
     },
     {
-      "id": "shy_guy_bazaar",
+      "id": "shy-guy-bazaar",
       "name": "Shy Guy Bazaar",
       "cup": "Flower Cup"
     },
     {
-      "id": "wario_stadium",
+      "id": "wario-stadium",
       "name": "Wario Stadium",
       "cup": "Flower Cup"
     },
     {
-      "id": "airship_fortress",
+      "id": "airship-fortress",
       "name": "Airship Fortress",
       "cup": "Flower Cup"
     },
     {
-      "id": "dk_pass",
+      "id": "dk-pass",
       "name": "DK Pass",
       "cup": "Star Cup"
     },
     {
-      "id": "starview_peak",
+      "id": "starview-peak",
       "name": "Starview Peak",
       "cup": "Star Cup"
     },
     {
-      "id": "sky_high_sundae",
+      "id": "sky-high-sundae",
       "name": "Sky-High Sundae",
       "cup": "Star Cup"
     },
     {
-      "id": "wario_shipyard",
+      "id": "wario-shipyard",
       "name": "Wario Shipyard",
       "cup": "Star Cup"
     },
     {
-      "id": "koopa_troopa_beach",
+      "id": "koopa-troopa-beach",
       "name": "Koopa Troopa Beach",
       "cup": "Special Cup"
     },
     {
-      "id": "faraway_oasis",
+      "id": "faraway-oasis",
       "name": "Faraway Oasis",
       "cup": "Special Cup"
     },
     {
-      "id": "peach_stadium",
+      "id": "peach-stadium",
       "name": "Peach Stadium",
       "cup": "Special Cup"
     },
     {
-      "id": "peach_beach",
+      "id": "peach-beach",
       "name": "Peach Beach",
       "cup": "Special Cup"
     },
     {
-      "id": "salty_salty_speedway",
+      "id": "salty-salty-speedway",
       "name": "Salty Salty Speedway",
       "cup": "Shell Cup"
     },
     {
-      "id": "dino_dino_jungle",
+      "id": "dino-dino-jungle",
       "name": "Dino Dino Jungle",
       "cup": "Shell Cup"
     },
     {
-      "id": "great_?_block_ruins",
+      "id": "great-?-block-ruins",
       "name": "Great ? Block Ruins",
       "cup": "Shell Cup"
     },
     {
-      "id": "cheep_cheep_falls",
+      "id": "cheep-cheep-falls",
       "name": "Cheep Cheep Falls",
       "cup": "Shell Cup"
     },
     {
-      "id": "dandelion_depths",
+      "id": "dandelion-depths",
       "name": "Dandelion Depths",
       "cup": "Banana Cup"
     },
     {
-      "id": "boo_cinema",
+      "id": "boo-cinema",
       "name": "Boo Cinema",
       "cup": "Banana Cup"
     },
     {
-      "id": "dry_bones_burnout",
+      "id": "dry-bones-burnout",
       "name": "Dry Bones Burnout",
       "cup": "Banana Cup"
     },
     {
-      "id": "moo_moo_meadows",
+      "id": "moo-moo-meadows",
       "name": "Moo Moo Meadows",
       "cup": "Banana Cup"
     },
     {
-      "id": "choco_mountain",
+      "id": "choco-mountain",
       "name": "Choco Mountain",
       "cup": "Leaf Cup"
     },
     {
-      "id": "toads_factory",
+      "id": "toads-factory",
       "name": "Toad's Factory",
       "cup": "Leaf Cup"
     },
     {
-      "id": "bowsers_castle",
+      "id": "bowsers-castle",
       "name": "Bowser's Castle",
       "cup": "Leaf Cup"
     },
     {
-      "id": "acorn_heights",
+      "id": "acorn-heights",
       "name": "Acorn Heights",
       "cup": "Leaf Cup"
     },
     {
-      "id": "mario_circuit",
+      "id": "mario-circuit",
       "name": "Mario Circuit",
       "cup": "Lightning Cup"
     },
     {
-      "id": "rainbow_road",
+      "id": "rainbow-road",
       "name": "Rainbow Road",
       "cup": "Special Cup"
     }

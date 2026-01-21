@@ -1,7 +1,7 @@
 {
   "characters": [
     {
-      "id": "baby_peach",
+      "id": "baby-peach",
       "name": "Baby Peach",
       "speed": {
         "road": 0,
@@ -19,7 +19,7 @@
       "coinCurve": 9
     },
     {
-      "id": "baby_daisy",
+      "id": "baby-daisy",
       "name": "Baby Daisy",
       "speed": {
         "road": 0,
@@ -55,7 +55,7 @@
       "coinCurve": 9
     },
     {
-      "id": "para_biddybud",
+      "id": "para-biddybud",
       "name": "Para-Biddybud",
       "speed": {
         "road": 0,
@@ -73,7 +73,7 @@
       "coinCurve": 9
     },
     {
-      "id": "baby_mario",
+      "id": "baby-mario",
       "name": "Baby Mario",
       "speed": {
         "road": 1,
@@ -127,7 +127,7 @@
       "coinCurve": 8
     },
     {
-      "id": "baby_luigi",
+      "id": "baby-luigi",
       "name": "Baby Luigi",
       "speed": {
         "road": 0,
@@ -145,7 +145,7 @@
       "coinCurve": 8
     },
     {
-      "id": "dry_bones",
+      "id": "dry-bones",
       "name": "Dry Bones",
       "speed": {
         "road": 0,
@@ -181,7 +181,7 @@
       "coinCurve": 8
     },
     {
-      "id": "baby_rosalina",
+      "id": "baby-rosalina",
       "name": "Baby Rosalina",
       "speed": {
         "road": 0,
@@ -289,7 +289,7 @@
       "coinCurve": 7
     },
     {
-      "id": "shy_guy",
+      "id": "shy-guy",
       "name": "Shy Guy",
       "speed": {
         "road": 1,
@@ -325,7 +325,7 @@
       "coinCurve": 7
     },
     {
-      "id": "koopa_troopa",
+      "id": "koopa-troopa",
       "name": "Koopa Troopa",
       "speed": {
         "road": 1,
@@ -361,7 +361,7 @@
       "coinCurve": 7
     },
     {
-      "id": "cheep_cheep",
+      "id": "cheep-cheep",
       "name": "Cheep Cheep",
       "speed": {
         "road": 1,
@@ -415,7 +415,7 @@
       "coinCurve": 5
     },
     {
-      "id": "coin_coffer",
+      "id": "coin-coffer",
       "name": "Coin Coffer",
       "speed": {
         "road": 3,
@@ -451,7 +451,7 @@
       "coinCurve": 5
     },
     {
-      "id": "monty_mole",
+      "id": "monty-mole",
       "name": "Monty Mole",
       "speed": {
         "road": 2,
@@ -469,7 +469,7 @@
       "coinCurve": 5
     },
     {
-      "id": "bowser_jr",
+      "id": "bowser-jr",
       "name": "Bowser Jr.",
       "speed": {
         "road": 2,
@@ -523,7 +523,7 @@
       "coinCurve": 4
     },
     {
-      "id": "rocky_wrench",
+      "id": "rocky-wrench",
       "name": "Rocky Wrench",
       "speed": {
         "road": 4,
@@ -559,7 +559,7 @@
       "coinCurve": 4
     },
     {
-      "id": "hammer_bro",
+      "id": "hammer-bro",
       "name": "Hammer Bro",
       "speed": {
         "road": 3,
@@ -667,7 +667,7 @@
       "coinCurve": 2
     },
     {
-      "id": "piranha_plant",
+      "id": "piranha-plant",
       "name": "Piranha Plant",
       "speed": {
         "road": 5,
@@ -685,7 +685,7 @@
       "coinCurve": 2
     },
     {
-      "id": "king_boo",
+      "id": "king-boo",
       "name": "King Boo",
       "speed": {
         "road": 4,
@@ -793,7 +793,7 @@
       "coinCurve": 1
     },
     {
-      "id": "donkey_kong",
+      "id": "donkey-kong",
       "name": "Donkey Kong",
       "speed": {
         "road": 5,
@@ -811,7 +811,7 @@
       "coinCurve": 1
     },
     {
-      "id": "chargin_chuck",
+      "id": "chargin-chuck",
       "name": "Chargin' Chuck",
       "speed": {
         "road": 5,
