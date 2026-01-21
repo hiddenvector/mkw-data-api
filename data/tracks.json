@@ -131,7 +131,32 @@
       "cup": "Leaf Cup"
     },
     {
-      "id": "bowsers-castle",
+      "id": "boo_cinema",
+      "name": "Boo Cinema",
+      "cup": "Banana Cup"
+    },
+    {
+      "id": "dry_bones_burnout",
+      "name": "Dry Bones Burnout",
+      "cup": "Banana Cup"
+    },
+    {
+      "id": "moo_moo_meadows",
+      "name": "Moo Moo Meadows",
+      "cup": "Banana Cup"
+    },
+    {
+      "id": "choco_mountain",
+      "name": "Choco Mountain",
+      "cup": "Leaf Cup"
+    },
+    {
+      "id": "toads_factory",
+      "name": "Toad's Factory",
+      "cup": "Leaf Cup"
+    },
+    {
+      "id": "bowsers_castle",
       "name": "Bowser's Castle",
       "cup": "Leaf Cup"
     },

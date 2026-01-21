@@ -13,97 +13,70 @@ import * as path from 'path';
 import { parse } from 'csv-parse/sync';
 import type { Character, Vehicle, Track, TerrainStats, BaseStats } from '../src/types';
 
-// Helper: Convert name to ID (slug with hyphens)
+// Helper: Convert name to ID
 function toId(name: string): string {
   return name
     .toLowerCase()
-    .replace(/\s+/g, '-')
+    .replace(/\s+/g, '_')
     .replace(/\./g, '')
     .replace(/'/g, '')
-    .replace(/_/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replace(/-/g, '_');
 }
-
-// Helper: Safe parseInt (throws if NaN or undefined, with row/col info)
-function safeParseInt(value: any, rowIdx?: number, colIdx?: number, rowSnippet?: any[]): number {
-  const n = parseInt(value);
-  if (isNaN(n)) {
-    let msg = `Invalid number in CSV: '${value}'`;
-    if (rowIdx !== undefined && colIdx !== undefined) {
-      msg += ` (row ${rowIdx + 1}, col ${colIdx + 1})`;
-    }
-    if (rowSnippet) {
-      msg += `\nRow: ${JSON.stringify(rowSnippet)}`;
-    }
-    throw new Error(msg);
-  }
-  return n;
-}
-
-// Column indices for stats (for maintainability)
-const COL = {
-  // Shared
-  NAME_1: 3,
-  NAME_2: 4,
-  NAME_3: 5,
-  NAME_4: 6,
-  // Stats
-  SPEED_ROAD: 7,
-  SPEED_ROUGH: 8,
-  SPEED_WATER: 9,
-  ACCELERATION: 10,
-  MINI_TURBO: 11,
-  WEIGHT: 12,
-  COIN_CURVE: 13,
-  HANDLING_ROAD: 14,
-  HANDLING_ROUGH: 15,
-  HANDLING_WATER: 16,
-};
 
 // Helper: Check if row has stats (numeric values in stat columns)
 function hasStats(row: any[], startCol: number): boolean {
-  return row && row[startCol] !== undefined &&
+  return row[startCol] !== undefined &&
          row[startCol] !== '' &&
          !isNaN(parseInt(row[startCol]));
 }
 
+/**
+ * Parse Characters CSV
+ *
+ * Structure:
+ * - Row N: Stats (columns 7-16)
+ * - Row N+1: Character names (columns 3-6)
+ * - Multiple characters share the same stat line
+ */
 function parseCharacters(csvPath: string): Character[] {
   const csv = fs.readFileSync(csvPath, 'utf-8');
   const rows = parse(csv, { relax_column_count: true });
 
   const characters: Character[] = [];
+
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
+
+    // Skip empty rows
     if (!row || row.every((cell: string) => !cell)) continue;
 
-    if (hasStats(row, COL.SPEED_ROAD)) {
-      let stats: BaseStats;
-      try {
-        stats = {
-          speed: {
-            road: safeParseInt(row[COL.SPEED_ROAD], i, COL.SPEED_ROAD, row),
-            rough: safeParseInt(row[COL.SPEED_ROUGH], i, COL.SPEED_ROUGH, row),
-            water: safeParseInt(row[COL.SPEED_WATER], i, COL.SPEED_WATER, row)
-          },
-          handling: {
-            road: safeParseInt(row[COL.HANDLING_ROAD], i, COL.HANDLING_ROAD, row),
-            rough: safeParseInt(row[COL.HANDLING_ROUGH], i, COL.HANDLING_ROUGH, row),
-            water: safeParseInt(row[COL.HANDLING_WATER], i, COL.HANDLING_WATER, row)
-          },
-          acceleration: safeParseInt(row[COL.ACCELERATION], i, COL.ACCELERATION, row),
-          miniTurbo: safeParseInt(row[COL.MINI_TURBO], i, COL.MINI_TURBO, row),
-          weight: safeParseInt(row[COL.WEIGHT], i, COL.WEIGHT, row),
-          coinCurve: safeParseInt(row[COL.COIN_CURVE], i, COL.COIN_CURVE, row)
-        };
-      } catch (err) {
-        throw new Error(`Characters CSV: ${err instanceof Error ? err.message : err}`);
-      }
+    // Look for stat rows (column 7 = On-Road Speed)
+    if (hasStats(row, 7)) {
+      // Parse stats from this row
+      const stats: BaseStats = {
+        speed: {
+          road: parseInt(row[7]),
+          rough: parseInt(row[8]),
+          water: parseInt(row[9])
+        },
+        handling: {
+          road: parseInt(row[14]),
+          rough: parseInt(row[15]),
+          water: parseInt(row[16])
+        },
+        acceleration: parseInt(row[10]),
+        miniTurbo: parseInt(row[11]),
+        weight: parseInt(row[12]),
+        coinCurve: parseInt(row[13])
+      };
+
       // Look at next row for character names (columns 3-6)
       const nextRow = rows[i + 1];
       if (nextRow) {
-        const names = [nextRow[COL.NAME_1], nextRow[COL.NAME_2], nextRow[COL.NAME_3], nextRow[COL.NAME_4]]
+        const names = [nextRow[3], nextRow[4], nextRow[5], nextRow[6]]
           .filter(name => name && name.trim());
+
+        // Create one character per name with these stats
         for (const name of names) {
           characters.push({
             id: toId(name),
@@ -114,61 +87,76 @@ function parseCharacters(csvPath: string): Character[] {
       }
     }
   }
-  console.log(`[parseCharacters] Parsed ${characters.length} characters.`);
+
   return characters;
 }
 
+/**
+ * Parse Vehicles CSV
+ *
+ * Structure:
+ * - Row N: Class, Tag, empty name columns, Stats (columns 7-16)
+ * - Row N+1: Vehicle names in columns 3-5
+ * - Multiple vehicle names share the same stats
+ */
 function parseVehicles(csvPath: string): Vehicle[] {
   const csv = fs.readFileSync(csvPath, 'utf-8');
   const rows = parse(csv, { relax_column_count: true });
 
   const vehicles: Vehicle[] = [];
+
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
+
+    // Skip empty rows and header rows
     if (!row || row.every((cell: string) => !cell)) continue;
+    if (row[1] === 'Class') continue; // Header row
 
-    // Header row check (robust: trim/case-insensitive)
-    if (row[1] && typeof row[1] === 'string' && row[1].trim().toLowerCase() === 'class') continue;
+    // Look for stat rows (column 7 = On-Road Speed)
+    if (hasStats(row, 7)) {
+      // Parse stats
+      const stats: BaseStats = {
+        speed: {
+          road: parseInt(row[7]),
+          rough: parseInt(row[8]),
+          water: parseInt(row[9])
+        },
+        handling: {
+          road: parseInt(row[14]),
+          rough: parseInt(row[15]),
+          water: parseInt(row[16])
+        },
+        acceleration: parseInt(row[10]),
+        miniTurbo: parseInt(row[11]),
+        weight: parseInt(row[12]),
+        coinCurve: parseInt(row[13])
+      };
 
-    if (hasStats(row, COL.SPEED_ROAD)) {
-      let stats: BaseStats;
-      try {
-        stats = {
-          speed: {
-            road: safeParseInt(row[COL.SPEED_ROAD], i, COL.SPEED_ROAD, row),
-            rough: safeParseInt(row[COL.SPEED_ROUGH], i, COL.SPEED_ROUGH, row),
-            water: safeParseInt(row[COL.SPEED_WATER], i, COL.SPEED_WATER, row)
-          },
-          handling: {
-            road: safeParseInt(row[COL.HANDLING_ROAD], i, COL.HANDLING_ROAD, row),
-            rough: safeParseInt(row[COL.HANDLING_ROUGH], i, COL.HANDLING_ROUGH, row),
-            water: safeParseInt(row[COL.HANDLING_WATER], i, COL.HANDLING_WATER, row)
-          },
-          acceleration: safeParseInt(row[COL.ACCELERATION], i, COL.ACCELERATION, row),
-          miniTurbo: safeParseInt(row[COL.MINI_TURBO], i, COL.MINI_TURBO, row),
-          weight: safeParseInt(row[COL.WEIGHT], i, COL.WEIGHT, row),
-          coinCurve: safeParseInt(row[COL.COIN_CURVE], i, COL.COIN_CURVE, row)
-        };
-      } catch (err) {
-        throw new Error(`Vehicles CSV: ${err instanceof Error ? err.message : err}`);
-      }
+      // Look at NEXT row for vehicle names (columns 3-6)
       const nextRow = rows[i + 1];
       if (!nextRow) continue;
-      const names = [nextRow[COL.NAME_1], nextRow[COL.NAME_2], nextRow[COL.NAME_3], nextRow[COL.NAME_4]]
+
+      const names = [nextRow[3], nextRow[4], nextRow[5], nextRow[6]]
         .filter(name => name && name.trim());
-      if (names.length === 0) continue;
+
+      // Determine category based on class name (column 1)
       const className = (row[1] || '').toLowerCase();
-      let category: 'kart' | 'bike' | 'atv' = 'kart';
+      let category: 'kart' | 'bike' | 'atv' = 'kart'; // default
+
       if (className.includes('bike')) {
         category = 'bike';
       } else if (className.includes('atv')) {
         category = 'atv';
-      } else if (names.length > 0) {
+      }
+      // If it has specific vehicle types, try to infer from names
+      else if (names.length > 0) {
         const firstNameLower = names[0].toLowerCase();
         if (firstNameLower.includes('bike') || firstNameLower.includes('chopper')) {
           category = 'bike';
         }
       }
+
+      // Create one vehicle per name
       for (const name of names) {
         vehicles.push({
           id: toId(name),
@@ -179,10 +167,18 @@ function parseVehicles(csvPath: string): Vehicle[] {
       }
     }
   }
-  console.log(`[parseVehicles] Parsed ${vehicles.length} vehicles.`);
+
   return vehicles;
 }
 
+/**
+ * Parse Tracks from Surface Coverage CSV
+ *
+ * Structure:
+ * - Regular tracks section (rows ~6-44)
+ * - Track name in column 1
+ * - Need to map to cups (we'll do a simple mapping)
+ */
 function parseTracks(csvPath: string): Track[] {
   const csv = fs.readFileSync(csvPath, 'utf-8');
   const rows = parse(csv, { relax_column_count: true });
@@ -216,36 +212,35 @@ function parseTracks(csvPath: string): Track[] {
     'Dry Bones Burnout': 'Banana Cup',
     'Moo Moo Meadows': 'Banana Cup',
     'Choco Mountain': 'Leaf Cup',
-    "Toad's Factory": 'Leaf Cup',
-    "Bowser's Castle": 'Leaf Cup',
+    'Toad\'s Factory': 'Leaf Cup',
+    'Bowser\'s Castle': 'Leaf Cup',
     'Acorn Heights': 'Leaf Cup',
     'Mario Circuit': 'Lightning Cup',
     'Rainbow Road': 'Special Cup'
   };
 
   let inRegularTracks = false;
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
+
+  for (const row of rows) {
     // Start parsing after "Regular Tracks" header
     if (row[1] === 'Regular Tracks') {
       inRegularTracks = true;
       continue;
     }
+
     // Stop at "Knock-Out Tour" section
     if (row[1] === 'Knock-Out Tour') {
       break;
     }
+
     if (inRegularTracks && row[1] && row[1] !== 'Track' && row[1] !== 'Name') {
       const trackName = row[1].trim();
+
       // Skip summary rows and explanatory text
-      if (!trackName ||
-          trackName.toLowerCase().includes('average') ||
-          trackName.startsWith('ℹ️') ||
-          trackName.startsWith('The following') ||
-          trackName.toLowerCase().includes('surface coverage') ||
-          trackName.toLowerCase().includes('info:') ||
-          trackName.toLowerCase().includes('summary')
-      ) continue;
+      if (trackName.includes('Average')) continue;
+      if (trackName.startsWith('ℹ️')) continue;
+      if (trackName.startsWith('The following')) continue;
+
       tracks.push({
         id: toId(trackName),
         name: trackName,
@@ -253,7 +248,7 @@ function parseTracks(csvPath: string): Track[] {
       });
     }
   }
-  console.log(`[parseTracks] Parsed ${tracks.length} tracks.`);
+
   return tracks;
 }
 
