@@ -1,73 +1,904 @@
 {
   "characters": [
     {
-      "id": "baby-peach",
+      "id": "baby_peach",
       "name": "Baby Peach",
-      "display": {
-        "speed": 0,
-        "handling": 6
-      },
       "speed": {
-        "solid": 0,
-        "coarse": 0,
-        "liquid": 0
+        "road": 0,
+        "rough": 0,
+        "water": 0
       },
       "handling": {
-        "solid": 6,
-        "coarse": 6,
-        "liquid": 6
+        "road": 6,
+        "rough": 6,
+        "water": 6
       },
       "acceleration": 7,
       "miniTurbo": 4,
       "weight": 0,
-      "coinCurve": 0,
-      "requiresDisplayAdjustment": true
+      "coinCurve": 9
+    },
+    {
+      "id": "baby_daisy",
+      "name": "Baby Daisy",
+      "speed": {
+        "road": 0,
+        "rough": 0,
+        "water": 0
+      },
+      "handling": {
+        "road": 6,
+        "rough": 6,
+        "water": 6
+      },
+      "acceleration": 7,
+      "miniTurbo": 4,
+      "weight": 0,
+      "coinCurve": 9
+    },
+    {
+      "id": "swooper",
+      "name": "Swooper",
+      "speed": {
+        "road": 0,
+        "rough": 0,
+        "water": 0
+      },
+      "handling": {
+        "road": 6,
+        "rough": 6,
+        "water": 6
+      },
+      "acceleration": 7,
+      "miniTurbo": 4,
+      "weight": 0,
+      "coinCurve": 9
+    },
+    {
+      "id": "para_biddybud",
+      "name": "Para-Biddybud",
+      "speed": {
+        "road": 0,
+        "rough": 0,
+        "water": 0
+      },
+      "handling": {
+        "road": 6,
+        "rough": 6,
+        "water": 6
+      },
+      "acceleration": 7,
+      "miniTurbo": 4,
+      "weight": 0,
+      "coinCurve": 9
+    },
+    {
+      "id": "baby_mario",
+      "name": "Baby Mario",
+      "speed": {
+        "road": 1,
+        "rough": 0,
+        "water": 0
+      },
+      "handling": {
+        "road": 7,
+        "rough": 5,
+        "water": 5
+      },
+      "acceleration": 6,
+      "miniTurbo": 3,
+      "weight": 1,
+      "coinCurve": 8
+    },
+    {
+      "id": "goomba",
+      "name": "Goomba",
+      "speed": {
+        "road": 1,
+        "rough": 0,
+        "water": 0
+      },
+      "handling": {
+        "road": 7,
+        "rough": 5,
+        "water": 5
+      },
+      "acceleration": 6,
+      "miniTurbo": 3,
+      "weight": 1,
+      "coinCurve": 8
+    },
+    {
+      "id": "spike",
+      "name": "Spike",
+      "speed": {
+        "road": 1,
+        "rough": 0,
+        "water": 0
+      },
+      "handling": {
+        "road": 7,
+        "rough": 5,
+        "water": 5
+      },
+      "acceleration": 6,
+      "miniTurbo": 3,
+      "weight": 1,
+      "coinCurve": 8
+    },
+    {
+      "id": "baby_luigi",
+      "name": "Baby Luigi",
+      "speed": {
+        "road": 0,
+        "rough": 1,
+        "water": 0
+      },
+      "handling": {
+        "road": 5,
+        "rough": 7,
+        "water": 5
+      },
+      "acceleration": 6,
+      "miniTurbo": 3,
+      "weight": 1,
+      "coinCurve": 8
+    },
+    {
+      "id": "dry_bones",
+      "name": "Dry Bones",
+      "speed": {
+        "road": 0,
+        "rough": 1,
+        "water": 0
+      },
+      "handling": {
+        "road": 5,
+        "rough": 7,
+        "water": 5
+      },
+      "acceleration": 6,
+      "miniTurbo": 3,
+      "weight": 1,
+      "coinCurve": 8
+    },
+    {
+      "id": "peepa",
+      "name": "Peepa",
+      "speed": {
+        "road": 0,
+        "rough": 1,
+        "water": 0
+      },
+      "handling": {
+        "road": 5,
+        "rough": 7,
+        "water": 5
+      },
+      "acceleration": 6,
+      "miniTurbo": 3,
+      "weight": 1,
+      "coinCurve": 8
+    },
+    {
+      "id": "baby_rosalina",
+      "name": "Baby Rosalina",
+      "speed": {
+        "road": 0,
+        "rough": 0,
+        "water": 1
+      },
+      "handling": {
+        "road": 5,
+        "rough": 5,
+        "water": 7
+      },
+      "acceleration": 6,
+      "miniTurbo": 3,
+      "weight": 1,
+      "coinCurve": 8
+    },
+    {
+      "id": "sidestepper",
+      "name": "Sidestepper",
+      "speed": {
+        "road": 0,
+        "rough": 0,
+        "water": 1
+      },
+      "handling": {
+        "road": 5,
+        "rough": 5,
+        "water": 7
+      },
+      "acceleration": 6,
+      "miniTurbo": 3,
+      "weight": 1,
+      "coinCurve": 8
+    },
+    {
+      "id": "fishbone",
+      "name": "Fishbone",
+      "speed": {
+        "road": 0,
+        "rough": 0,
+        "water": 1
+      },
+      "handling": {
+        "road": 5,
+        "rough": 5,
+        "water": 7
+      },
+      "acceleration": 6,
+      "miniTurbo": 3,
+      "weight": 1,
+      "coinCurve": 8
+    },
+    {
+      "id": "toadette",
+      "name": "Toadette",
+      "speed": {
+        "road": 2,
+        "rough": 1,
+        "water": 1
+      },
+      "handling": {
+        "road": 6,
+        "rough": 4,
+        "water": 4
+      },
+      "acceleration": 5,
+      "miniTurbo": 3,
+      "weight": 2,
+      "coinCurve": 7
+    },
+    {
+      "id": "nabbit",
+      "name": "Nabbit",
+      "speed": {
+        "road": 2,
+        "rough": 1,
+        "water": 1
+      },
+      "handling": {
+        "road": 6,
+        "rough": 4,
+        "water": 4
+      },
+      "acceleration": 5,
+      "miniTurbo": 3,
+      "weight": 2,
+      "coinCurve": 7
+    },
+    {
+      "id": "toad",
+      "name": "Toad",
+      "speed": {
+        "road": 1,
+        "rough": 2,
+        "water": 1
+      },
+      "handling": {
+        "road": 4,
+        "rough": 6,
+        "water": 4
+      },
+      "acceleration": 5,
+      "miniTurbo": 3,
+      "weight": 2,
+      "coinCurve": 7
+    },
+    {
+      "id": "shy_guy",
+      "name": "Shy Guy",
+      "speed": {
+        "road": 1,
+        "rough": 2,
+        "water": 1
+      },
+      "handling": {
+        "road": 4,
+        "rough": 6,
+        "water": 4
+      },
+      "acceleration": 5,
+      "miniTurbo": 3,
+      "weight": 2,
+      "coinCurve": 7
+    },
+    {
+      "id": "stingby",
+      "name": "Stingby",
+      "speed": {
+        "road": 1,
+        "rough": 2,
+        "water": 1
+      },
+      "handling": {
+        "road": 4,
+        "rough": 6,
+        "water": 4
+      },
+      "acceleration": 5,
+      "miniTurbo": 3,
+      "weight": 2,
+      "coinCurve": 7
+    },
+    {
+      "id": "koopa_troopa",
+      "name": "Koopa Troopa",
+      "speed": {
+        "road": 1,
+        "rough": 1,
+        "water": 2
+      },
+      "handling": {
+        "road": 4,
+        "rough": 4,
+        "water": 6
+      },
+      "acceleration": 5,
+      "miniTurbo": 3,
+      "weight": 2,
+      "coinCurve": 7
+    },
+    {
+      "id": "lakitu",
+      "name": "Lakitu",
+      "speed": {
+        "road": 1,
+        "rough": 1,
+        "water": 2
+      },
+      "handling": {
+        "road": 4,
+        "rough": 4,
+        "water": 6
+      },
+      "acceleration": 5,
+      "miniTurbo": 3,
+      "weight": 2,
+      "coinCurve": 7
+    },
+    {
+      "id": "cheep_cheep",
+      "name": "Cheep Cheep",
+      "speed": {
+        "road": 1,
+        "rough": 1,
+        "water": 2
+      },
+      "handling": {
+        "road": 4,
+        "rough": 4,
+        "water": 6
+      },
+      "acceleration": 5,
+      "miniTurbo": 3,
+      "weight": 2,
+      "coinCurve": 7
+    },
+    {
+      "id": "peach",
+      "name": "Peach",
+      "speed": {
+        "road": 3,
+        "rough": 2,
+        "water": 2
+      },
+      "handling": {
+        "road": 5,
+        "rough": 3,
+        "water": 3
+      },
+      "acceleration": 4,
+      "miniTurbo": 2,
+      "weight": 3,
+      "coinCurve": 5
+    },
+    {
+      "id": "daisy",
+      "name": "Daisy",
+      "speed": {
+        "road": 3,
+        "rough": 2,
+        "water": 2
+      },
+      "handling": {
+        "road": 5,
+        "rough": 3,
+        "water": 3
+      },
+      "acceleration": 4,
+      "miniTurbo": 2,
+      "weight": 3,
+      "coinCurve": 5
+    },
+    {
+      "id": "coin_coffer",
+      "name": "Coin Coffer",
+      "speed": {
+        "road": 3,
+        "rough": 2,
+        "water": 2
+      },
+      "handling": {
+        "road": 5,
+        "rough": 3,
+        "water": 3
+      },
+      "acceleration": 4,
+      "miniTurbo": 2,
+      "weight": 3,
+      "coinCurve": 5
+    },
+    {
+      "id": "yoshi",
+      "name": "Yoshi",
+      "speed": {
+        "road": 2,
+        "rough": 3,
+        "water": 2
+      },
+      "handling": {
+        "road": 3,
+        "rough": 5,
+        "water": 3
+      },
+      "acceleration": 4,
+      "miniTurbo": 2,
+      "weight": 3,
+      "coinCurve": 5
+    },
+    {
+      "id": "monty_mole",
+      "name": "Monty Mole",
+      "speed": {
+        "road": 2,
+        "rough": 3,
+        "water": 2
+      },
+      "handling": {
+        "road": 3,
+        "rough": 5,
+        "water": 3
+      },
+      "acceleration": 4,
+      "miniTurbo": 2,
+      "weight": 3,
+      "coinCurve": 5
+    },
+    {
+      "id": "bowser_jr",
+      "name": "Bowser Jr.",
+      "speed": {
+        "road": 2,
+        "rough": 2,
+        "water": 3
+      },
+      "handling": {
+        "road": 3,
+        "rough": 3,
+        "water": 5
+      },
+      "acceleration": 4,
+      "miniTurbo": 2,
+      "weight": 3,
+      "coinCurve": 5
+    },
+    {
+      "id": "dolphin",
+      "name": "Dolphin",
+      "speed": {
+        "road": 2,
+        "rough": 2,
+        "water": 3
+      },
+      "handling": {
+        "road": 3,
+        "rough": 3,
+        "water": 5
+      },
+      "acceleration": 4,
+      "miniTurbo": 2,
+      "weight": 3,
+      "coinCurve": 5
     },
     {
       "id": "mario",
       "name": "Mario",
-      "display": {
-        "speed": 3,
-        "handling": 3
-      },
       "speed": {
-        "solid": 3,
-        "coarse": 4,
-        "liquid": 3
+        "road": 4,
+        "rough": 3,
+        "water": 3
       },
       "handling": {
-        "solid": 3,
-        "coarse": 4,
-        "liquid": 2
+        "road": 4,
+        "rough": 2,
+        "water": 2
       },
       "acceleration": 3,
-      "miniTurbo": 3,
+      "miniTurbo": 1,
       "weight": 4,
-      "coinCurve": 3,
-      "requiresDisplayAdjustment": false
+      "coinCurve": 4
+    },
+    {
+      "id": "rocky_wrench",
+      "name": "Rocky Wrench",
+      "speed": {
+        "road": 4,
+        "rough": 3,
+        "water": 3
+      },
+      "handling": {
+        "road": 4,
+        "rough": 2,
+        "water": 2
+      },
+      "acceleration": 3,
+      "miniTurbo": 1,
+      "weight": 4,
+      "coinCurve": 4
+    },
+    {
+      "id": "luigi",
+      "name": "Luigi",
+      "speed": {
+        "road": 3,
+        "rough": 4,
+        "water": 3
+      },
+      "handling": {
+        "road": 2,
+        "rough": 4,
+        "water": 2
+      },
+      "acceleration": 3,
+      "miniTurbo": 1,
+      "weight": 4,
+      "coinCurve": 4
+    },
+    {
+      "id": "hammer_bro",
+      "name": "Hammer Bro",
+      "speed": {
+        "road": 3,
+        "rough": 4,
+        "water": 3
+      },
+      "handling": {
+        "road": 2,
+        "rough": 4,
+        "water": 2
+      },
+      "acceleration": 3,
+      "miniTurbo": 1,
+      "weight": 4,
+      "coinCurve": 4
+    },
+    {
+      "id": "pokey",
+      "name": "Pokey",
+      "speed": {
+        "road": 3,
+        "rough": 4,
+        "water": 3
+      },
+      "handling": {
+        "road": 2,
+        "rough": 4,
+        "water": 2
+      },
+      "acceleration": 3,
+      "miniTurbo": 1,
+      "weight": 4,
+      "coinCurve": 4
+    },
+    {
+      "id": "birdo",
+      "name": "Birdo",
+      "speed": {
+        "road": 3,
+        "rough": 3,
+        "water": 4
+      },
+      "handling": {
+        "road": 2,
+        "rough": 2,
+        "water": 4
+      },
+      "acceleration": 3,
+      "miniTurbo": 1,
+      "weight": 4,
+      "coinCurve": 4
+    },
+    {
+      "id": "penguin",
+      "name": "Penguin",
+      "speed": {
+        "road": 3,
+        "rough": 3,
+        "water": 4
+      },
+      "handling": {
+        "road": 2,
+        "rough": 2,
+        "water": 4
+      },
+      "acceleration": 3,
+      "miniTurbo": 1,
+      "weight": 4,
+      "coinCurve": 4
+    },
+    {
+      "id": "pauline",
+      "name": "Pauline",
+      "speed": {
+        "road": 5,
+        "rough": 4,
+        "water": 4
+      },
+      "handling": {
+        "road": 3,
+        "rough": 1,
+        "water": 1
+      },
+      "acceleration": 2,
+      "miniTurbo": 0,
+      "weight": 5,
+      "coinCurve": 2
+    },
+    {
+      "id": "snowman",
+      "name": "Snowman",
+      "speed": {
+        "road": 5,
+        "rough": 4,
+        "water": 4
+      },
+      "handling": {
+        "road": 3,
+        "rough": 1,
+        "water": 1
+      },
+      "acceleration": 2,
+      "miniTurbo": 0,
+      "weight": 5,
+      "coinCurve": 2
+    },
+    {
+      "id": "piranha_plant",
+      "name": "Piranha Plant",
+      "speed": {
+        "road": 5,
+        "rough": 4,
+        "water": 4
+      },
+      "handling": {
+        "road": 3,
+        "rough": 1,
+        "water": 1
+      },
+      "acceleration": 2,
+      "miniTurbo": 0,
+      "weight": 5,
+      "coinCurve": 2
+    },
+    {
+      "id": "king_boo",
+      "name": "King Boo",
+      "speed": {
+        "road": 4,
+        "rough": 5,
+        "water": 4
+      },
+      "handling": {
+        "road": 1,
+        "rough": 3,
+        "water": 1
+      },
+      "acceleration": 2,
+      "miniTurbo": 0,
+      "weight": 5,
+      "coinCurve": 2
+    },
+    {
+      "id": "conkdor",
+      "name": "Conkdor",
+      "speed": {
+        "road": 4,
+        "rough": 5,
+        "water": 4
+      },
+      "handling": {
+        "road": 1,
+        "rough": 3,
+        "water": 1
+      },
+      "acceleration": 2,
+      "miniTurbo": 0,
+      "weight": 5,
+      "coinCurve": 2
+    },
+    {
+      "id": "rosalina",
+      "name": "Rosalina",
+      "speed": {
+        "road": 4,
+        "rough": 4,
+        "water": 5
+      },
+      "handling": {
+        "road": 1,
+        "rough": 1,
+        "water": 3
+      },
+      "acceleration": 2,
+      "miniTurbo": 0,
+      "weight": 5,
+      "coinCurve": 2
+    },
+    {
+      "id": "cataquack",
+      "name": "Cataquack",
+      "speed": {
+        "road": 4,
+        "rough": 4,
+        "water": 5
+      },
+      "handling": {
+        "road": 1,
+        "rough": 1,
+        "water": 3
+      },
+      "acceleration": 2,
+      "miniTurbo": 0,
+      "weight": 5,
+      "coinCurve": 2
+    },
+    {
+      "id": "wario",
+      "name": "Wario",
+      "speed": {
+        "road": 6,
+        "rough": 5,
+        "water": 5
+      },
+      "handling": {
+        "road": 2,
+        "rough": 0,
+        "water": 0
+      },
+      "acceleration": 1,
+      "miniTurbo": 0,
+      "weight": 6,
+      "coinCurve": 1
+    },
+    {
+      "id": "wiggler",
+      "name": "Wiggler",
+      "speed": {
+        "road": 6,
+        "rough": 5,
+        "water": 5
+      },
+      "handling": {
+        "road": 2,
+        "rough": 0,
+        "water": 0
+      },
+      "acceleration": 1,
+      "miniTurbo": 0,
+      "weight": 6,
+      "coinCurve": 1
+    },
+    {
+      "id": "donkey_kong",
+      "name": "Donkey Kong",
+      "speed": {
+        "road": 5,
+        "rough": 6,
+        "water": 5
+      },
+      "handling": {
+        "road": 0,
+        "rough": 2,
+        "water": 0
+      },
+      "acceleration": 1,
+      "miniTurbo": 0,
+      "weight": 6,
+      "coinCurve": 1
+    },
+    {
+      "id": "chargin_chuck",
+      "name": "Chargin' Chuck",
+      "speed": {
+        "road": 5,
+        "rough": 6,
+        "water": 5
+      },
+      "handling": {
+        "road": 0,
+        "rough": 2,
+        "water": 0
+      },
+      "acceleration": 1,
+      "miniTurbo": 0,
+      "weight": 6,
+      "coinCurve": 1
+    },
+    {
+      "id": "cow",
+      "name": "Cow",
+      "speed": {
+        "road": 5,
+        "rough": 6,
+        "water": 5
+      },
+      "handling": {
+        "road": 0,
+        "rough": 2,
+        "water": 0
+      },
+      "acceleration": 1,
+      "miniTurbo": 0,
+      "weight": 6,
+      "coinCurve": 1
+    },
+    {
+      "id": "waluigi",
+      "name": "Waluigi",
+      "speed": {
+        "road": 5,
+        "rough": 5,
+        "water": 6
+      },
+      "handling": {
+        "road": 0,
+        "rough": 0,
+        "water": 2
+      },
+      "acceleration": 1,
+      "miniTurbo": 0,
+      "weight": 6,
+      "coinCurve": 1
+    },
+    {
+      "id": "pianta",
+      "name": "Pianta",
+      "speed": {
+        "road": 5,
+        "rough": 5,
+        "water": 6
+      },
+      "handling": {
+        "road": 0,
+        "rough": 0,
+        "water": 2
+      },
+      "acceleration": 1,
+      "miniTurbo": 0,
+      "weight": 6,
+      "coinCurve": 1
     },
     {
       "id": "bowser",
       "name": "Bowser",
-      "display": {
-        "speed": 6,
-        "handling": 0
-      },
       "speed": {
-        "solid": 6,
-        "coarse": 6,
-        "liquid": 6
+        "road": 6,
+        "rough": 6,
+        "water": 6
       },
       "handling": {
-        "solid": 0,
-        "coarse": 0,
-        "liquid": 0
+        "road": 0,
+        "rough": 0,
+        "water": 0
       },
       "acceleration": 0,
       "miniTurbo": 0,
       "weight": 7,
-      "coinCurve": 6,
-      "requiresDisplayAdjustment": true
+      "coinCurve": 0
     }
   ]
 }

@@ -1,0 +1,42 @@
+,,,,,,,,,,,,,,,,
+,Size,Class,Characters,,,,On-Road Speed,Rough Speed,Water Speed,Acceleration,Mini-Turbo,Weight,Coin Curve,On-Road Handling,Rough Handling,Water Handling
+,Small,Flyweight,,,,,0,0,0,7,4,0,9,6,6,6
+,,,Baby Peach,Baby Daisy,Swooper,Para-Biddybud,,,,,,,,,,
+,,Featherweight,,,,,1,0,0,6,3,1,8,7,5,5
+,,,Baby Mario,Goomba,Spike,,,,,,,,,,,
+,,,,,,,0,1,0,6,3,1,8,5,7,5
+,,,Baby Luigi,Dry Bones,Peepa,,,,,,,,,,,
+,,,,,,,0,0,1,6,3,1,8,5,5,7
+,,,Baby Rosalina,Sidestepper,Fishbone,,,,,,,,,,,
+,,Lightweight,,,,,2,1,1,5,3,2,7,6,4,4
+,,,Toadette,Nabbit,,,,,,,,,,,,
+,,,,,,,1,2,1,5,3,2,7,4,6,4
+,,,Toad,Shy Guy,Stingby,,,,,,,,,,,
+,,,,,,,1,1,2,5,3,2,7,4,4,6
+,,,Koopa Troopa,Lakitu,Cheep Cheep,,,,,,,,,,,
+,Medium,Welterweight,,,,,3,2,2,4,2,3,5,5,3,3
+,,,Peach,Daisy,Coin Coffer,,,,,,,,,,,
+,,,,,,,2,3,2,4,2,3,5,3,5,3
+,,,Yoshi,Monty Mole,,,,,,,,,,,,
+,,,,,,,2,2,3,4,2,3,5,3,3,5
+,,,Bowser Jr.,Dolphin,,,,,,,,,,,,
+,,Middleweight,,,,,4,3,3,3,1,4,4,4,2,2
+,,,Mario,Rocky Wrench,,,,,,,,,,,,
+,,,,,,,3,4,3,3,1,4,4,2,4,2
+,,,Luigi,Hammer Bro,Pokey,,,,,,,,,,,
+,,,,,,,3,3,4,3,1,4,4,2,2,4
+,,,Birdo,Penguin,,,,,,,,,,,,
+,Large,Cruiserweight,,,,,5,4,4,2,0,5,2,3,1,1
+,,,Pauline,Snowman,Piranha Plant,,,,,,,,,,,
+,,,,,,,4,5,4,2,0,5,2,1,3,1
+,,,King Boo,Conkdor,,,,,,,,,,,,
+,,,,,,,4,4,5,2,0,5,2,1,1,3
+,,,Rosalina,Cataquack,,,,,,,,,,,,
+,,Heavyweight,,,,,6,5,5,1,0,6,1,2,0,0
+,,,Wario,Wiggler,,,,,,,,,,,,
+,,,,,,,5,6,5,1,0,6,1,0,2,0
+,,,Donkey Kong,Chargin' Chuck,Cow,,,,,,,,,,,
+,,,,,,,5,5,6,1,0,6,1,0,0,2
+,,,Waluigi,Pianta,,,,,,,,,,,,
+,,Super Heavyweight,,,,,6,6,6,0,0,7,0,0,0,0
+,,,Bowser,,,,,,,,,,,,,
