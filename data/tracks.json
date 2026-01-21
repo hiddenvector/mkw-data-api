@@ -1,24 +1,154 @@
 {
   "tracks": [
     {
-      "id": "mario-circuit",
-      "name": "Mario Circuit",
-      "cup": "mushroom"
+      "id": "mario-bros-circuit",
+      "name": "Mario Bros. Circuit",
+      "cup": "Mushroom Cup"
     },
     {
-      "id": "rainbow-road",
-      "name": "Rainbow Road",
-      "cup": "special"
+      "id": "crown-city",
+      "name": "Crown City",
+      "cup": "Mushroom Cup"
+    },
+    {
+      "id": "whistlestop-summit",
+      "name": "Whistlestop Summit",
+      "cup": "Mushroom Cup"
+    },
+    {
+      "id": "dk-spaceport",
+      "name": "DK Spaceport",
+      "cup": "Mushroom Cup"
+    },
+    {
+      "id": "desert-hills",
+      "name": "Desert Hills",
+      "cup": "Flower Cup"
+    },
+    {
+      "id": "shy-guy-bazaar",
+      "name": "Shy Guy Bazaar",
+      "cup": "Flower Cup"
+    },
+    {
+      "id": "wario-stadium",
+      "name": "Wario Stadium",
+      "cup": "Flower Cup"
+    },
+    {
+      "id": "airship-fortress",
+      "name": "Airship Fortress",
+      "cup": "Flower Cup"
+    },
+    {
+      "id": "dk-pass",
+      "name": "DK Pass",
+      "cup": "Star Cup"
+    },
+    {
+      "id": "starview-peak",
+      "name": "Starview Peak",
+      "cup": "Star Cup"
+    },
+    {
+      "id": "sky-high-sundae",
+      "name": "Sky-High Sundae",
+      "cup": "Star Cup"
+    },
+    {
+      "id": "wario-shipyard",
+      "name": "Wario Shipyard",
+      "cup": "Star Cup"
+    },
+    {
+      "id": "koopa-troopa-beach",
+      "name": "Koopa Troopa Beach",
+      "cup": "Special Cup"
+    },
+    {
+      "id": "faraway-oasis",
+      "name": "Faraway Oasis",
+      "cup": "Special Cup"
+    },
+    {
+      "id": "peach-stadium",
+      "name": "Peach Stadium",
+      "cup": "Special Cup"
+    },
+    {
+      "id": "peach-beach",
+      "name": "Peach Beach",
+      "cup": "Special Cup"
+    },
+    {
+      "id": "salty-salty-speedway",
+      "name": "Salty Salty Speedway",
+      "cup": "Shell Cup"
+    },
+    {
+      "id": "dino-dino-jungle",
+      "name": "Dino Dino Jungle",
+      "cup": "Shell Cup"
+    },
+    {
+      "id": "great-?-block-ruins",
+      "name": "Great ? Block Ruins",
+      "cup": "Shell Cup"
+    },
+    {
+      "id": "cheep-cheep-falls",
+      "name": "Cheep Cheep Falls",
+      "cup": "Shell Cup"
+    },
+    {
+      "id": "dandelion-depths",
+      "name": "Dandelion Depths",
+      "cup": "Banana Cup"
+    },
+    {
+      "id": "boo-cinema",
+      "name": "Boo Cinema",
+      "cup": "Banana Cup"
+    },
+    {
+      "id": "dry-bones-burnout",
+      "name": "Dry Bones Burnout",
+      "cup": "Banana Cup"
+    },
+    {
+      "id": "moo-moo-meadows",
+      "name": "Moo Moo Meadows",
+      "cup": "Banana Cup"
+    },
+    {
+      "id": "choco-mountain",
+      "name": "Choco Mountain",
+      "cup": "Leaf Cup"
+    },
+    {
+      "id": "toads-factory",
+      "name": "Toad's Factory",
+      "cup": "Leaf Cup"
     },
     {
       "id": "bowsers-castle",
       "name": "Bowser's Castle",
-      "cup": "special"
+      "cup": "Leaf Cup"
     },
     {
-      "id": "koopa-cape",
-      "name": "Koopa Cape",
-      "cup": "star"
+      "id": "acorn-heights",
+      "name": "Acorn Heights",
+      "cup": "Leaf Cup"
+    },
+    {
+      "id": "mario-circuit",
+      "name": "Mario Circuit",
+      "cup": "Lightning Cup"
+    },
+    {
+      "id": "rainbow-road",
+      "name": "Rainbow Road",
+      "cup": "Special Cup"
     }
   ]
 }

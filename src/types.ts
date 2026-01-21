@@ -1,51 +1,41 @@
 /**
- * Represents speed or handling stats for different terrain types.
+ * Speed and handling stats for different surface types.
+ * Based on Mario Kart World Statpedia terminology.
  */
 export interface TerrainStats {
-    /** Stat for solid terrain (e.g., road) */
-    readonly solid: number;
-    /** Stat for coarse terrain (e.g., off-road) */
-    readonly coarse: number;
-    /** Stat for liquid terrain (e.g., water) */
-    readonly liquid: number;
+    /** Performance on paved surfaces (asphalt, concrete, bricks) */
+    readonly road: number;
+    /** Performance on coarse surfaces (dirt, gravel, sand, snow, ice) */
+    readonly rough: number;
+    /** Performance on liquid surfaces (water) */
+    readonly water: number;
 }
 
 /**
- * Represents a playable character and their stats.
+ * Core racing stats shared by characters and vehicles.
+ * Stats use Level notation (0-11 range for most stats).
  */
-export interface Character {
+export interface BaseStats {
+    readonly speed: TerrainStats;
+    readonly handling: TerrainStats;
+    readonly acceleration: number;
+    readonly miniTurbo: number;
+    readonly weight: number;
+    readonly coinCurve: number;
+}
+
+/**
+ * Represents a playable character.
+ */
+export interface Character extends BaseStats {
     /** Unique identifier for the character */
     readonly id: string;
     /** Display name of the character */
     readonly name: string;
-
-    /** Display stats for UI */
-    readonly display: {
-        /** Display speed stat */
-        readonly speed: number;
-        /** Display handling stat */
-        readonly handling: number;
-    };
-
-    /** Speed stats by terrain */
-    readonly speed: TerrainStats;
-    /** Handling stats by terrain */
-    readonly handling: TerrainStats;
-    /** Acceleration stat */
-    readonly acceleration: number;
-    /** Mini-turbo stat */
-    readonly miniTurbo: number;
-    /** Weight stat */
-    readonly weight: number;
-    /** Coin curve stat */
-    readonly coinCurve: number;
-
-    /** If true, display stats require adjustment for this character */
-    readonly requiresDisplayAdjustment: boolean;
 }
 
 /**
- * Represents a vehicle and its stats.
+ * Represents a vehicle (kart, bike, or ATV).
  */
 export interface Vehicle {
     /** Unique identifier for the vehicle */
@@ -54,30 +44,6 @@ export interface Vehicle {
     readonly name: string;
     /** Vehicle category */
     readonly category: 'kart' | 'bike' | 'atv';
-
-    /** Display stats for UI */
-    readonly display: {
-        /** Display speed stat */
-        readonly speed: number;
-        /** Display handling stat */
-        readonly handling: number;
-    };
-
-    /** Speed stats by terrain */
-    readonly speed: TerrainStats;
-    /** Handling stats by terrain */
-    readonly handling: TerrainStats;
-    /** Acceleration stat */
-    readonly acceleration: number;
-    /** Mini-turbo stat */
-    readonly miniTurbo: number;
-    /** Weight stat */
-    readonly weight: number;
-    /** Coin curve stat */
-    readonly coinCurve: number;
-
-    /** If true, display stats require adjustment for this vehicle */
-    readonly requiresDisplayAdjustment: boolean;
 }
 
 /**

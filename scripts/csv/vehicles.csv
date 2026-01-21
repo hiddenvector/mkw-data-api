@@ -1,0 +1,54 @@
+,,,,,,,,,,,,,,,,
+,,"Update 1.2.0 Balance Changes
+⬆️ Rally Bike and Hyper Pipe (OF-L-0):
+        -  On-Road Handling  0 --> 6",,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,
+,Class,Tag,Vehicles,,,,On-Road Speed,Rough Speed,Water Speed,Acceleration,Mini-Turbo,Weight,Coin Curve,On-Road Handling,Rough Handling,Water Handling
+,Charger,ST-A-0,,,,,1,1,1,9,9,0,6,8,8,8
+,,,Standard Bike,Tune Thumper,Cute Scoot,,,,,,,,,,,
+,,ST-A-1,,,,,2,2,2,8,8,1,5,7,7,7
+,,,Pipe Frame,,,,,,,,,,,,,
+,All-Rounder,ST-B-0,,,,,4,4,4,6,6,1,5,7,7,7
+,,,Loco Moto,,,,,,,,,,,,,
+,,ST-B-1,,,,,5,5,5,5,5,2,4,6,6,6
+,,,Standard Kart,Plushbuggy,,,,,,,,,,,,
+,,ST-B-X,,,,,5,5,5,6,6,3,3,4,4,4
+,,,Blastronaut III,,,,,,,,,,,,,
+,Speedster,ST-C-0,,,,,7,7,7,3,3,2,4,6,6,6
+,,,W-Twin Chopper,,,,,,,,,,,,,
+,,ST-C-1,,,,,8,8,8,2,2,3,3,5,5,5
+,,,Reel Racer,,,,,,,,,,,,,
+,,ST-C-X,,,,,8,8,8,3,3,4,2,3,3,3
+,,,Junkyard Hog,,,,,,,,,,,,,
+,Off-Road Hybrid,HB-OF,,,,,3,9,5,3,3,3,3,4,10,5
+,,,Dread Sled,,,,,,,,,,,,,
+,Water Hybrid,HB-WT,,,,,6,8,11,0,0,5,1,2,3,9
+,,,Stellar Sled,,,,,,,,,,,,,
+,Light On-Roader,ON-L-0,,,,,6,1,1,7,7,0,6,11,7,7
+,,,Mach Rocket,R.O.B. H.O.G.,,,,,,,,,,,,
+,,ON-L-1,,,,,7,2,2,6,6,1,5,10,6,6
+,,,Baby Blooper,,,,,,,,,,,,,
+,Medium On-Roader,ON-M,,,,,8,4,4,4,4,3,3,9,4,4
+,,,Roadster Royale,B-Dasher,Hot Rod,Bumble V,,,,,,,,,,
+,Heavy On-Roader,ON-H-1,,,,,9,6,6,2,2,5,1,8,2,2
+,,,Billdozer,Big Horn,,,,,,,,,,,,
+,,ON-H-X,,,,,9,6,6,3,3,6,0,6,0,0
+,,,Rallygator,,,,,,,,,,,,,
+,Light Off-Roader,OF-L-0,,,,,0,5,0,8,8,0,6,7,11,7
+,,,Rally Bike,Hyper Pipe,,,,,,,,,,,,
+,,OF-L-1,,,,,1,6,1,7,7,1,5,6,10,6
+,,,Biddybuggy,,,,,,,,,,,,,
+,Medium Off-Roader,OF-M,,,,,4,8,4,4,4,3,3,4,9,4
+,,,Rally Kart,Zoom Buggy,,,,,,,,,,,,
+,Heavy Off-Roader,OF-H,,,,,7,10,7,1,1,5,1,2,8,2
+,,,Bowser Bruiser,Li'l Dumpy,Chargin' Truck,Tiny Titan,,,,,,,,,,
+,Light Surfer,WT-L,,,,,0,0,5,8,8,0,6,7,7,11
+,,,Dolphin Dasher,Fin Twin,,,,,,,,,,,,
+,Medium Surfer,WT-M-1,,,,,4,4,8,4,4,3,3,4,4,9
+,,,Cloud 9,Ribbit Revster,Carpet Flyer,,,,,,,,,,,
+,,WT-M-X,,,,,4,4,8,5,5,4,2,2,2,7
+,,,Funky Dorrie,,,,,,,,,,,,,
+,Heavy Surfer,WT-H-1,,,,,7,7,10,1,1,5,1,2,2,8
+,,,Mecha Trike,,,,,,,,,,,,,
+,,WT-H-X,,,,,7,7,10,2,2,6,0,0,0,6
+,,,Lobster Roller,,,,,,,,,,,,,
