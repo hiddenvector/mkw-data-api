@@ -1,104 +1,221 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-
-import type { Character, Vehicle, Track, CharactersResponse, VehiclesResponse, TracksResponse } from './types';
+import type {
+  Character,
+  Vehicle,
+  Track,
+  CharactersResponse,
+  VehiclesResponse,
+  TracksResponse
+} from './types';
 
 import charactersData from '../data/characters.json';
 import vehiclesData from '../data/vehicles.json';
 import tracksData from '../data/tracks.json';
 
+// ============================================================================
+// App Setup
+// ============================================================================
+
 const app = new Hono().basePath('/mkw/api/v1');
 
+// ============================================================================
+// Middleware
+// ============================================================================
+
+// CORS - allow all origins
 app.use('/*', cors());
 
+// Cache control with ETag support based on dataVersion
 app.use('/*', async (c, next) => {
-    await next();
-    c.header('Cache-Control', 'public, max-age=3600'); // 1 hour
+  await next();
+
+  // Set cache headers
+  c.header('Cache-Control', 'public, max-age=3600'); // 1 hour
+
+  // Set ETag based on data version for conditional requests
+  const contentType = c.res.headers.get('content-type');
+  if (contentType?.includes('application/json')) {
+    try {
+      const body: any = await c.res.clone().json();
+      if (body.dataVersion) {
+        c.header('ETag', `"${body.dataVersion}"`);
+      }
+    } catch {
+      // Not JSON or already consumed, skip ETag
+    }
+  }
 });
+
+// ============================================================================
+// Health Check
+// ============================================================================
 
 app.get('/health', (c) => {
-    return c.json({
-        status: 'ok',
-        version: '1.0.0',
-        timestamp: new Date().toISOString()
-    });
+  return c.json({
+    status: 'ok',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    dataVersion: (charactersData as CharactersResponse).dataVersion,
+  });
 });
 
-// ========== Characters Endpoints ==========
+// ============================================================================
+// Characters Endpoints
+// ============================================================================
 
-// GET /mkw/api/v1/characters - List all characters
+/**
+ * GET /characters
+ * Returns all characters with their stats
+ */
 app.get('/characters', (c) => {
-    return c.json(charactersData as CharactersResponse);
+  return c.json(charactersData as CharactersResponse);
 });
 
-// GET /mkw/api/v1/characters/:id - Get character by ID
+/**
+ * GET /characters/:id
+ * Returns a single character by ID
+ */
 app.get('/characters/:id', (c) => {
-    const id = c.req.param('id');
-    const character = (charactersData as CharactersResponse).characters.find((char) =>
-        char.id === id
-    );
+  const id = c.req.param('id');
+  const data = charactersData as CharactersResponse;
+  const character = data.characters.find((char) => char.id === id);
 
-    if (!character) {
-        return c.json({ error: 'Character not found' }, 404);
-    }
+  if (!character) {
+    return c.json({ error: `Character '${id}' not found` }, 404);
+  }
 
-    return c.json(character);
+  return c.json(character);
 });
 
-// ========== Vehicles Endpoints ==========
+// ============================================================================
+// Vehicles Endpoints
+// ============================================================================
 
-// GET /mkw/api/v1/vehicles - List all vehicles
+/**
+ * GET /vehicles
+ * Returns all vehicles with their stats
+ */
 app.get('/vehicles', (c) => {
-    return c.json(vehiclesData as VehiclesResponse);
+  return c.json(vehiclesData as VehiclesResponse);
 });
 
-// GET /mkw/api/v1/vehicles/:id - Get vehicle by ID
+/**
+ * GET /vehicles/tag/:tag
+ * Returns all vehicles with a specific tag (same stats)
+ */
+app.get('/vehicles/tag/:tag', (c) => {
+  const tag = c.req.param('tag').toLowerCase();
+  const data = vehiclesData as VehiclesResponse;
+  const vehicles = data.vehicles.filter((veh) => veh.tag === tag);
+
+  if (vehicles.length === 0) {
+    return c.json({ error: `No vehicles found with tag '${tag}'` }, 404);
+  }
+
+  return c.json({
+    tag,
+    dataVersion: data.dataVersion,
+    vehicles,
+  });
+});
+
+/**
+ * GET /vehicles/:id
+ * Returns a single vehicle by ID
+ */
 app.get('/vehicles/:id', (c) => {
-    const id = c.req.param('id');
-    const vehicle = (vehiclesData as VehiclesResponse).vehicles.find((veh) =>
-        veh.id === id
-    );
+  const id = c.req.param('id');
+  const data = vehiclesData as VehiclesResponse;
+  const vehicle = data.vehicles.find((veh) => veh.id === id);
 
-    if (!vehicle) {
-        return c.json({ error: 'Vehicle not found' }, 404);
-    }
+  if (!vehicle) {
+    return c.json({ error: `Vehicle '${id}' not found` }, 404);
+  }
 
-    return c.json(vehicle);
+  return c.json(vehicle);
 });
 
-// ========== Tracks Endpoints ==========
+// ============================================================================
+// Tracks Endpoints
+// ============================================================================
 
-// GET /mkw/api/v1/tracks - List all tracks
+/**
+ * GET /tracks
+ * Returns all tracks with surface coverage data
+ */
 app.get('/tracks', (c) => {
-    return c.json(tracksData as TracksResponse);
+  return c.json(tracksData as TracksResponse);
 });
 
-// GET /mkw/api/v1/tracks/:id - Get track by ID
+/**
+ * GET /tracks/cup/:cup
+ * Returns all tracks in a specific cup
+ */
+app.get('/tracks/cup/:cup', (c) => {
+  const cup = c.req.param('cup');
+  const data = tracksData as TracksResponse;
+
+  // Normalize cup name for matching (case-insensitive, handle spaces)
+  const normalizedCup = cup.toLowerCase().replace(/-/g, ' ');
+  const tracks = data.tracks.filter((t) =>
+    t.cup.toLowerCase() === normalizedCup
+  );
+
+  if (tracks.length === 0) {
+    return c.json({ error: `No tracks found in cup '${cup}'` }, 404);
+  }
+
+  return c.json({
+    cup: tracks[0].cup, // Use proper capitalization from data
+    dataVersion: data.dataVersion,
+    tracks,
+  });
+});
+
+/**
+ * GET /tracks/:id
+ * Returns a single track by ID
+ */
 app.get('/tracks/:id', (c) => {
-    const id = c.req.param('id');
-    const track = (tracksData as TracksResponse).tracks.find( (t) => t.id === id );
+  const id = c.req.param('id');
+  const data = tracksData as TracksResponse;
+  const track = data.tracks.find((t) => t.id === id);
 
-    if (!track) {
-        return c.json({ error: 'Track not found' }, 404);
-    }
+  if (!track) {
+    return c.json({ error: `Track '${id}' not found` }, 404);
+  }
 
-    return c.json(track);
+  return c.json(track);
 });
 
-// ========== 404 Handler ==========
+// ============================================================================
+// 404 Handler
+// ============================================================================
+
 app.notFound((c) => {
-    return c.json({
-        error: 'Endpoint not found' ,
-        availableEndpoints: [
-            '/mkw/api/v1/health',
-            '/mkw/api/v1/characters',
-            '/mkw/api/v1/characters/:id',
-            '/mkw/api/v1/vehicles',
-            '/mkw/api/v1/vehicles/:id',
-            '/mkw/api/v1/tracks',
-            '/mkw/api/v1/tracks/:id'
-        ]
-    }, 404);
+  return c.json(
+    {
+      error: 'Endpoint not found',
+      path: c.req.path,
+      availableEndpoints: [
+        'GET /mkw/api/v1/health',
+        'GET /mkw/api/v1/characters',
+        'GET /mkw/api/v1/characters/:id',
+        'GET /mkw/api/v1/vehicles',
+        'GET /mkw/api/v1/vehicles/:id',
+        'GET /mkw/api/v1/vehicles/tag/:tag',
+        'GET /mkw/api/v1/tracks',
+        'GET /mkw/api/v1/tracks/:id',
+        'GET /mkw/api/v1/tracks/cup/:cup',
+      ],
+    },
+    404
+  );
 });
+
+// ============================================================================
+// Export
+// ============================================================================
 
 export default app;

@@ -42,8 +42,16 @@ export interface Vehicle {
     readonly id: string;
     /** Display name of the vehicle */
     readonly name: string;
-    /** Vehicle category */
-    readonly category: 'kart' | 'bike' | 'atv';
+    /** Vehicle tag */
+    readonly tag: string;
+}
+
+export interface SurfaceCoverage {
+    readonly road: number;
+    readonly rough: number;
+    readonly water: number;
+    readonly neutral: number;
+    readonly offRoad: number;
 }
 
 /**
@@ -56,12 +64,15 @@ export interface Track {
     readonly name: string;
     /** Cup or group this track belongs to */
     readonly cup: string;
+    /** Surface coverage percentages for the track */
+    readonly surfaceCoverage: SurfaceCoverage;
 }
 
 /**
  * API response containing all characters.
  */
 export interface CharactersResponse {
+    readonly dataVersion: string;
     readonly characters: Character[];
 }
 
@@ -69,6 +80,7 @@ export interface CharactersResponse {
  * API response containing all vehicles.
  */
 export interface VehiclesResponse {
+    readonly dataVersion: string;
     readonly vehicles: Vehicle[];
 }
 
@@ -76,5 +88,6 @@ export interface VehiclesResponse {
  * API response containing all tracks.
  */
 export interface TracksResponse {
+    readonly dataVersion: string;
     readonly tracks: Track[];
 }

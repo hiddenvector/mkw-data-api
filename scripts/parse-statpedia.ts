@@ -11,44 +11,23 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { parse } from 'csv-parse/sync';
-import type { Character, Vehicle, Track, TerrainStats, BaseStats } from '../src/types';
+import type { Character, Vehicle, Track, BaseStats, SurfaceCoverage } from '../src/types';
 
-// Helper: Convert name to ID (slug with hyphens)
-function toId(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/\./g, '')
-    .replace(/'/g, '')
-    .replace(/_/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
+// ============================================================================
+// Constants
+// ============================================================================
 
-// Helper: Safe parseInt (throws if NaN or undefined, with row/col info)
-function safeParseInt(value: any, rowIdx?: number, colIdx?: number, rowSnippet?: any[]): number {
-  const n = parseInt(value);
-  if (isNaN(n)) {
-    let msg = `Invalid number in CSV: '${value}'`;
-    if (rowIdx !== undefined && colIdx !== undefined) {
-      msg += ` (row ${rowIdx + 1}, col ${colIdx + 1})`;
-    }
-    if (rowSnippet) {
-      msg += `\nRow: ${JSON.stringify(rowSnippet)}`;
-    }
-    throw new Error(msg);
-  }
-  return n;
-}
+const DATA_VERSION = new Date().toISOString().split('T')[0];
 
-// Column indices for stats (for maintainability)
+/** CSV column indices for both characters and vehicles */
 const COL = {
-  // Shared
+  // Shared name columns
   NAME_1: 3,
   NAME_2: 4,
   NAME_3: 5,
   NAME_4: 6,
-  // Stats
+
+  // Stat columns (same for characters and vehicles)
   SPEED_ROAD: 7,
   SPEED_ROUGH: 8,
   SPEED_WATER: 9,
@@ -59,205 +38,459 @@ const COL = {
   HANDLING_ROAD: 14,
   HANDLING_ROUGH: 15,
   HANDLING_WATER: 16,
+
+  // Vehicle-specific columns
+  CLASS: 1,
+  TAG: 2,
+
+  // Track columns
+  TRACK_NAME: 1,
+  TRACK_TIME: 2,
+  COVERAGE_ROAD: 3,
+  COVERAGE_ROUGH: 4,
+  COVERAGE_WATER: 5,
+  COVERAGE_NEUTRAL: 6,
+  COVERAGE_OFFROAD: 7,
+} as const;
+
+/** Cup assignments for tracks */
+const CUP_MAPPING: Record<string, string> = {
+  'Mario Bros. Circuit': 'Mushroom Cup',
+  'Crown City': 'Mushroom Cup',
+  'Whistlestop Summit': 'Mushroom Cup',
+  'DK Spaceport': 'Mushroom Cup',
+  'Desert Hills': 'Flower Cup',
+  'Shy Guy Bazaar': 'Flower Cup',
+  'Wario Stadium': 'Flower Cup',
+  'Airship Fortress': 'Flower Cup',
+  'DK Pass': 'Star Cup',
+  'Starview Peak': 'Star Cup',
+  'Sky-High Sundae': 'Star Cup',
+  'Wario Shipyard': 'Star Cup',
+  'Koopa Troopa Beach': 'Special Cup',
+  'Faraway Oasis': 'Special Cup',
+  'Peach Stadium': 'Special Cup',
+  'Peach Beach': 'Special Cup',
+  'Salty Salty Speedway': 'Shell Cup',
+  'Dino Dino Jungle': 'Shell Cup',
+  'Great ? Block Ruins': 'Shell Cup',
+  'Cheep Cheep Falls': 'Shell Cup',
+  'Dandelion Depths': 'Banana Cup',
+  'Boo Cinema': 'Banana Cup',
+  'Dry Bones Burnout': 'Banana Cup',
+  'Moo Moo Meadows': 'Banana Cup',
+  'Choco Mountain': 'Leaf Cup',
+  "Toad's Factory": 'Leaf Cup',
+  "Bowser's Castle": 'Leaf Cup',
+  'Acorn Heights': 'Leaf Cup',
+  'Mario Circuit': 'Lightning Cup',
+  'Rainbow Road': 'Special Cup',
 };
 
-// Helper: Check if row has stats (numeric values in stat columns)
-function hasStats(row: any[], startCol: number): boolean {
-  return row && row[startCol] !== undefined &&
-         row[startCol] !== '' &&
-         !isNaN(parseInt(row[startCol]));
+// ============================================================================
+// Utility Functions
+// ============================================================================
+
+/**
+ * Convert a name to a URL-safe ID (slug)
+ * @example toId("Baby Peach") → "baby-peach"
+ * @example toId("R.O.B. H.O.G.") → "rob-hog"
+ */
+function toId(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/\s+/g, '-')        // spaces → hyphens
+    .replace(/\./g, '')          // remove periods
+    .replace(/'/g, '')           // remove apostrophes
+    .replace(/_/g, '-')          // underscores → hyphens
+    .replace(/-+/g, '-')         // collapse multiple hyphens
+    .replace(/^-+|-+$/g, '');    // trim leading/trailing hyphens
 }
 
+/**
+ * Safely parse an integer from a CSV cell with detailed error context
+ * @throws {Error} If value is not a valid integer
+ */
+function safeParseInt(
+  value: any,
+  context?: { row?: number; col?: number; rowData?: any[] }
+): number {
+  const n = parseInt(value);
+  if (isNaN(n)) {
+    let msg = `Invalid number in CSV: '${value}'`;
+    if (context?.row !== undefined && context?.col !== undefined) {
+      msg += ` (row ${context.row + 1}, col ${context.col + 1})`;
+    }
+    if (context?.rowData) {
+      msg += `\nRow: ${JSON.stringify(context.rowData.slice(0, 10))}...`;
+    }
+    throw new Error(msg);
+  }
+  return n;
+}
+
+/**
+ * Safely parse a percentage string to a number
+ * @example parsePercent("47%") → 47
+ * @example parsePercent("47,5%") → 47.5 (handles European decimals)
+ */
+function parsePercent(value: string): number {
+  if (!value) return 0;
+  return parseFloat(value.replace('%', '').replace(',', '.'));
+}
+
+/**
+ * Check if a CSV row contains stat data (non-empty numeric value at startCol)
+ */
+function hasStats(row: any[], startCol: number): boolean {
+  return (
+    row &&
+    row[startCol] !== undefined &&
+    row[startCol] !== '' &&
+    !isNaN(parseInt(row[startCol]))
+  );
+}
+
+/**
+ * Check if a string is a header row identifier
+ */
+function isHeaderRow(value: any, headerText: string): boolean {
+  return (
+    value &&
+    typeof value === 'string' &&
+    value.trim().toLowerCase() === headerText.toLowerCase()
+  );
+}
+
+/**
+ * Extract names from a CSV row (columns 3-6)
+ */
+function extractNames(row: any[]): string[] {
+  return [row[COL.NAME_1], row[COL.NAME_2], row[COL.NAME_3], row[COL.NAME_4]]
+    .filter((name): name is string => Boolean(name && name.trim()))
+    .map(name => name.trim());
+}
+
+// ============================================================================
+// Stat Parsing
+// ============================================================================
+
+/**
+ * Parse BaseStats from a CSV row (shared by characters and vehicles)
+ */
+function parseStats(row: any[], rowIndex: number): BaseStats {
+  const ctx = (col: number) => ({ row: rowIndex, col, rowData: row });
+
+  return {
+    speed: {
+      road: safeParseInt(row[COL.SPEED_ROAD], ctx(COL.SPEED_ROAD)),
+      rough: safeParseInt(row[COL.SPEED_ROUGH], ctx(COL.SPEED_ROUGH)),
+      water: safeParseInt(row[COL.SPEED_WATER], ctx(COL.SPEED_WATER)),
+    },
+    handling: {
+      road: safeParseInt(row[COL.HANDLING_ROAD], ctx(COL.HANDLING_ROAD)),
+      rough: safeParseInt(row[COL.HANDLING_ROUGH], ctx(COL.HANDLING_ROUGH)),
+      water: safeParseInt(row[COL.HANDLING_WATER], ctx(COL.HANDLING_WATER)),
+    },
+    acceleration: safeParseInt(row[COL.ACCELERATION], ctx(COL.ACCELERATION)),
+    miniTurbo: safeParseInt(row[COL.MINI_TURBO], ctx(COL.MINI_TURBO)),
+    weight: safeParseInt(row[COL.WEIGHT], ctx(COL.WEIGHT)),
+    coinCurve: safeParseInt(row[COL.COIN_CURVE], ctx(COL.COIN_CURVE)),
+  };
+}
+
+/**
+ * Parse surface coverage from a CSV row
+ */
+function parseSurfaceCoverage(row: any[]): SurfaceCoverage {
+  return {
+    road: parsePercent(row[COL.COVERAGE_ROAD]),
+    rough: parsePercent(row[COL.COVERAGE_ROUGH]),
+    water: parsePercent(row[COL.COVERAGE_WATER]),
+    neutral: parsePercent(row[COL.COVERAGE_NEUTRAL]),
+    offRoad: parsePercent(row[COL.COVERAGE_OFFROAD]),
+  };
+}
+
+// ============================================================================
+// Validation
+// ============================================================================
+
+/**
+ * Validate a character has required fields and reasonable stat values
+ */
+function validateCharacter(char: Character, index: number): void {
+  if (!char.id || !char.name) {
+    throw new Error(`Character ${index}: missing id or name`);
+  }
+
+  // Sanity check: stats should be in reasonable ranges (0-20)
+  const stats = [
+    char.speed.road,
+    char.speed.rough,
+    char.speed.water,
+    char.handling.road,
+    char.handling.rough,
+    char.handling.water,
+    char.acceleration,
+    char.miniTurbo,
+    char.weight,
+    char.coinCurve,
+  ];
+
+  for (const stat of stats) {
+    if (stat < 0 || stat > 20) {
+      throw new Error(`Character ${char.name}: invalid stat value ${stat} (expected 0-20)`);
+    }
+  }
+}
+
+/**
+ * Validate a vehicle has required fields and reasonable stat values
+ */
+function validateVehicle(vehicle: Vehicle, index: number): void {
+  if (!vehicle.id || !vehicle.name) {
+    throw new Error(`Vehicle ${index}: missing id or name`);
+  }
+
+  if (!vehicle.tag) {
+    console.warn(`⚠️  Vehicle ${vehicle.name}: missing tag`);
+  }
+}
+
+/**
+ * Validate a track has required fields
+ */
+function validateTrack(track: Track, index: number): void {
+  if (!track.id || !track.name) {
+    throw new Error(`Track ${index}: missing id or name`);
+  }
+
+  if (track.cup === 'Unknown Cup') {
+    console.warn(`⚠️  Track ${track.name}: unknown cup (not in mapping)`);
+  }
+
+  // Validate surface coverage adds up to ~100% (allow some tolerance for rounding)
+  if (track.surfaceCoverage) {
+    const total =
+      track.surfaceCoverage.road +
+      track.surfaceCoverage.rough +
+      track.surfaceCoverage.water +
+      track.surfaceCoverage.neutral +
+      track.surfaceCoverage.offRoad;
+
+    if (total < 95 || total > 105) {
+      console.warn(
+        `⚠️  Track ${track.name}: surface coverage sums to ${total.toFixed(1)}% (expected ~100%)`
+      );
+    }
+  }
+}
+
+// ============================================================================
+// CSV Parsers
+// ============================================================================
+
+/**
+ * Parse Characters CSV
+ *
+ * Structure:
+ * - Row N: Stats in columns 7-16
+ * - Row N+1: Character names in columns 3-6
+ * - Multiple characters can share the same stat line
+ */
 function parseCharacters(csvPath: string): Character[] {
   const csv = fs.readFileSync(csvPath, 'utf-8');
   const rows = parse(csv, { relax_column_count: true });
 
   const characters: Character[] = [];
+
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
+
+    // Skip empty rows
     if (!row || row.every((cell: string) => !cell)) continue;
 
+    // Look for stat rows
     if (hasStats(row, COL.SPEED_ROAD)) {
-      let stats: BaseStats;
-      try {
-        stats = {
-          speed: {
-            road: safeParseInt(row[COL.SPEED_ROAD], i, COL.SPEED_ROAD, row),
-            rough: safeParseInt(row[COL.SPEED_ROUGH], i, COL.SPEED_ROUGH, row),
-            water: safeParseInt(row[COL.SPEED_WATER], i, COL.SPEED_WATER, row)
-          },
-          handling: {
-            road: safeParseInt(row[COL.HANDLING_ROAD], i, COL.HANDLING_ROAD, row),
-            rough: safeParseInt(row[COL.HANDLING_ROUGH], i, COL.HANDLING_ROUGH, row),
-            water: safeParseInt(row[COL.HANDLING_WATER], i, COL.HANDLING_WATER, row)
-          },
-          acceleration: safeParseInt(row[COL.ACCELERATION], i, COL.ACCELERATION, row),
-          miniTurbo: safeParseInt(row[COL.MINI_TURBO], i, COL.MINI_TURBO, row),
-          weight: safeParseInt(row[COL.WEIGHT], i, COL.WEIGHT, row),
-          coinCurve: safeParseInt(row[COL.COIN_CURVE], i, COL.COIN_CURVE, row)
-        };
-      } catch (err) {
-        throw new Error(`Characters CSV: ${err instanceof Error ? err.message : err}`);
-      }
-      // Look at next row for character names (columns 3-6)
+      const stats = parseStats(row, i);
+
+      // Get character names from next row
       const nextRow = rows[i + 1];
-      if (nextRow) {
-        const names = [nextRow[COL.NAME_1], nextRow[COL.NAME_2], nextRow[COL.NAME_3], nextRow[COL.NAME_4]]
-          .filter(name => name && name.trim());
-        for (const name of names) {
-          characters.push({
-            id: toId(name),
-            name: name.trim(),
-            ...stats
-          });
-        }
+      if (!nextRow) {
+        console.warn(`⚠️  Row ${i + 1}: stat row has no following name row`);
+        continue;
+      }
+
+      const names = extractNames(nextRow);
+      if (names.length === 0) {
+        console.warn(`⚠️  Row ${i + 1}: no character names found`);
+        continue;
+      }
+
+      // Create one character per name with shared stats
+      for (const name of names) {
+        const character: Character = {
+          id: toId(name),
+          name,
+          ...stats,
+        };
+
+        validateCharacter(character, characters.length);
+        characters.push(character);
       }
     }
   }
-  console.log(`[parseCharacters] Parsed ${characters.length} characters.`);
+
   return characters;
 }
 
+/**
+ * Parse Vehicles CSV
+ *
+ * Structure:
+ * - Row N: Class, Tag, empty name columns, Stats (columns 7-16)
+ * - Row N+1: Vehicle names in columns 3-6
+ * - Multiple vehicles can share the same stat line
+ */
 function parseVehicles(csvPath: string): Vehicle[] {
   const csv = fs.readFileSync(csvPath, 'utf-8');
   const rows = parse(csv, { relax_column_count: true });
 
   const vehicles: Vehicle[] = [];
+
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
+
+    // Skip empty rows
     if (!row || row.every((cell: string) => !cell)) continue;
 
-    // Header row check (robust: trim/case-insensitive)
-    if (row[1] && typeof row[1] === 'string' && row[1].trim().toLowerCase() === 'class') continue;
+    // Skip header row
+    if (isHeaderRow(row[COL.CLASS], 'class')) continue;
 
+    // Look for stat rows
     if (hasStats(row, COL.SPEED_ROAD)) {
-      let stats: BaseStats;
-      try {
-        stats = {
-          speed: {
-            road: safeParseInt(row[COL.SPEED_ROAD], i, COL.SPEED_ROAD, row),
-            rough: safeParseInt(row[COL.SPEED_ROUGH], i, COL.SPEED_ROUGH, row),
-            water: safeParseInt(row[COL.SPEED_WATER], i, COL.SPEED_WATER, row)
-          },
-          handling: {
-            road: safeParseInt(row[COL.HANDLING_ROAD], i, COL.HANDLING_ROAD, row),
-            rough: safeParseInt(row[COL.HANDLING_ROUGH], i, COL.HANDLING_ROUGH, row),
-            water: safeParseInt(row[COL.HANDLING_WATER], i, COL.HANDLING_WATER, row)
-          },
-          acceleration: safeParseInt(row[COL.ACCELERATION], i, COL.ACCELERATION, row),
-          miniTurbo: safeParseInt(row[COL.MINI_TURBO], i, COL.MINI_TURBO, row),
-          weight: safeParseInt(row[COL.WEIGHT], i, COL.WEIGHT, row),
-          coinCurve: safeParseInt(row[COL.COIN_CURVE], i, COL.COIN_CURVE, row)
-        };
-      } catch (err) {
-        throw new Error(`Vehicles CSV: ${err instanceof Error ? err.message : err}`);
-      }
+      const stats = parseStats(row, i);
+      const tag = (row[COL.TAG] || '').trim().toLowerCase();
+
+      // Get vehicle names from next row
       const nextRow = rows[i + 1];
-      if (!nextRow) continue;
-      const names = [nextRow[COL.NAME_1], nextRow[COL.NAME_2], nextRow[COL.NAME_3], nextRow[COL.NAME_4]]
-        .filter(name => name && name.trim());
-      if (names.length === 0) continue;
-      const className = (row[1] || '').toLowerCase();
-      let category: 'kart' | 'bike' | 'atv' = 'kart';
-      if (className.includes('bike')) {
-        category = 'bike';
-      } else if (className.includes('atv')) {
-        category = 'atv';
-      } else if (names.length > 0) {
-        const firstNameLower = names[0].toLowerCase();
-        if (firstNameLower.includes('bike') || firstNameLower.includes('chopper')) {
-          category = 'bike';
-        }
+      if (!nextRow) {
+        console.warn(`⚠️  Row ${i + 1}: stat row has no following name row`);
+        continue;
       }
+
+      const names = extractNames(nextRow);
+      if (names.length === 0) {
+        console.warn(`⚠️  Row ${i + 1}: no vehicle names found`);
+        continue;
+      }
+
+      // Create one vehicle per name with shared stats
       for (const name of names) {
-        vehicles.push({
+        const vehicle: Vehicle = {
           id: toId(name),
-          name: name.trim(),
-          category,
-          ...stats
-        });
+          name,
+          tag,
+          ...stats,
+        };
+
+        validateVehicle(vehicle, vehicles.length);
+        vehicles.push(vehicle);
       }
     }
   }
-  console.log(`[parseVehicles] Parsed ${vehicles.length} vehicles.`);
+
   return vehicles;
 }
 
+/**
+ * Parse Tracks from Surface Coverage CSV
+ *
+ * Structure:
+ * - Regular Tracks section contains track data
+ * - Track name in column 1
+ * - Surface coverage percentages in columns 3-7
+ */
 function parseTracks(csvPath: string): Track[] {
   const csv = fs.readFileSync(csvPath, 'utf-8');
   const rows = parse(csv, { relax_column_count: true });
 
   const tracks: Track[] = [];
-
-  // Simple cup mapping (you can refine this)
-  const cupMapping: Record<string, string> = {
-    'Mario Bros. Circuit': 'Mushroom Cup',
-    'Crown City': 'Mushroom Cup',
-    'Whistlestop Summit': 'Mushroom Cup',
-    'DK Spaceport': 'Mushroom Cup',
-    'Desert Hills': 'Flower Cup',
-    'Shy Guy Bazaar': 'Flower Cup',
-    'Wario Stadium': 'Flower Cup',
-    'Airship Fortress': 'Flower Cup',
-    'DK Pass': 'Star Cup',
-    'Starview Peak': 'Star Cup',
-    'Sky-High Sundae': 'Star Cup',
-    'Wario Shipyard': 'Star Cup',
-    'Koopa Troopa Beach': 'Special Cup',
-    'Faraway Oasis': 'Special Cup',
-    'Peach Stadium': 'Special Cup',
-    'Peach Beach': 'Special Cup',
-    'Salty Salty Speedway': 'Shell Cup',
-    'Dino Dino Jungle': 'Shell Cup',
-    'Great ? Block Ruins': 'Shell Cup',
-    'Cheep Cheep Falls': 'Shell Cup',
-    'Dandelion Depths': 'Banana Cup',
-    'Boo Cinema': 'Banana Cup',
-    'Dry Bones Burnout': 'Banana Cup',
-    'Moo Moo Meadows': 'Banana Cup',
-    'Choco Mountain': 'Leaf Cup',
-    "Toad's Factory": 'Leaf Cup',
-    "Bowser's Castle": 'Leaf Cup',
-    'Acorn Heights': 'Leaf Cup',
-    'Mario Circuit': 'Lightning Cup',
-    'Rainbow Road': 'Special Cup'
-  };
-
   let inRegularTracks = false;
+
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
+
     // Start parsing after "Regular Tracks" header
-    if (row[1] === 'Regular Tracks') {
+    if (row[COL.TRACK_NAME] === 'Regular Tracks') {
       inRegularTracks = true;
       continue;
     }
+
     // Stop at "Knock-Out Tour" section
-    if (row[1] === 'Knock-Out Tour') {
+    if (row[COL.TRACK_NAME] === 'Knock-Out Tour') {
       break;
     }
-    if (inRegularTracks && row[1] && row[1] !== 'Track' && row[1] !== 'Name') {
-      const trackName = row[1].trim();
+
+    if (
+      inRegularTracks &&
+      row[COL.TRACK_NAME] &&
+      row[COL.TRACK_NAME] !== 'Track' &&
+      row[COL.TRACK_NAME] !== 'Name'
+    ) {
+      const trackName = row[COL.TRACK_NAME].trim();
+
       // Skip summary rows and explanatory text
-      if (!trackName ||
-          trackName.toLowerCase().includes('average') ||
-          trackName.startsWith('ℹ️') ||
-          trackName.startsWith('The following') ||
-          trackName.toLowerCase().includes('surface coverage') ||
-          trackName.toLowerCase().includes('info:') ||
-          trackName.toLowerCase().includes('summary')
-      ) continue;
-      tracks.push({
+      if (
+        !trackName ||
+        trackName.toLowerCase().includes('average') ||
+        trackName.startsWith('ℹ️') ||
+        trackName.startsWith('The following') ||
+        trackName.toLowerCase().includes('surface coverage')
+      ) {
+        continue;
+      }
+
+      const track: Track = {
         id: toId(trackName),
         name: trackName,
-        cup: cupMapping[trackName] || 'Unknown Cup'
-      });
+        cup: CUP_MAPPING[trackName] || 'Unknown Cup',
+        surfaceCoverage: parseSurfaceCoverage(row),
+      };
+
+      validateTrack(track, tracks.length);
+      tracks.push(track);
     }
   }
-  console.log(`[parseTracks] Parsed ${tracks.length} tracks.`);
+
   return tracks;
 }
 
-// Main execution
+// ============================================================================
+// File I/O
+// ============================================================================
+
+/**
+ * Write parsed data to JSON file with versioning
+ */
+function writeJSON<T>(filePath: string, data: T, label: string): void {
+  const json = JSON.stringify(
+    {
+      dataVersion: DATA_VERSION,
+      [label]: data,
+    },
+    null,
+    2
+  );
+
+  fs.writeFileSync(filePath, json);
+}
+
+// ============================================================================
+// Main
+// ============================================================================
+
 async function main() {
   console.log('🚀 Parsing Statpedia CSVs...\n');
 
@@ -276,10 +509,7 @@ async function main() {
     const characters = parseCharacters(charactersPath);
     console.log(`   ✅ Parsed ${characters.length} characters`);
 
-    fs.writeFileSync(
-      path.join(dataDir, 'characters.json'),
-      JSON.stringify({ characters }, null, 2)
-    );
+    writeJSON(path.join(dataDir, 'characters.json'), characters, 'characters');
     console.log('   💾 Wrote data/characters.json\n');
   } else {
     console.log('   ⚠️  characters.csv not found, skipping\n');
@@ -292,10 +522,7 @@ async function main() {
     const vehicles = parseVehicles(vehiclesPath);
     console.log(`   ✅ Parsed ${vehicles.length} vehicles`);
 
-    fs.writeFileSync(
-      path.join(dataDir, 'vehicles.json'),
-      JSON.stringify({ vehicles }, null, 2)
-    );
+    writeJSON(path.join(dataDir, 'vehicles.json'), vehicles, 'vehicles');
     console.log('   💾 Wrote data/vehicles.json\n');
   } else {
     console.log('   ⚠️  vehicles.csv not found, skipping\n');
@@ -308,16 +535,17 @@ async function main() {
     const tracks = parseTracks(tracksPath);
     console.log(`   ✅ Parsed ${tracks.length} tracks`);
 
-    fs.writeFileSync(
-      path.join(dataDir, 'tracks.json'),
-      JSON.stringify({ tracks }, null, 2)
-    );
+    writeJSON(path.join(dataDir, 'tracks.json'), tracks, 'tracks');
     console.log('   💾 Wrote data/tracks.json\n');
   } else {
     console.log('   ⚠️  surface-coverage.csv not found, skipping\n');
   }
 
   console.log('✨ Done! Data files generated in data/');
+  console.log(`📅 Data version: ${DATA_VERSION}`);
 }
 
-main().catch(console.error);
+main().catch((err) => {
+  console.error('❌ Fatal error:', err);
+  process.exit(1);
+});
