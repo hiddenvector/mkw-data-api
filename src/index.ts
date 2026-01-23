@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { apiReference } from '@scalar/hono-api-reference';
+import { Scalar } from '@scalar/hono-api-reference';
 import { openApiSpec } from './openapi-spec';
 
 import type {
@@ -206,9 +206,9 @@ app.get('/openapi.json', (c) => {
  */
 app.get(
   '/docs',
-  apiReference({
-    theme: 'purple',
+  Scalar({
     url: '/mkw/api/v1/openapi.json',
+    pageTitle: 'Mario Kart World Data API Documentation',
   })
 );
 
