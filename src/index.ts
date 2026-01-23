@@ -36,17 +36,19 @@ app.use('/*', cors({
 
 // Cache control with security headers
 app.use('/*', async (c, next) => {
-  await next();
-
   c.header('API-Version', API_CONFIG.apiVersion);
+  c.header('X-Content-Type-Options', 'nosniff');
+  c.header('Referrer-Policy', 'no-referrer');
+
+  if (!c.req.path.endsWith('/docs')) {
+    c.header('X-Frame-Options', 'DENY');
+  }
+
+  await next();
 
   if (!c.req.path.includes('/docs') && !c.req.path.includes('/openapi.json')) {
     c.header('Cache-Control', 'public, max-age=3600');
   }
-
-  c.header('X-Content-Type-Options', 'nosniff');
-  c.header('X-Frame-Options', 'DENY');
-  c.header('Referrer-Policy', 'no-referrer');
 });
 
 // ============================================================================
@@ -226,7 +228,7 @@ app.get(
     await next();
   },
   Scalar({
-    url: `${API_CONFIG.basePath}/openapi.json`,
+    content: openApiSpec,
     pageTitle: 'Mario Kart World Data API Documentation',
   })
 );
