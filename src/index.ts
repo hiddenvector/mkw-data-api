@@ -33,8 +33,10 @@ app.use('/*', cors());
 app.use('/*', async (c, next) => {
   await next();
 
-  // Set cache headers
-  c.header('Cache-Control', 'public, max-age=3600'); // 1 hour
+  if (!c.req.path.includes('/docs') && !c.req.path.includes('/openapi.json')) {
+    c.header('Cache-Control', 'public, max-age=3600');
+  }
+
   c.header('X-Content-Type-Options', 'nosniff');
   c.header('X-Frame-Options', 'DENY');
   c.header('Referrer-Policy', 'no-referrer');
