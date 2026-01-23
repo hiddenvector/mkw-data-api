@@ -137,7 +137,12 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
             in: 'path',
             required: true,
             schema: { type: 'string' },
-            example: 'dry-bones',
+            examples: {
+              dryBones: {
+                value: 'dry-bones',
+                summary: 'Example character ID'
+              }
+            },
             description: 'Character ID (slug format)'
           }
         ],
@@ -201,7 +206,12 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
             in: 'path',
             required: true,
             schema: { type: 'string' },
-            example: 'mach-rocket',
+            examples: {
+              machRocket: {
+                value: 'mach-rocket',
+                summary: 'Example vehicle ID'
+              }
+            },
             description: 'Vehicle ID (slug format)'
           }
         ],
@@ -236,7 +246,12 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
             in: 'path',
             required: true,
             schema: { type: 'string' },
-            example: 'on-l-0',
+            examples: {
+              onL0: {
+                value: 'on-l-0',
+                summary: 'Example vehicle tag'
+              }
+            },
             description: 'Vehicle tag (groups vehicles with identical stats)'
           }
         ],
@@ -316,7 +331,12 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
             in: 'path',
             required: true,
             schema: { type: 'string' },
-            example: 'mario-bros-circuit',
+            examples: {
+              marioBrosCircuit: {
+                value: 'mario-bros-circuit',
+                summary: 'Example track ID'
+              }
+            },
             description: 'Track ID (slug format)'
           }
         ],
@@ -351,7 +371,12 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
             in: 'path',
             required: true,
             schema: { type: 'string' },
-            example: 'mushroom-cup',
+            examples: {
+              mushroomCup: {
+                value: 'mushroom-cup',
+                summary: 'Example cup name'
+              }
+            },
             description: 'Cup name (slug format, e.g., "mushroom-cup", "flower-cup")'
           }
         ],
