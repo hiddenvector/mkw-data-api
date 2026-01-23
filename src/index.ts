@@ -1,5 +1,8 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { apiReference } from '@scalar/hono-api-reference';
+import { openApiSpec } from './openapi-spec';
+
 import type {
   Character,
   Vehicle,
@@ -26,25 +29,15 @@ const app = new Hono().basePath('/mkw/api/v1');
 // CORS - allow all origins
 app.use('/*', cors());
 
-// Cache control with ETag support based on dataVersion
+// Cache control with security headers
 app.use('/*', async (c, next) => {
   await next();
 
   // Set cache headers
   c.header('Cache-Control', 'public, max-age=3600'); // 1 hour
-
-  // Set ETag based on data version for conditional requests
-  const contentType = c.res.headers.get('content-type');
-  if (contentType?.includes('application/json')) {
-    try {
-      const body: any = await c.res.clone().json();
-      if (body.dataVersion) {
-        c.header('ETag', `"${body.dataVersion}"`);
-      }
-    } catch {
-      // Not JSON or already consumed, skip ETag
-    }
-  }
+  c.header('X-Content-Type-Options', 'nosniff');
+  c.header('X-Frame-Options', 'DENY');
+  c.header('Referrer-Policy', 'no-referrer');
 });
 
 // ============================================================================
@@ -69,7 +62,9 @@ app.get('/health', (c) => {
  * Returns all characters with their stats
  */
 app.get('/characters', (c) => {
-  return c.json(charactersData as CharactersResponse);
+  const data = charactersData as CharactersResponse;
+  c.header('ETag', `"${data.dataVersion}"`);
+  return c.json(data);
 });
 
 /**
@@ -97,7 +92,9 @@ app.get('/characters/:id', (c) => {
  * Returns all vehicles with their stats
  */
 app.get('/vehicles', (c) => {
-  return c.json(vehiclesData as VehiclesResponse);
+  const data = vehiclesData as VehiclesResponse;
+  c.header('ETag', `"${data.dataVersion}"`);
+  return c.json(data);
 });
 
 /**
@@ -145,7 +142,9 @@ app.get('/vehicles/:id', (c) => {
  * Returns all tracks with surface coverage data
  */
 app.get('/tracks', (c) => {
-  return c.json(tracksData as TracksResponse);
+  const data = tracksData as TracksResponse;
+  c.header('ETag', `"${data.dataVersion}"`);
+  return c.json(data);
 });
 
 /**
@@ -188,6 +187,30 @@ app.get('/tracks/:id', (c) => {
 
   return c.json(track);
 });
+
+// ============================================================================
+// API Documentation
+// ============================================================================
+
+// Serve the OpenAPI spec as JSON
+app.get('/openapi.json', (c) => {
+  c.header('Cache-Control', 'public, max-age=86400, immutable');
+  c.header('Content-Type', 'application/json; charset=utf-8');
+  c.header('ETag', '"v1"');
+  return c.json(openApiSpec);
+});
+
+/**
+ * GET /docs
+ * Interactive API documentation powered by Scalar
+ */
+app.get(
+  '/docs',
+  apiReference({
+    theme: 'purple',
+    url: '/mkw/api/v1/openapi.json',
+  })
+);
 
 // ============================================================================
 // 404 Handler
