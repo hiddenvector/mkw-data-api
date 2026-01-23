@@ -206,6 +206,10 @@ app.get('/openapi.json', (c) => {
  */
 app.get(
   '/docs',
+  async (c, next) => {
+    c.header('Cache-Control', 'public, max-age=86400');
+    await next();
+  },
   Scalar({
     url: '/mkw/api/v1/openapi.json',
     pageTitle: 'Mario Kart World Data API Documentation',
