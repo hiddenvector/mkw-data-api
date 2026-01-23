@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
 import { Scalar } from '@scalar/hono-api-reference';
+import { API_CONFIG } from './config';
 import { openApiSpec } from './openapi-spec';
 
 import type {
@@ -20,7 +21,7 @@ import tracksData from '../data/tracks.json';
 // App Setup
 // ============================================================================
 
-const app = new Hono().basePath('/mkw/api/v1');
+const app = new Hono().basePath(API_CONFIG.basePath);
 
 // ============================================================================
 // Middleware
@@ -32,6 +33,8 @@ app.use('/*', cors());
 // Cache control with security headers
 app.use('/*', async (c, next) => {
   await next();
+
+  c.header('API-Version', API_CONFIG.apiVersion);
 
   if (!c.req.path.includes('/docs') && !c.req.path.includes('/openapi.json')) {
     c.header('Cache-Control', 'public, max-age=3600');
@@ -49,9 +52,15 @@ app.use('/*', async (c, next) => {
 app.get('/health', (c) => {
   return c.json({
     status: 'ok',
-    version: '1.0.0',
+    apiVersion: API_CONFIG.apiVersion,
+    serviceVersion: API_CONFIG.serviceVersion,
     timestamp: new Date().toISOString(),
-    dataVersion: (charactersData as CharactersResponse).dataVersion,
+    dataVersion: charactersData.dataVersion,
+    dataLoaded: {
+      characters: charactersData.characters.length,
+      vehicles: vehiclesData.vehicles.length,
+      tracks: tracksData.tracks.length,
+    }
   });
 });
 
@@ -213,7 +222,7 @@ app.get(
     await next();
   },
   Scalar({
-    url: '/mkw/api/v1/openapi.json',
+    url: `${API_CONFIG.basePath}/openapi.json`,
     pageTitle: 'Mario Kart World Data API Documentation',
   })
 );
@@ -228,15 +237,15 @@ app.notFound((c) => {
       error: 'Endpoint not found',
       path: c.req.path,
       availableEndpoints: [
-        'GET /mkw/api/v1/health',
-        'GET /mkw/api/v1/characters',
-        'GET /mkw/api/v1/characters/:id',
-        'GET /mkw/api/v1/vehicles',
-        'GET /mkw/api/v1/vehicles/:id',
-        'GET /mkw/api/v1/vehicles/tag/:tag',
-        'GET /mkw/api/v1/tracks',
-        'GET /mkw/api/v1/tracks/:id',
-        'GET /mkw/api/v1/tracks/cup/:cup',
+        `GET ${API_CONFIG.basePath}/health`,
+        `GET ${API_CONFIG.basePath}/characters`,
+        `GET ${API_CONFIG.basePath}/characters/:id`,
+        `GET ${API_CONFIG.basePath}/vehicles`,
+        `GET ${API_CONFIG.basePath}/vehicles/:id`,
+        `GET ${API_CONFIG.basePath}/vehicles/tag/:tag`,
+        `GET ${API_CONFIG.basePath}/tracks`,
+        `GET ${API_CONFIG.basePath}/tracks/:id`,
+        `GET ${API_CONFIG.basePath}/tracks/cup/:cup`,
       ],
     },
     404

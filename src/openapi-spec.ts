@@ -4,11 +4,13 @@
  * This spec powers the interactive API documentation at /docs
  */
 
+import { API_CONFIG } from "./config";
+
 export const openApiSpec = {
   openapi: '3.1.0',
   info: {
     title: 'Mario Kart World Data API',
-    version: '1.0.0',
+    version: API_CONFIG.serviceVersion,
     description: `
 Free, community-maintained data API for Mario Kart World stats, combos, and track information.
 
@@ -33,7 +35,7 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
   },
   servers: [
     {
-      url: 'https://hiddenvector.studio/mkw/api/v1',
+      url: `https://hiddenvector.studio${API_CONFIG.basePath}`,
       description: 'Production'
     }
   ],
