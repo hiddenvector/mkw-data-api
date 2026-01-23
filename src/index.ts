@@ -28,7 +28,11 @@ const app = new Hono().basePath(API_CONFIG.basePath);
 // ============================================================================
 
 // CORS - allow all origins
-app.use('/*', cors());
+app.use('/*', cors({
+  origin: '*',
+  allowMethods: ['GET', 'OPTIONS'],
+  maxAge: 86400,
+}));
 
 // Cache control with security headers
 app.use('/*', async (c, next) => {

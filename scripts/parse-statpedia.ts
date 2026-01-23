@@ -55,35 +55,52 @@ const COL = {
 
 /** Cup assignments for tracks */
 const CUP_MAPPING: Record<string, string> = {
+  // Mushroom Cup
   'Mario Bros. Circuit': 'Mushroom Cup',
   'Crown City': 'Mushroom Cup',
   'Whistlestop Summit': 'Mushroom Cup',
   'DK Spaceport': 'Mushroom Cup',
+
+  // Flower Cup
   'Desert Hills': 'Flower Cup',
   'Shy Guy Bazaar': 'Flower Cup',
   'Wario Stadium': 'Flower Cup',
   'Airship Fortress': 'Flower Cup',
+
+  // Star Cup
   'DK Pass': 'Star Cup',
   'Starview Peak': 'Star Cup',
   'Sky-High Sundae': 'Star Cup',
   'Wario Shipyard': 'Star Cup',
-  'Koopa Troopa Beach': 'Special Cup',
-  'Faraway Oasis': 'Special Cup',
-  'Peach Stadium': 'Special Cup',
-  'Peach Beach': 'Special Cup',
-  'Salty Salty Speedway': 'Shell Cup',
-  'Dino Dino Jungle': 'Shell Cup',
-  'Great ? Block Ruins': 'Shell Cup',
-  'Cheep Cheep Falls': 'Shell Cup',
-  'Dandelion Depths': 'Banana Cup',
-  'Boo Cinema': 'Banana Cup',
-  'Dry Bones Burnout': 'Banana Cup',
-  'Moo Moo Meadows': 'Banana Cup',
-  'Choco Mountain': 'Leaf Cup',
-  "Toad's Factory": 'Leaf Cup',
-  "Bowser's Castle": 'Leaf Cup',
-  'Acorn Heights': 'Leaf Cup',
-  'Mario Circuit': 'Lightning Cup',
+
+  // Shell Cup
+  'Koopa Troopa Beach': 'Shell Cup',
+  'Faraway Oasis': 'Shell Cup',
+  'Crown City 2': 'Shell Cup',
+  'Peach Stadium': 'Shell Cup',
+
+  // Banana Cup
+  'Peach Beach': 'Banana Cup',
+  'Salty Salty Speedway': 'Banana Cup',
+  'Dino Dino Jungle': 'Banana Cup',
+  'Great ? Block Ruins': 'Banana Cup',
+
+  // Leaf Cup
+  'Cheep Cheep Falls': 'Leaf Cup',
+  'Dandelion Depths': 'Leaf Cup',
+  'Boo Cinema': 'Leaf Cup',
+  'Dry Bones Burnout': 'Leaf Cup',
+
+  // Lightning Cup
+  'Moo Moo Meadows': 'Lightning Cup',
+  'Choco Mountain': 'Lightning Cup',
+  "Toad's Factory": 'Lightning Cup',
+  "Bowser's Castle": 'Lightning Cup',
+
+  // Special Cup
+  'Acorn Heights': 'Special Cup',
+  'Mario Circuit': 'Special Cup',
+  'Peach Stadium 2': 'Special Cup',
   'Rainbow Road': 'Special Cup',
 };
 
