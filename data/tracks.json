@@ -1,134 +1,317 @@
 {
+  "dataVersion": "2026-01-23",
   "tracks": [
     {
       "id": "mario-bros-circuit",
       "name": "Mario Bros. Circuit",
-      "cup": "Mushroom Cup"
+      "cup": "Mushroom Cup",
+      "surfaceCoverage": {
+        "road": 47,
+        "rough": 15,
+        "water": 0,
+        "neutral": 34,
+        "offRoad": 4
+      }
     },
     {
       "id": "crown-city",
       "name": "Crown City",
-      "cup": "Mushroom Cup"
+      "cup": "Mushroom Cup",
+      "surfaceCoverage": {
+        "road": 78,
+        "rough": 0,
+        "water": 0,
+        "neutral": 20,
+        "offRoad": 2
+      }
     },
     {
       "id": "whistlestop-summit",
       "name": "Whistlestop Summit",
-      "cup": "Mushroom Cup"
+      "cup": "Mushroom Cup",
+      "surfaceCoverage": {
+        "road": 35,
+        "rough": 0,
+        "water": 0,
+        "neutral": 62,
+        "offRoad": 3
+      }
     },
     {
       "id": "dk-spaceport",
       "name": "DK Spaceport",
-      "cup": "Mushroom Cup"
+      "cup": "Mushroom Cup",
+      "surfaceCoverage": {
+        "road": 79,
+        "rough": 0,
+        "water": 0,
+        "neutral": 17,
+        "offRoad": 4
+      }
     },
     {
       "id": "desert-hills",
       "name": "Desert Hills",
-      "cup": "Flower Cup"
+      "cup": "Flower Cup",
+      "surfaceCoverage": {
+        "road": 71,
+        "rough": 13,
+        "water": 2,
+        "neutral": 4,
+        "offRoad": 10
+      }
     },
     {
       "id": "shy-guy-bazaar",
       "name": "Shy Guy Bazaar",
-      "cup": "Flower Cup"
+      "cup": "Flower Cup",
+      "surfaceCoverage": {
+        "road": 62,
+        "rough": 0,
+        "water": 0,
+        "neutral": 36,
+        "offRoad": 2
+      }
     },
     {
       "id": "wario-stadium",
       "name": "Wario Stadium",
-      "cup": "Flower Cup"
+      "cup": "Flower Cup",
+      "surfaceCoverage": {
+        "road": 36,
+        "rough": 24,
+        "water": 0,
+        "neutral": 38,
+        "offRoad": 2
+      }
     },
     {
       "id": "airship-fortress",
       "name": "Airship Fortress",
-      "cup": "Flower Cup"
+      "cup": "Flower Cup",
+      "surfaceCoverage": {
+        "road": 62,
+        "rough": 0,
+        "water": 0,
+        "neutral": 34,
+        "offRoad": 2
+      }
     },
     {
       "id": "dk-pass",
       "name": "DK Pass",
-      "cup": "Star Cup"
+      "cup": "Star Cup",
+      "surfaceCoverage": {
+        "road": 43,
+        "rough": 26,
+        "water": 0,
+        "neutral": 20,
+        "offRoad": 11
+      }
     },
     {
       "id": "starview-peak",
       "name": "Starview Peak",
-      "cup": "Star Cup"
+      "cup": "Star Cup",
+      "surfaceCoverage": {
+        "road": 13,
+        "rough": 43,
+        "water": 13,
+        "neutral": 27,
+        "offRoad": 4
+      }
     },
     {
       "id": "sky-high-sundae",
       "name": "Sky-High Sundae",
-      "cup": "Star Cup"
+      "cup": "Star Cup",
+      "surfaceCoverage": {
+        "road": 73,
+        "rough": 0,
+        "water": 0,
+        "neutral": 24,
+        "offRoad": 3
+      }
     },
     {
       "id": "wario-shipyard",
       "name": "Wario Shipyard",
-      "cup": "Star Cup"
+      "cup": "Star Cup",
+      "surfaceCoverage": {
+        "road": 46,
+        "rough": 0,
+        "water": 26,
+        "neutral": 24,
+        "offRoad": 4
+      }
     },
     {
       "id": "koopa-troopa-beach",
       "name": "Koopa Troopa Beach",
-      "cup": "Special Cup"
+      "cup": "Special Cup",
+      "surfaceCoverage": {
+        "road": 0,
+        "rough": 81,
+        "water": 13,
+        "neutral": 0,
+        "offRoad": 6
+      }
     },
     {
       "id": "faraway-oasis",
       "name": "Faraway Oasis",
-      "cup": "Special Cup"
+      "cup": "Special Cup",
+      "surfaceCoverage": {
+        "road": 28,
+        "rough": 24,
+        "water": 22,
+        "neutral": 22,
+        "offRoad": 4
+      }
     },
     {
       "id": "peach-stadium",
       "name": "Peach Stadium",
-      "cup": "Special Cup"
+      "cup": "Special Cup",
+      "surfaceCoverage": {
+        "road": 92,
+        "rough": 0,
+        "water": 0,
+        "neutral": 6,
+        "offRoad": 2
+      }
     },
     {
       "id": "peach-beach",
       "name": "Peach Beach",
-      "cup": "Special Cup"
+      "cup": "Special Cup",
+      "surfaceCoverage": {
+        "road": 51,
+        "rough": 14,
+        "water": 23,
+        "neutral": 10,
+        "offRoad": 2
+      }
     },
     {
       "id": "salty-salty-speedway",
       "name": "Salty Salty Speedway",
-      "cup": "Shell Cup"
+      "cup": "Shell Cup",
+      "surfaceCoverage": {
+        "road": 42,
+        "rough": 0,
+        "water": 42,
+        "neutral": 15,
+        "offRoad": 1
+      }
     },
     {
       "id": "dino-dino-jungle",
       "name": "Dino Dino Jungle",
-      "cup": "Shell Cup"
+      "cup": "Shell Cup",
+      "surfaceCoverage": {
+        "road": 24,
+        "rough": 56,
+        "water": 0,
+        "neutral": 16,
+        "offRoad": 4
+      }
     },
     {
       "id": "great-?-block-ruins",
       "name": "Great ? Block Ruins",
-      "cup": "Shell Cup"
+      "cup": "Shell Cup",
+      "surfaceCoverage": {
+        "road": 66,
+        "rough": 0,
+        "water": 0,
+        "neutral": 27,
+        "offRoad": 7
+      }
     },
     {
       "id": "cheep-cheep-falls",
       "name": "Cheep Cheep Falls",
-      "cup": "Shell Cup"
+      "cup": "Shell Cup",
+      "surfaceCoverage": {
+        "road": 51,
+        "rough": 0,
+        "water": 40,
+        "neutral": 0,
+        "offRoad": 9
+      }
     },
     {
       "id": "dandelion-depths",
       "name": "Dandelion Depths",
-      "cup": "Banana Cup"
+      "cup": "Banana Cup",
+      "surfaceCoverage": {
+        "road": 64,
+        "rough": 19,
+        "water": 14,
+        "neutral": 1,
+        "offRoad": 2
+      }
     },
     {
       "id": "boo-cinema",
       "name": "Boo Cinema",
-      "cup": "Banana Cup"
+      "cup": "Banana Cup",
+      "surfaceCoverage": {
+        "road": 80,
+        "rough": 0,
+        "water": 0,
+        "neutral": 17,
+        "offRoad": 3
+      }
     },
     {
       "id": "dry-bones-burnout",
       "name": "Dry Bones Burnout",
-      "cup": "Banana Cup"
+      "cup": "Banana Cup",
+      "surfaceCoverage": {
+        "road": 75,
+        "rough": 0,
+        "water": 2,
+        "neutral": 23,
+        "offRoad": 0
+      }
     },
     {
       "id": "moo-moo-meadows",
       "name": "Moo Moo Meadows",
-      "cup": "Banana Cup"
+      "cup": "Banana Cup",
+      "surfaceCoverage": {
+        "road": 5,
+        "rough": 88,
+        "water": 0,
+        "neutral": 0,
+        "offRoad": 7
+      }
     },
     {
       "id": "choco-mountain",
       "name": "Choco Mountain",
-      "cup": "Leaf Cup"
+      "cup": "Leaf Cup",
+      "surfaceCoverage": {
+        "road": 39,
+        "rough": 51,
+        "water": 10,
+        "neutral": 0,
+        "offRoad": 0
+      }
     },
     {
       "id": "toads-factory",
       "name": "Toad's Factory",
-      "cup": "Leaf Cup"
+      "cup": "Leaf Cup",
+      "surfaceCoverage": {
+        "road": 69,
+        "rough": 12,
+        "water": 0,
+        "neutral": 12,
+        "offRoad": 7
+      }
     },
     {
       "id": "boo-cinema",
@@ -158,22 +341,50 @@
     {
       "id": "bowsers-castle",
       "name": "Bowser's Castle",
-      "cup": "Leaf Cup"
+      "cup": "Leaf Cup",
+      "surfaceCoverage": {
+        "road": 66,
+        "rough": 0,
+        "water": 5,
+        "neutral": 29,
+        "offRoad": 0
+      }
     },
     {
       "id": "acorn-heights",
       "name": "Acorn Heights",
-      "cup": "Leaf Cup"
+      "cup": "Leaf Cup",
+      "surfaceCoverage": {
+        "road": 28,
+        "rough": 20,
+        "water": 0,
+        "neutral": 50,
+        "offRoad": 2
+      }
     },
     {
       "id": "mario-circuit",
       "name": "Mario Circuit",
-      "cup": "Lightning Cup"
+      "cup": "Lightning Cup",
+      "surfaceCoverage": {
+        "road": 90,
+        "rough": 0,
+        "water": 0,
+        "neutral": 0,
+        "offRoad": 10
+      }
     },
     {
       "id": "rainbow-road",
       "name": "Rainbow Road",
-      "cup": "Special Cup"
+      "cup": "Special Cup",
+      "surfaceCoverage": {
+        "road": 71,
+        "rough": 0,
+        "water": 7,
+        "neutral": 18,
+        "offRoad": 4
+      }
     }
   ]
 }

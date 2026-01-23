@@ -1,9 +1,10 @@
 {
+  "dataVersion": "2026-01-23",
   "vehicles": [
     {
       "id": "standard-bike",
       "name": "Standard Bike",
-      "category": "bike",
+      "tag": "st-a-0",
       "speed": {
         "road": 1,
         "rough": 1,
@@ -22,7 +23,7 @@
     {
       "id": "tune-thumper",
       "name": "Tune Thumper",
-      "category": "bike",
+      "tag": "st-a-0",
       "speed": {
         "road": 1,
         "rough": 1,
@@ -41,7 +42,7 @@
     {
       "id": "cute-scoot",
       "name": "Cute Scoot",
-      "category": "bike",
+      "tag": "st-a-0",
       "speed": {
         "road": 1,
         "rough": 1,
@@ -60,7 +61,7 @@
     {
       "id": "pipe-frame",
       "name": "Pipe Frame",
-      "category": "kart",
+      "tag": "st-a-1",
       "speed": {
         "road": 2,
         "rough": 2,
@@ -79,7 +80,7 @@
     {
       "id": "loco-moto",
       "name": "Loco Moto",
-      "category": "kart",
+      "tag": "st-b-0",
       "speed": {
         "road": 4,
         "rough": 4,
@@ -98,7 +99,7 @@
     {
       "id": "standard-kart",
       "name": "Standard Kart",
-      "category": "kart",
+      "tag": "st-b-1",
       "speed": {
         "road": 5,
         "rough": 5,
@@ -117,7 +118,7 @@
     {
       "id": "plushbuggy",
       "name": "Plushbuggy",
-      "category": "kart",
+      "tag": "st-b-1",
       "speed": {
         "road": 5,
         "rough": 5,
@@ -136,7 +137,7 @@
     {
       "id": "blastronaut-iii",
       "name": "Blastronaut III",
-      "category": "kart",
+      "tag": "st-b-x",
       "speed": {
         "road": 5,
         "rough": 5,
@@ -155,7 +156,7 @@
     {
       "id": "w-twin-chopper",
       "name": "W-Twin Chopper",
-      "category": "bike",
+      "tag": "st-c-0",
       "speed": {
         "road": 7,
         "rough": 7,
@@ -174,7 +175,7 @@
     {
       "id": "reel-racer",
       "name": "Reel Racer",
-      "category": "kart",
+      "tag": "st-c-1",
       "speed": {
         "road": 8,
         "rough": 8,
@@ -193,7 +194,7 @@
     {
       "id": "junkyard-hog",
       "name": "Junkyard Hog",
-      "category": "kart",
+      "tag": "st-c-x",
       "speed": {
         "road": 8,
         "rough": 8,
@@ -212,7 +213,7 @@
     {
       "id": "dread-sled",
       "name": "Dread Sled",
-      "category": "kart",
+      "tag": "hb-of",
       "speed": {
         "road": 3,
         "rough": 9,
@@ -231,7 +232,7 @@
     {
       "id": "stellar-sled",
       "name": "Stellar Sled",
-      "category": "kart",
+      "tag": "hb-wt",
       "speed": {
         "road": 6,
         "rough": 8,
@@ -250,7 +251,7 @@
     {
       "id": "mach-rocket",
       "name": "Mach Rocket",
-      "category": "kart",
+      "tag": "on-l-0",
       "speed": {
         "road": 6,
         "rough": 1,
@@ -269,7 +270,7 @@
     {
       "id": "rob-hog",
       "name": "R.O.B. H.O.G.",
-      "category": "kart",
+      "tag": "on-l-0",
       "speed": {
         "road": 6,
         "rough": 1,
@@ -288,7 +289,7 @@
     {
       "id": "baby-blooper",
       "name": "Baby Blooper",
-      "category": "kart",
+      "tag": "on-l-1",
       "speed": {
         "road": 7,
         "rough": 2,
@@ -307,7 +308,7 @@
     {
       "id": "roadster-royale",
       "name": "Roadster Royale",
-      "category": "kart",
+      "tag": "on-m",
       "speed": {
         "road": 8,
         "rough": 4,
@@ -326,7 +327,7 @@
     {
       "id": "b-dasher",
       "name": "B-Dasher",
-      "category": "kart",
+      "tag": "on-m",
       "speed": {
         "road": 8,
         "rough": 4,
@@ -345,7 +346,7 @@
     {
       "id": "hot-rod",
       "name": "Hot Rod",
-      "category": "kart",
+      "tag": "on-m",
       "speed": {
         "road": 8,
         "rough": 4,
@@ -364,7 +365,7 @@
     {
       "id": "bumble-v",
       "name": "Bumble V",
-      "category": "kart",
+      "tag": "on-m",
       "speed": {
         "road": 8,
         "rough": 4,
@@ -383,7 +384,7 @@
     {
       "id": "billdozer",
       "name": "Billdozer",
-      "category": "kart",
+      "tag": "on-h-1",
       "speed": {
         "road": 9,
         "rough": 6,
@@ -402,7 +403,7 @@
     {
       "id": "big-horn",
       "name": "Big Horn",
-      "category": "kart",
+      "tag": "on-h-1",
       "speed": {
         "road": 9,
         "rough": 6,
@@ -421,7 +422,7 @@
     {
       "id": "rallygator",
       "name": "Rallygator",
-      "category": "kart",
+      "tag": "on-h-x",
       "speed": {
         "road": 9,
         "rough": 6,
@@ -440,7 +441,7 @@
     {
       "id": "rally-bike",
       "name": "Rally Bike",
-      "category": "bike",
+      "tag": "of-l-0",
       "speed": {
         "road": 0,
         "rough": 5,
@@ -459,7 +460,7 @@
     {
       "id": "hyper-pipe",
       "name": "Hyper Pipe",
-      "category": "bike",
+      "tag": "of-l-0",
       "speed": {
         "road": 0,
         "rough": 5,
@@ -478,7 +479,7 @@
     {
       "id": "biddybuggy",
       "name": "Biddybuggy",
-      "category": "kart",
+      "tag": "of-l-1",
       "speed": {
         "road": 1,
         "rough": 6,
@@ -497,7 +498,7 @@
     {
       "id": "rally-kart",
       "name": "Rally Kart",
-      "category": "kart",
+      "tag": "of-m",
       "speed": {
         "road": 4,
         "rough": 8,
@@ -516,7 +517,7 @@
     {
       "id": "zoom-buggy",
       "name": "Zoom Buggy",
-      "category": "kart",
+      "tag": "of-m",
       "speed": {
         "road": 4,
         "rough": 8,
@@ -535,7 +536,7 @@
     {
       "id": "bowser-bruiser",
       "name": "Bowser Bruiser",
-      "category": "kart",
+      "tag": "of-h",
       "speed": {
         "road": 7,
         "rough": 10,
@@ -554,7 +555,7 @@
     {
       "id": "lil-dumpy",
       "name": "Li'l Dumpy",
-      "category": "kart",
+      "tag": "of-h",
       "speed": {
         "road": 7,
         "rough": 10,
@@ -573,7 +574,7 @@
     {
       "id": "chargin-truck",
       "name": "Chargin' Truck",
-      "category": "kart",
+      "tag": "of-h",
       "speed": {
         "road": 7,
         "rough": 10,
@@ -592,7 +593,7 @@
     {
       "id": "tiny-titan",
       "name": "Tiny Titan",
-      "category": "kart",
+      "tag": "of-h",
       "speed": {
         "road": 7,
         "rough": 10,
@@ -611,7 +612,7 @@
     {
       "id": "dolphin-dasher",
       "name": "Dolphin Dasher",
-      "category": "kart",
+      "tag": "wt-l",
       "speed": {
         "road": 0,
         "rough": 0,
@@ -630,7 +631,7 @@
     {
       "id": "fin-twin",
       "name": "Fin Twin",
-      "category": "kart",
+      "tag": "wt-l",
       "speed": {
         "road": 0,
         "rough": 0,
@@ -649,7 +650,7 @@
     {
       "id": "cloud-9",
       "name": "Cloud 9",
-      "category": "kart",
+      "tag": "wt-m-1",
       "speed": {
         "road": 4,
         "rough": 4,
@@ -668,7 +669,7 @@
     {
       "id": "ribbit-revster",
       "name": "Ribbit Revster",
-      "category": "kart",
+      "tag": "wt-m-1",
       "speed": {
         "road": 4,
         "rough": 4,
@@ -687,7 +688,7 @@
     {
       "id": "carpet-flyer",
       "name": "Carpet Flyer",
-      "category": "kart",
+      "tag": "wt-m-1",
       "speed": {
         "road": 4,
         "rough": 4,
@@ -706,7 +707,7 @@
     {
       "id": "funky-dorrie",
       "name": "Funky Dorrie",
-      "category": "kart",
+      "tag": "wt-m-x",
       "speed": {
         "road": 4,
         "rough": 4,
@@ -725,7 +726,7 @@
     {
       "id": "mecha-trike",
       "name": "Mecha Trike",
-      "category": "kart",
+      "tag": "wt-h-1",
       "speed": {
         "road": 7,
         "rough": 7,
@@ -744,7 +745,7 @@
     {
       "id": "lobster-roller",
       "name": "Lobster Roller",
-      "category": "kart",
+      "tag": "wt-h-x",
       "speed": {
         "road": 7,
         "rough": 7,
