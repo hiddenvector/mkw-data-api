@@ -34,21 +34,10 @@ import charactersData from '../data/characters.json';
 import vehiclesData from '../data/vehicles.json';
 import tracksData from '../data/tracks.json';
 
-<<<<<<< HEAD
-const charactersResponse = charactersData as CharactersResponse;
-const vehiclesResponse = vehiclesData as VehiclesResponse;
-const tracksResponse = tracksData as TracksResponse;
-
-const { dataVersion, characters } = charactersData as CharactersResponse;
-const vehicles = vehiclesResponse.vehicles;
-const tracks = tracksResponse.tracks;
-||||||| parent of 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
-=======
 // Cast data once at startup
 const { dataVersion, characters } = charactersData as CharactersResponse;
 const { vehicles } = vehiclesData as VehiclesResponse;
 const { tracks } = tracksData as TracksResponse;
->>>>>>> 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
 
 // ============================================================================
 // App Setup
@@ -324,82 +313,22 @@ app.openapi(healthRoute, (c) => {
     apiVersion: API_CONFIG.apiVersion,
     serviceVersion: API_CONFIG.serviceVersion,
     timestamp: new Date().toISOString(),
-<<<<<<< HEAD
-    dataVersion: charactersResponse.dataVersion,
-||||||| parent of 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
-    dataVersion: charactersData.dataVersion,
-=======
     dataVersion,
->>>>>>> 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
     dataLoaded: {
       characters: characters.length,
       vehicles: vehicles.length,
       tracks: tracks.length,
-<<<<<<< HEAD
-    }
-||||||| parent of 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
-      characters: charactersData.characters.length,
-      vehicles: vehiclesData.vehicles.length,
-      tracks: tracksData.tracks.length,
-    }
-=======
     },
->>>>>>> 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
   });
 });
 
-<<<<<<< HEAD
-// ============================================================================
-// Characters Endpoints
-// ============================================================================
-
-/**
- * GET /characters
- * Returns all characters with their stats
- */
-app.get('/characters', (c) => {
-  c.header('ETag', `"${charactersResponse.dataVersion}"`);
-  return c.json(charactersResponse);
-||||||| parent of 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
-// ============================================================================
-// Characters Endpoints
-// ============================================================================
-
-/**
- * GET /characters
- * Returns all characters with their stats
- */
-app.get('/characters', (c) => {
-  const data = charactersData as CharactersResponse;
-  c.header('ETag', `"${data.dataVersion}"`);
-  return c.json(data);
-=======
 app.openapi(getCharactersRoute, (c) => {
   c.header('ETag', `"${dataVersion}"`);
   return c.json({ dataVersion, characters });
->>>>>>> 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
 });
 
-<<<<<<< HEAD
-/**
- * GET /characters/:id
- * Returns a single character by ID
- */
-app.get('/characters/:id', (c) => {
-  const id = c.req.param('id');
-||||||| parent of 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
-/**
- * GET /characters/:id
- * Returns a single character by ID
- */
-app.get('/characters/:id', (c) => {
-  const id = c.req.param('id');
-  const data = charactersData as CharactersResponse;
-  const character = data.characters.find((char) => char.id === id);
-=======
 app.openapi(getCharacterByIdRoute, (c) => {
   const { id } = c.req.valid('param');
->>>>>>> 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
   const character = characters.find((char) => char.id === id);
 
   if (!character) {
@@ -409,97 +338,13 @@ app.openapi(getCharacterByIdRoute, (c) => {
   return c.json(character);
 });
 
-<<<<<<< HEAD
-// ============================================================================
-// Vehicles Endpoints
-// ============================================================================
-
-/**
- * GET /vehicles
- * Returns all vehicles with their stats
- */
-app.get('/vehicles', (c) => {
-  c.header('ETag', `"${vehiclesResponse.dataVersion}"`);
-  return c.json(vehiclesResponse);
-||||||| parent of 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
-// ============================================================================
-// Vehicles Endpoints
-// ============================================================================
-
-/**
- * GET /vehicles
- * Returns all vehicles with their stats
- */
-app.get('/vehicles', (c) => {
-  const data = vehiclesData as VehiclesResponse;
-  c.header('ETag', `"${data.dataVersion}"`);
-  return c.json(data);
-=======
 app.openapi(getVehiclesRoute, (c) => {
   c.header('ETag', `"${dataVersion}"`);
   return c.json({ dataVersion, vehicles });
->>>>>>> 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
 });
 
-<<<<<<< HEAD
-/**
- * GET /vehicles/tag/:tag
- * Returns all vehicles with a specific tag (same stats)
- */
-app.get('/vehicles/tag/:tag', (c) => {
-  const tag = c.req.param('tag').toLowerCase();
-  const byTag = vehicles.filter((veh) => veh.tag === tag);
-
-  if (byTag.length === 0) {
-    return c.json({ error: `No vehicles found with tag '${tag}'` }, 404);
-  }
-
-  return c.json({
-    tag,
-    dataVersion: vehiclesResponse.dataVersion,
-    vehicles: byTag,
-  });
-});
-
-/**
- * GET /vehicles/:id
- * Returns a single vehicle by ID
- */
-app.get('/vehicles/:id', (c) => {
-  const id = c.req.param('id');
-||||||| parent of 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
-/**
- * GET /vehicles/tag/:tag
- * Returns all vehicles with a specific tag (same stats)
- */
-app.get('/vehicles/tag/:tag', (c) => {
-  const tag = c.req.param('tag').toLowerCase();
-  const data = vehiclesData as VehiclesResponse;
-  const vehicles = data.vehicles.filter((veh) => veh.tag === tag);
-
-  if (vehicles.length === 0) {
-    return c.json({ error: `No vehicles found with tag '${tag}'` }, 404);
-  }
-
-  return c.json({
-    tag,
-    dataVersion: data.dataVersion,
-    vehicles,
-  });
-});
-
-/**
- * GET /vehicles/:id
- * Returns a single vehicle by ID
- */
-app.get('/vehicles/:id', (c) => {
-  const id = c.req.param('id');
-  const data = vehiclesData as VehiclesResponse;
-  const vehicle = data.vehicles.find((veh) => veh.id === id);
-=======
 app.openapi(getVehicleByIdRoute, (c) => {
   const { id } = c.req.valid('param');
->>>>>>> 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
   const vehicle = vehicles.find((veh) => veh.id === id);
 
   if (!vehicle) {
@@ -513,98 +358,17 @@ app.openapi(getVehiclesByTagRoute, (c) => {
   const { tag } = c.req.valid('param');
   const byTag = vehicles.filter((veh) => veh.tag === tag);
 
-<<<<<<< HEAD
-/**
- * GET /tracks
- * Returns all tracks with surface coverage data
- */
-app.get('/tracks', (c) => {
-  c.header('ETag', `"${tracksResponse.dataVersion}"`);
-  return c.json(tracksResponse);
-});
-
-/**
- * GET /tracks/cup/:cup
- * Returns all tracks in a specific cup
- */
-app.get('/tracks/cup/:cup', (c) => {
-  const cup = c.req.param('cup');
-
-  // Normalize cup name for matching (case-insensitive, handle spaces)
-  const normalizedCup = cup.toLowerCase().replace(/-/g, ' ');
-  const byCup = tracks.filter((t) =>
-    t.cup.toLowerCase() === normalizedCup
-  );
-
-  if (byCup.length === 0) {
-    return c.json({ error: `No tracks found in cup '${cup}'` }, 404);
-||||||| parent of 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
-/**
- * GET /tracks
- * Returns all tracks with surface coverage data
- */
-app.get('/tracks', (c) => {
-  const data = tracksData as TracksResponse;
-  c.header('ETag', `"${data.dataVersion}"`);
-  return c.json(data);
-});
-
-/**
- * GET /tracks/cup/:cup
- * Returns all tracks in a specific cup
- */
-app.get('/tracks/cup/:cup', (c) => {
-  const cup = c.req.param('cup');
-  const data = tracksData as TracksResponse;
-
-  // Normalize cup name for matching (case-insensitive, handle spaces)
-  const normalizedCup = cup.toLowerCase().replace(/-/g, ' ');
-  const tracks = data.tracks.filter((t) =>
-    t.cup.toLowerCase() === normalizedCup
-  );
-
-  if (tracks.length === 0) {
-    return c.json({ error: `No tracks found in cup '${cup}'` }, 404);
-=======
   if (byTag.length === 0) {
     return notFound(c, 'Vehicles with tag', tag) as any;
->>>>>>> 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
   }
 
   return c.json({
-<<<<<<< HEAD
-    cup: byCup[0].cup, // Use proper capitalization from data
-    dataVersion: tracksResponse.dataVersion,
-    tracks: byCup,
-||||||| parent of 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
-    cup: tracks[0].cup, // Use proper capitalization from data
-    dataVersion: data.dataVersion,
-    tracks,
-=======
     tag,
     dataVersion,
     vehicles: byTag,
->>>>>>> 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
   });
 });
 
-<<<<<<< HEAD
-/**
- * GET /tracks/:id
- * Returns a single track by ID
- */
-app.get('/tracks/:id', (c) => {
-  const id = c.req.param('id');
-||||||| parent of 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
-/**
- * GET /tracks/:id
- * Returns a single track by ID
- */
-app.get('/tracks/:id', (c) => {
-  const id = c.req.param('id');
-  const data = tracksData as TracksResponse;
-  const track = data.tracks.find((t) => t.id === id);
-=======
 app.openapi(getTracksRoute, (c) => {
   c.header('ETag', `"${dataVersion}"`);
   return c.json({ dataVersion, tracks });
@@ -612,7 +376,6 @@ app.openapi(getTracksRoute, (c) => {
 
 app.openapi(getTrackByIdRoute, (c) => {
   const { id } = c.req.valid('param');
->>>>>>> 1ca9c0d (Refactor to OpenAPIHono with Zod schemas)
   const track = tracks.find((t) => t.id === id);
 
   if (!track) {
