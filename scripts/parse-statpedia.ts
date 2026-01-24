@@ -132,7 +132,7 @@ function safeParseInt(
   value: any,
   context?: { row?: number; col?: number; rowData?: any[] }
 ): number {
-  const n = parseInt(value);
+  const n = parseInt(value, 10);
   if (isNaN(n)) {
     let msg = `Invalid number in CSV: '${value}'`;
     if (context?.row !== undefined && context?.col !== undefined) {
@@ -164,7 +164,7 @@ function hasStats(row: any[], startCol: number): boolean {
     row &&
     row[startCol] !== undefined &&
     row[startCol] !== '' &&
-    !isNaN(parseInt(row[startCol]))
+    !isNaN(parseInt(row[startCol], 10))
   );
 }
 
