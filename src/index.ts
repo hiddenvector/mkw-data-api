@@ -119,13 +119,16 @@ app.use('/*', async (c, next) => {
   // Don't send referrer for privacy
   c.header('Referrer-Policy', 'no-referrer');
 
-  // Prevent clickjacking (except for docs which needs to render)
-  if (!c.req.path.endsWith('/docs')) {
-    c.header('X-Frame-Options', 'DENY');
-  }
+  // Prevent clickjacking
+  c.header('X-Frame-Options', 'DENY');
 
-  // Content Security Policy for API responses
-  if (!c.req.path.endsWith('/docs')) {
+  // Content Security Policy
+  if (c.req.path.endsWith('/docs')) {
+    c.header(
+      'Content-Security-Policy',
+      "default-src 'self'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'"
+    );
+  } else {
     c.header('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");
   }
 
