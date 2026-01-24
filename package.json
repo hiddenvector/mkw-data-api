@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
-    "generate-data": "tsx scripts/parse-statpedia.ts"
+    "generate-data": "tsx scripts/parse-statpedia.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,7 @@
     "csv-parse": "^6.1.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
+    "vitest": "^4.0.18",
     "wrangler": "^4.59.2"
   }
 }
