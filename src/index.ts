@@ -17,6 +17,14 @@ import charactersData from '../data/characters.json';
 import vehiclesData from '../data/vehicles.json';
 import tracksData from '../data/tracks.json';
 
+const charactersResponse = charactersData as CharactersResponse;
+const vehiclesResponse = vehiclesData as VehiclesResponse;
+const tracksResponse = tracksData as TracksResponse;
+
+const { dataVersion, characters } = charactersData as CharactersResponse;
+const vehicles = vehiclesResponse.vehicles;
+const tracks = tracksResponse.tracks;
+
 // ============================================================================
 // App Setup
 // ============================================================================
@@ -61,11 +69,11 @@ app.get('/health', (c) => {
     apiVersion: API_CONFIG.apiVersion,
     serviceVersion: API_CONFIG.serviceVersion,
     timestamp: new Date().toISOString(),
-    dataVersion: charactersData.dataVersion,
+    dataVersion: charactersResponse.dataVersion,
     dataLoaded: {
-      characters: charactersData.characters.length,
-      vehicles: vehiclesData.vehicles.length,
-      tracks: tracksData.tracks.length,
+      characters: characters.length,
+      vehicles: vehicles.length,
+      tracks: tracks.length,
     }
   });
 });
@@ -79,9 +87,8 @@ app.get('/health', (c) => {
  * Returns all characters with their stats
  */
 app.get('/characters', (c) => {
-  const data = charactersData as CharactersResponse;
-  c.header('ETag', `"${data.dataVersion}"`);
-  return c.json(data);
+  c.header('ETag', `"${charactersResponse.dataVersion}"`);
+  return c.json(charactersResponse);
 });
 
 /**
@@ -90,8 +97,7 @@ app.get('/characters', (c) => {
  */
 app.get('/characters/:id', (c) => {
   const id = c.req.param('id');
-  const data = charactersData as CharactersResponse;
-  const character = data.characters.find((char) => char.id === id);
+  const character = characters.find((char) => char.id === id);
 
   if (!character) {
     return c.json({ error: `Character '${id}' not found` }, 404);
@@ -109,9 +115,8 @@ app.get('/characters/:id', (c) => {
  * Returns all vehicles with their stats
  */
 app.get('/vehicles', (c) => {
-  const data = vehiclesData as VehiclesResponse;
-  c.header('ETag', `"${data.dataVersion}"`);
-  return c.json(data);
+  c.header('ETag', `"${vehiclesResponse.dataVersion}"`);
+  return c.json(vehiclesResponse);
 });
 
 /**
@@ -120,17 +125,16 @@ app.get('/vehicles', (c) => {
  */
 app.get('/vehicles/tag/:tag', (c) => {
   const tag = c.req.param('tag').toLowerCase();
-  const data = vehiclesData as VehiclesResponse;
-  const vehicles = data.vehicles.filter((veh) => veh.tag === tag);
+  const byTag = vehicles.filter((veh) => veh.tag === tag);
 
-  if (vehicles.length === 0) {
+  if (byTag.length === 0) {
     return c.json({ error: `No vehicles found with tag '${tag}'` }, 404);
   }
 
   return c.json({
     tag,
-    dataVersion: data.dataVersion,
-    vehicles,
+    dataVersion: vehiclesResponse.dataVersion,
+    vehicles: byTag,
   });
 });
 
@@ -140,8 +144,7 @@ app.get('/vehicles/tag/:tag', (c) => {
  */
 app.get('/vehicles/:id', (c) => {
   const id = c.req.param('id');
-  const data = vehiclesData as VehiclesResponse;
-  const vehicle = data.vehicles.find((veh) => veh.id === id);
+  const vehicle = vehicles.find((veh) => veh.id === id);
 
   if (!vehicle) {
     return c.json({ error: `Vehicle '${id}' not found` }, 404);
@@ -159,9 +162,8 @@ app.get('/vehicles/:id', (c) => {
  * Returns all tracks with surface coverage data
  */
 app.get('/tracks', (c) => {
-  const data = tracksData as TracksResponse;
-  c.header('ETag', `"${data.dataVersion}"`);
-  return c.json(data);
+  c.header('ETag', `"${tracksResponse.dataVersion}"`);
+  return c.json(tracksResponse);
 });
 
 /**
@@ -170,22 +172,21 @@ app.get('/tracks', (c) => {
  */
 app.get('/tracks/cup/:cup', (c) => {
   const cup = c.req.param('cup');
-  const data = tracksData as TracksResponse;
 
   // Normalize cup name for matching (case-insensitive, handle spaces)
   const normalizedCup = cup.toLowerCase().replace(/-/g, ' ');
-  const tracks = data.tracks.filter((t) =>
+  const byCup = tracks.filter((t) =>
     t.cup.toLowerCase() === normalizedCup
   );
 
-  if (tracks.length === 0) {
+  if (byCup.length === 0) {
     return c.json({ error: `No tracks found in cup '${cup}'` }, 404);
   }
 
   return c.json({
-    cup: tracks[0].cup, // Use proper capitalization from data
-    dataVersion: data.dataVersion,
-    tracks,
+    cup: byCup[0].cup, // Use proper capitalization from data
+    dataVersion: tracksResponse.dataVersion,
+    tracks: byCup,
   });
 });
 
@@ -195,8 +196,7 @@ app.get('/tracks/cup/:cup', (c) => {
  */
 app.get('/tracks/:id', (c) => {
   const id = c.req.param('id');
-  const data = tracksData as TracksResponse;
-  const track = data.tracks.find((t) => t.id === id);
+  const track = tracks.find((t) => t.id === id);
 
   if (!track) {
     return c.json({ error: `Track '${id}' not found` }, 404);
