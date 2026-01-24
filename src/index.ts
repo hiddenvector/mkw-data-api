@@ -520,7 +520,7 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
     },
     servers: [
       {
-        url: `https://hiddenvector.studio${API_CONFIG.basePath}`,
+        url: 'https://hiddenvector.studio',
         description: 'Production',
       },
     ],
