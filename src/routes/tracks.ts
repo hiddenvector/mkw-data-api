@@ -1,8 +1,8 @@
 import { createRoute } from '@hono/zod-openapi';
 import { createRouter } from '../app';
-import { notFound, ErrorResponseSchema } from '../errors';
+import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } from '../errors';
 import {
-  IdParamSchema,
+  TrackIdParamSchema,
   CupParamSchema,
   TracksResponseSchema,
   TrackSchema,
@@ -40,18 +40,18 @@ const getTrackByIdRoute = createRoute({
   tags: ['Tracks'],
   summary: 'Get Track by ID',
   description: 'Returns a single track by its ID',
-  request: { params: IdParamSchema },
+  request: { params: TrackIdParamSchema },
   responses: {
     200: {
       content: { 'application/json': { schema: TrackSchema } },
       description: 'Track found',
     },
     400: {
-      content: { 'application/json': { schema: ErrorResponseSchema } },
+      content: { 'application/json': { schema: ValidationErrorResponseSchema } },
       description: 'Invalid ID format',
     },
     404: {
-      content: { 'application/json': { schema: ErrorResponseSchema } },
+      content: { 'application/json': { schema: NotFoundErrorResponseSchema } },
       description: 'Track not found',
     },
   },
@@ -70,11 +70,11 @@ const getTracksByCupRoute = createRoute({
       description: 'Tracks found',
     },
     400: {
-      content: { 'application/json': { schema: ErrorResponseSchema } },
+      content: { 'application/json': { schema: ValidationErrorResponseSchema } },
       description: 'Invalid cup format',
     },
     404: {
-      content: { 'application/json': { schema: ErrorResponseSchema } },
+      content: { 'application/json': { schema: NotFoundErrorResponseSchema } },
       description: 'No tracks found in this cup',
     },
   },

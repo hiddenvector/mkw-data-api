@@ -1,8 +1,8 @@
 import { createRoute } from '@hono/zod-openapi';
 import { createRouter } from '../app';
-import { notFound, ErrorResponseSchema } from '../errors';
+import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } from '../errors';
 import {
-  IdParamSchema,
+  CharacterIdParamSchema,
   CharactersResponseSchema,
   CharacterSchema,
   type CharactersResponse,
@@ -36,18 +36,18 @@ const getCharacterByIdRoute = createRoute({
   tags: ['Characters'],
   summary: 'Get Character by ID',
   description: 'Returns a single character by their ID',
-  request: { params: IdParamSchema },
+  request: { params: CharacterIdParamSchema },
   responses: {
     200: {
       content: { 'application/json': { schema: CharacterSchema } },
       description: 'Character found',
     },
     400: {
-      content: { 'application/json': { schema: ErrorResponseSchema } },
+      content: { 'application/json': { schema: ValidationErrorResponseSchema } },
       description: 'Invalid ID format',
     },
     404: {
-      content: { 'application/json': { schema: ErrorResponseSchema } },
+      content: { 'application/json': { schema: NotFoundErrorResponseSchema } },
       description: 'Character not found',
     },
   },

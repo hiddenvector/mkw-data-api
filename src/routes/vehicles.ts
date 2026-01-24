@@ -1,8 +1,8 @@
 import { createRoute } from '@hono/zod-openapi';
 import { createRouter } from '../app';
-import { notFound, ErrorResponseSchema } from '../errors';
+import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } from '../errors';
 import {
-  IdParamSchema,
+  VehicleIdParamSchema,
   TagParamSchema,
   VehiclesResponseSchema,
   VehicleSchema,
@@ -40,18 +40,18 @@ const getVehicleByIdRoute = createRoute({
   tags: ['Vehicles'],
   summary: 'Get Vehicle by ID',
   description: 'Returns a single vehicle by its ID',
-  request: { params: IdParamSchema },
+  request: { params: VehicleIdParamSchema },
   responses: {
     200: {
       content: { 'application/json': { schema: VehicleSchema } },
       description: 'Vehicle found',
     },
     400: {
-      content: { 'application/json': { schema: ErrorResponseSchema } },
+      content: { 'application/json': { schema: ValidationErrorResponseSchema } },
       description: 'Invalid ID format',
     },
     404: {
-      content: { 'application/json': { schema: ErrorResponseSchema } },
+      content: { 'application/json': { schema: NotFoundErrorResponseSchema } },
       description: 'Vehicle not found',
     },
   },
@@ -70,11 +70,11 @@ const getVehiclesByTagRoute = createRoute({
       description: 'Vehicles found',
     },
     400: {
-      content: { 'application/json': { schema: ErrorResponseSchema } },
+      content: { 'application/json': { schema: ValidationErrorResponseSchema } },
       description: 'Invalid tag format',
     },
     404: {
-      content: { 'application/json': { schema: ErrorResponseSchema } },
+      content: { 'application/json': { schema: NotFoundErrorResponseSchema } },
       description: 'No vehicles found with this tag',
     },
   },

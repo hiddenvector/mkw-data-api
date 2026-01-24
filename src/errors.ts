@@ -25,32 +25,55 @@ export type ErrorCode = (typeof ErrorCode)[keyof typeof ErrorCode];
 // ============================================================================
 
 /**
- * Structured error response schema for OpenAPI documentation.
+ * Base error response schema (used internally).
  */
-export const ErrorResponseSchema = z
-  .object({
-    error: z.object({
-      code: z.string().openapi({
-        description: 'Machine-readable error code',
-        example: 'NOT_FOUND',
-      }),
-      message: z.string().openapi({
-        description: 'Human-readable error message',
-        example: "Character 'invalid-id' not found",
-      }),
-      status: z.number().int().openapi({
-        description: 'HTTP status code',
-        example: 404,
-      }),
-      requestId: z.string().optional().openapi({
-        description: 'Request ID for debugging (if available)',
-        example: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
-      }),
+const BaseErrorSchema = z.object({
+  error: z.object({
+    code: z.string().openapi({ description: 'Machine-readable error code' }),
+    message: z.string().openapi({ description: 'Human-readable error message' }),
+    status: z.number().int().openapi({ description: 'HTTP status code' }),
+    requestId: z.string().optional().openapi({
+      description: 'Request ID for debugging (if available)',
     }),
-  })
-  .openapi('ErrorResponse');
+  }),
+});
 
-export type ErrorResponse = z.infer<typeof ErrorResponseSchema>;
+/**
+ * 400 Bad Request error response schema.
+ * Example: Invalid ID format (e.g., contains uppercase or special characters).
+ */
+export const ValidationErrorResponseSchema = BaseErrorSchema.openapi({
+  ref: 'ValidationErrorResponse',
+  example: {
+    error: {
+      code: 'VALIDATION_ERROR',
+      message: 'ID must be lowercase alphanumeric with hyphens',
+      status: 400,
+      requestId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+    },
+  },
+});
+
+/**
+ * 404 Not Found error response schema.
+ * Example: Valid ID format but entity doesn't exist.
+ */
+export const NotFoundErrorResponseSchema = BaseErrorSchema.openapi({
+  ref: 'NotFoundErrorResponse',
+  example: {
+    error: {
+      code: 'NOT_FOUND',
+      message: "Vehicle 'nonexistent-vehicle' not found",
+      status: 404,
+      requestId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+    },
+  },
+});
+
+/** @deprecated Use ValidationErrorResponseSchema or NotFoundErrorResponseSchema */
+export const ErrorResponseSchema = BaseErrorSchema.openapi('ErrorResponse');
+
+export type ErrorResponse = z.infer<typeof BaseErrorSchema>;
 
 // ============================================================================
 // Error Factory Functions
