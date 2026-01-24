@@ -1,15 +1,12 @@
 import { OpenAPIHono, createRoute } from '@hono/zod-openapi';
 import { cors } from 'hono/cors';
 import { Scalar } from '@scalar/hono-api-reference';
-import { ZodError } from 'zod';
 import { API_CONFIG } from './config';
 import { endpointNotFound, notFound, ErrorResponseSchema, ErrorCode } from './errors';
 import {
-  // Path param schemas
   IdParamSchema,
   TagParamSchema,
   CupParamSchema,
-  // Response schemas
   HealthResponseSchema,
   CharactersResponseSchema,
   CharacterSchema,
@@ -19,20 +16,19 @@ import {
   TracksResponseSchema,
   TrackSchema,
   TracksByCupResponseSchema,
-  // Types
   type CharactersResponse,
   type VehiclesResponse,
   type TracksResponse,
 } from './schemas';
 
+import charactersData from '../data/characters.json';
+import vehiclesData from '../data/vehicles.json';
+import tracksData from '../data/tracks.json';
+
 // Type for app-level variables stored in context
 type AppVariables = {
   requestId: string;
 };
-
-import charactersData from '../data/characters.json';
-import vehiclesData from '../data/vehicles.json';
-import tracksData from '../data/tracks.json';
 
 // Cast data once at startup
 const { dataVersion, characters } = charactersData as CharactersResponse;
@@ -44,7 +40,6 @@ const { tracks } = tracksData as TracksResponse;
 // ============================================================================
 
 const app = new OpenAPIHono<{ Variables: AppVariables }>({
-  // Transform Zod validation errors into structured format
   defaultHook: (result, c) => {
     if (!result.success) {
       const requestId = c.get('requestId');
@@ -85,7 +80,7 @@ app.onError((err, c) => {
 // Middleware
 // ============================================================================
 
-// Request ID middleware - check for existing header or generate new
+// Request ID - preserve from upstream or generate new
 app.use('/*', async (c, next) => {
   const requestId = c.req.header('X-Request-ID') ?? crypto.randomUUID();
   c.set('requestId', requestId);
@@ -93,7 +88,7 @@ app.use('/*', async (c, next) => {
   await next();
 });
 
-// Response time middleware
+// Response time tracking
 app.use('/*', async (c, next) => {
   const start = performance.now();
   await next();
@@ -101,32 +96,80 @@ app.use('/*', async (c, next) => {
   c.header('X-Response-Time', `${duration.toFixed(2)}ms`);
 });
 
-// CORS - allow all origins
+// CORS
 app.use(
   '/*',
   cors({
     origin: '*',
     allowMethods: ['GET', 'OPTIONS'],
+    allowHeaders: ['If-None-Match'],
+    exposeHeaders: ['ETag', 'X-Request-ID', 'X-Response-Time', 'API-Version'],
     maxAge: 86400,
   })
 );
 
-// Security headers and cache control
+// Security headers
 app.use('/*', async (c, next) => {
+  // API version header
   c.header('API-Version', API_CONFIG.apiVersion);
+
+  // Prevent MIME type sniffing
   c.header('X-Content-Type-Options', 'nosniff');
+
+  // Don't send referrer for privacy
   c.header('Referrer-Policy', 'no-referrer');
 
+  // Prevent clickjacking (except for docs which needs to render)
   if (!c.req.path.endsWith('/docs')) {
     c.header('X-Frame-Options', 'DENY');
   }
 
+  // Content Security Policy for API responses
+  if (!c.req.path.endsWith('/docs')) {
+    c.header('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");
+  }
+
+  await next();
+});
+
+// Cache control (applied after route handlers)
+app.use('/*', async (c, next) => {
   await next();
 
-  if (!c.req.path.includes('/docs') && !c.req.path.includes('/openapi.json')) {
-    c.header('Cache-Control', 'public, max-age=3600');
+  // Skip if already set or if it's a 304
+  if (c.res.headers.get('Cache-Control') || c.res.status === 304) {
+    return;
+  }
+
+  const path = c.req.path;
+
+  if (path.endsWith('/docs')) {
+    // Docs page: cache for 1 day
+    c.header('Cache-Control', 'public, max-age=86400');
+  } else if (path.endsWith('/openapi.json')) {
+    // OpenAPI spec: cache for 1 day, revalidate on version change via ETag
+    c.header('Cache-Control', 'public, max-age=86400');
+  } else if (path.endsWith('/health')) {
+    // Health endpoint: no caching (should always be fresh)
+    c.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+  } else {
+    // Data endpoints: cache for 1 hour, but revalidate via ETag
+    c.header('Cache-Control', 'public, max-age=3600, must-revalidate');
   }
 });
+
+// ============================================================================
+// Helper: Check If-None-Match for 304 responses
+// ============================================================================
+
+function checkNotModified(c: { req: { header: (name: string) => string | undefined } }, etag: string): boolean {
+  const ifNoneMatch = c.req.header('If-None-Match');
+  if (!ifNoneMatch) return false;
+
+  // Handle multiple ETags (comma-separated) and wildcard
+  const tags = ifNoneMatch.split(',').map((t) => t.trim());
+  return tags.includes('*') || tags.includes(etag) || tags.includes(`W/${etag}`);
+}
 
 // ============================================================================
 // Route Definitions
@@ -151,11 +194,14 @@ const getCharactersRoute = createRoute({
   path: '/characters',
   tags: ['Characters'],
   summary: 'List All Characters',
-  description: 'Returns all playable characters with their stats',
+  description: 'Returns all playable characters with their stats. Supports ETag/If-None-Match for caching.',
   responses: {
     200: {
       content: { 'application/json': { schema: CharactersResponseSchema } },
       description: 'Success',
+    },
+    304: {
+      description: 'Not Modified - use cached response',
     },
   },
 });
@@ -188,11 +234,14 @@ const getVehiclesRoute = createRoute({
   path: '/vehicles',
   tags: ['Vehicles'],
   summary: 'List All Vehicles',
-  description: 'Returns all vehicles (karts, bikes, ATVs) with their stats',
+  description: 'Returns all vehicles (karts, bikes, ATVs) with their stats. Supports ETag/If-None-Match for caching.',
   responses: {
     200: {
       content: { 'application/json': { schema: VehiclesResponseSchema } },
       description: 'Success',
+    },
+    304: {
+      description: 'Not Modified - use cached response',
     },
   },
 });
@@ -248,11 +297,14 @@ const getTracksRoute = createRoute({
   path: '/tracks',
   tags: ['Tracks'],
   summary: 'List All Tracks',
-  description: 'Returns all race tracks with surface coverage data',
+  description: 'Returns all race tracks with surface coverage data. Supports ETag/If-None-Match for caching.',
   responses: {
     200: {
       content: { 'application/json': { schema: TracksResponseSchema } },
       description: 'Success',
+    },
+    304: {
+      description: 'Not Modified - use cached response',
     },
   },
 });
@@ -323,43 +375,58 @@ app.openapi(healthRoute, (c) => {
 });
 
 app.openapi(getCharactersRoute, (c) => {
-  c.header('ETag', `"${dataVersion}"`);
+  const currentEtag = `"${dataVersion}"`;
+  c.header('ETag', currentEtag);
+
+  if (checkNotModified(c, currentEtag)) {
+    return c.body(null, 304);
+  }
+
   return c.json({ dataVersion, characters });
 });
 
+// @ts-expect-error - OpenAPIHono strict typing doesn't handle error response returns well
 app.openapi(getCharacterByIdRoute, (c) => {
   const { id } = c.req.valid('param');
   const character = characters.find((char) => char.id === id);
 
   if (!character) {
-    return notFound(c, 'Character', id) as any;
+    return notFound(c, 'Character', id);
   }
 
   return c.json(character);
 });
 
 app.openapi(getVehiclesRoute, (c) => {
-  c.header('ETag', `"${dataVersion}"`);
+  const currentEtag = `"${dataVersion}"`;
+  c.header('ETag', currentEtag);
+
+  if (checkNotModified(c, currentEtag)) {
+    return c.body(null, 304);
+  }
+
   return c.json({ dataVersion, vehicles });
 });
 
+// @ts-expect-error - OpenAPIHono strict typing doesn't handle error response returns well
 app.openapi(getVehicleByIdRoute, (c) => {
   const { id } = c.req.valid('param');
   const vehicle = vehicles.find((veh) => veh.id === id);
 
   if (!vehicle) {
-    return notFound(c, 'Vehicle', id) as any;
+    return notFound(c, 'Vehicle', id);
   }
 
   return c.json(vehicle);
 });
 
+// @ts-expect-error - OpenAPIHono strict typing doesn't handle error response returns well
 app.openapi(getVehiclesByTagRoute, (c) => {
   const { tag } = c.req.valid('param');
   const byTag = vehicles.filter((veh) => veh.tag === tag);
 
   if (byTag.length === 0) {
-    return notFound(c, 'Vehicles with tag', tag) as any;
+    return notFound(c, 'Vehicles with tag', tag);
   }
 
   return c.json({
@@ -370,21 +437,29 @@ app.openapi(getVehiclesByTagRoute, (c) => {
 });
 
 app.openapi(getTracksRoute, (c) => {
-  c.header('ETag', `"${dataVersion}"`);
+  const currentEtag = `"${dataVersion}"`;
+  c.header('ETag', currentEtag);
+
+  if (checkNotModified(c, currentEtag)) {
+    return c.body(null, 304);
+  }
+
   return c.json({ dataVersion, tracks });
 });
 
+// @ts-expect-error - OpenAPIHono strict typing doesn't handle error response returns well
 app.openapi(getTrackByIdRoute, (c) => {
   const { id } = c.req.valid('param');
   const track = tracks.find((t) => t.id === id);
 
   if (!track) {
-    return notFound(c, 'Track', id) as any;
+    return notFound(c, 'Track', id);
   }
 
   return c.json(track);
 });
 
+// @ts-expect-error - OpenAPIHono strict typing doesn't handle error response returns well
 app.openapi(getTracksByCupRoute, (c) => {
   const { cup } = c.req.valid('param');
 
@@ -393,11 +468,11 @@ app.openapi(getTracksByCupRoute, (c) => {
   const byCup = tracks.filter((t) => t.cup.toLowerCase() === normalizedCup);
 
   if (byCup.length === 0) {
-    return notFound(c, 'Tracks in cup', cup) as any;
+    return notFound(c, 'Tracks in cup', cup);
   }
 
   return c.json({
-    cup: byCup[0].cup, // Use proper capitalization from data
+    cup: byCup[0].cup,
     dataVersion,
     tracks: byCup,
   });
@@ -407,11 +482,14 @@ app.openapi(getTracksByCupRoute, (c) => {
 // API Documentation
 // ============================================================================
 
-// Serve the auto-generated OpenAPI spec
 app.get('/openapi.json', (c) => {
-  c.header('Cache-Control', 'public, max-age=86400, immutable');
+  const currentEtag = `"${API_CONFIG.serviceVersion}"`;
+  c.header('ETag', currentEtag);
   c.header('Content-Type', 'application/json; charset=utf-8');
-  c.header('ETag', `"${API_CONFIG.serviceVersion}"`);
+
+  if (checkNotModified(c, currentEtag)) {
+    return c.body(null, 304);
+  }
 
   const spec = app.getOpenAPI31Document({
     openapi: '3.1.0',
@@ -457,13 +535,8 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
   return c.json(spec);
 });
 
-// Interactive API documentation
 app.get(
   '/docs',
-  async (c, next) => {
-    c.header('Cache-Control', 'public, max-age=86400');
-    await next();
-  },
   Scalar({
     url: `${API_CONFIG.basePath}/openapi.json`,
     pageTitle: 'Mario Kart World Data API Documentation',
