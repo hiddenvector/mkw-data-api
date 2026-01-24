@@ -37,7 +37,7 @@ export interface Character extends BaseStats {
 /**
  * Represents a vehicle (kart, bike, or ATV).
  */
-export interface Vehicle {
+export interface Vehicle extends BaseStats {
     /** Unique identifier for the vehicle */
     readonly id: string;
     /** Display name of the vehicle */
