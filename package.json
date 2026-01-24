@@ -20,8 +20,10 @@
   },
   "homepage": "https://github.com/hiddenvector/mkw-data-api#readme",
   "dependencies": {
+    "@hono/zod-openapi": "^1.2.0",
     "@scalar/hono-api-reference": "^0.9.35",
-    "hono": "^4.11.4"
+    "hono": "^4.11.4",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260120.0",
