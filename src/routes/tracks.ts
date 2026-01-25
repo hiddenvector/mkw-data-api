@@ -3,10 +3,9 @@ import { createRouter } from '../app';
 import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } from '../errors';
 import {
   TrackIdParamSchema,
-  CupParamSchema,
-  TracksResponseSchema,
+  CupQuerySchema,
+  TracksQueryResponseSchema,
   TrackSchema,
-  TracksByCupResponseSchema,
 } from '../schemas';
 import { checkNotModified } from '../utils';
 import { tracks, dataVersion } from '../data';
@@ -17,11 +16,16 @@ const getTracksRoute = createRoute({
   tags: ['Tracks'],
   summary: 'List All Tracks',
   description:
-    'Returns all race tracks with surface coverage data. Supports ETag/If-None-Match for caching.',
+    'Returns all race tracks with surface coverage data. Use ?cup= to filter. Supports ETag/If-None-Match for caching.',
+  request: { query: CupQuerySchema },
   responses: {
     200: {
-      content: { 'application/json': { schema: TracksResponseSchema } },
+      content: { 'application/json': { schema: TracksQueryResponseSchema } },
       description: 'Success',
+    },
+    400: {
+      content: { 'application/json': { schema: ValidationErrorResponseSchema } },
+      description: 'Invalid cup format',
     },
     304: {
       description: 'Not Modified - use cached response',
@@ -52,29 +56,6 @@ const getTrackByIdRoute = createRoute({
   },
 });
 
-const getTracksByCupRoute = createRoute({
-  method: 'get',
-  path: '/tracks/cup/{cup}',
-  tags: ['Tracks'],
-  summary: 'Get Tracks by Cup',
-  description: 'Returns all tracks in a specific cup',
-  request: { params: CupParamSchema },
-  responses: {
-    200: {
-      content: { 'application/json': { schema: TracksByCupResponseSchema } },
-      description: 'Tracks found',
-    },
-    400: {
-      content: { 'application/json': { schema: ValidationErrorResponseSchema } },
-      description: 'Invalid cup format',
-    },
-    404: {
-      content: { 'application/json': { schema: NotFoundErrorResponseSchema } },
-      description: 'No tracks found in this cup',
-    },
-  },
-});
-
 const tracksRouter = createRouter();
 
 const normalizeCup = (value: string) =>
@@ -85,6 +66,7 @@ const normalizeCup = (value: string) =>
     .replace(/^-+|-+$/g, '');
 
 tracksRouter.openapi(getTracksRoute, (c) => {
+  const { cup } = c.req.valid('query');
   const currentEtag = `"${dataVersion}"`;
   c.header('ETag', currentEtag);
 
@@ -92,7 +74,25 @@ tracksRouter.openapi(getTracksRoute, (c) => {
     return c.body(null, 304);
   }
 
-  return c.json({ dataVersion, tracks });
+  if (cup) {
+    const normalizedCup = normalizeCup(cup);
+    const byCup = tracks.filter((t) => normalizeCup(t.cup) === normalizedCup);
+
+    if (byCup.length === 0) {
+      return notFound(c, 'Tracks in cup', cup);
+    }
+
+    return c.json(
+      {
+        cup: byCup[0].cup,
+        dataVersion,
+        tracks: byCup,
+      },
+      200,
+    );
+  }
+
+  return c.json({ dataVersion, tracks }, 200);
 });
 
 tracksRouter.openapi(getTrackByIdRoute, (c) => {
@@ -104,26 +104,6 @@ tracksRouter.openapi(getTrackByIdRoute, (c) => {
   }
 
   return c.json(track, 200);
-});
-
-tracksRouter.openapi(getTracksByCupRoute, (c) => {
-  const { cup } = c.req.valid('param');
-
-  const normalizedCup = normalizeCup(cup);
-  const byCup = tracks.filter((t) => normalizeCup(t.cup) === normalizedCup);
-
-  if (byCup.length === 0) {
-    return notFound(c, 'Tracks in cup', cup);
-  }
-
-  return c.json(
-    {
-      cup: byCup[0].cup,
-      dataVersion,
-      tracks: byCup,
-    },
-    200,
-  );
 });
 
 export default tracksRouter;

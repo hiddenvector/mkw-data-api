@@ -127,13 +127,13 @@ describe('Vehicles endpoints', () => {
     expect(body.error.code).toBe('NOT_FOUND');
   });
 
-  it('GET /vehicles/tag/:tag returns vehicles by tag', async () => {
+  it('GET /vehicles?tag returns vehicles by tag', async () => {
     // First get a vehicle to find a valid tag
     const vehiclesRes = await request('/vehicles');
     const { vehicles } = (await vehiclesRes.json()) as AnyJson;
     const validTag = vehicles[0].tag;
 
-    const res = await request(`/vehicles/tag/${validTag}`);
+    const res = await request(`/vehicles?tag=${validTag}`);
     expect(res.status).toBe(200);
 
     const body = (await res.json()) as AnyJson;
@@ -142,8 +142,8 @@ describe('Vehicles endpoints', () => {
     expect(body.vehicles.length).toBeGreaterThan(0);
   });
 
-  it('GET /vehicles/tag/:tag returns 404 for unknown tag', async () => {
-    const res = await request('/vehicles/tag/not-a-tag');
+  it('GET /vehicles?tag returns 404 for unknown tag', async () => {
+    const res = await request('/vehicles?tag=not-a-tag');
     expect(res.status).toBe(404);
 
     const body = (await res.json()) as AnyJson;
@@ -194,8 +194,8 @@ describe('Tracks endpoints', () => {
     expect(body.error.code).toBe('NOT_FOUND');
   });
 
-  it('GET /tracks/cup/:cup returns tracks by cup', async () => {
-    const res = await request('/tracks/cup/mushroom-cup');
+  it('GET /tracks?cup returns tracks by cup', async () => {
+    const res = await request('/tracks?cup=mushroom-cup');
     expect(res.status).toBe(200);
 
     const body = (await res.json()) as AnyJson;
@@ -203,8 +203,8 @@ describe('Tracks endpoints', () => {
     expect(Array.isArray(body.tracks)).toBe(true);
   });
 
-  it('GET /tracks/cup/:cup returns 404 for unknown cup', async () => {
-    const res = await request('/tracks/cup/not-a-cup');
+  it('GET /tracks?cup returns 404 for unknown cup', async () => {
+    const res = await request('/tracks?cup=not-a-cup');
     expect(res.status).toBe(404);
 
     const body = (await res.json()) as AnyJson;

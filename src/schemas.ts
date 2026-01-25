@@ -62,30 +62,48 @@ export const TrackIdParamSchema = z.object({
   }),
 });
 
+const tagSchema = z
+  .string()
+  .min(1)
+  .max(MAX_ID_LENGTH)
+  .regex(ID_PATTERN, 'Tag must be lowercase alphanumeric with hyphens');
+
 /** Vehicle tag path parameter */
 export const TagParamSchema = z.object({
-  tag: z
-    .string()
-    .min(1)
-    .max(MAX_ID_LENGTH)
-    .regex(ID_PATTERN, 'Tag must be lowercase alphanumeric with hyphens')
-    .openapi({
-      param: { name: 'tag', in: 'path' },
-      example: 'on-l-0',
-    }),
+  tag: tagSchema.openapi({
+    param: { name: 'tag', in: 'path' },
+    example: 'on-l-0',
+  }),
 });
+
+/** Vehicle tag query parameter */
+export const TagQuerySchema = z.object({
+  tag: tagSchema.optional().openapi({
+    param: { name: 'tag', in: 'query' },
+    example: 'on-l-0',
+  }),
+});
+
+const cupSchema = z
+  .string()
+  .min(1)
+  .max(MAX_ID_LENGTH)
+  .regex(ID_PATTERN, 'Cup must be lowercase with hyphens');
 
 /** Cup name path parameter */
 export const CupParamSchema = z.object({
-  cup: z
-    .string()
-    .min(1)
-    .max(MAX_ID_LENGTH)
-    .regex(ID_PATTERN, 'Cup must be lowercase with hyphens')
-    .openapi({
-      param: { name: 'cup', in: 'path' },
-      example: 'mushroom-cup',
-    }),
+  cup: cupSchema.openapi({
+    param: { name: 'cup', in: 'path' },
+    example: 'mushroom-cup',
+  }),
+});
+
+/** Cup name query parameter */
+export const CupQuerySchema = z.object({
+  cup: cupSchema.optional().openapi({
+    param: { name: 'cup', in: 'query' },
+    example: 'mushroom-cup',
+  }),
 });
 
 // ============================================================================
@@ -390,6 +408,13 @@ export const VehiclesByTagResponseSchema = z
   });
 
 /**
+ * Response containing vehicles, optionally filtered by tag.
+ */
+export const VehiclesQueryResponseSchema = z
+  .union([VehiclesResponseSchema, VehiclesByTagResponseSchema])
+  .openapi('VehiclesQueryResponse');
+
+/**
  * Response containing all tracks.
  * Example shows first 3 tracks (full response contains 30).
  */
@@ -475,6 +500,13 @@ export const TracksByCupResponseSchema = z
   });
 
 /**
+ * Response containing tracks, optionally filtered by cup.
+ */
+export const TracksQueryResponseSchema = z
+  .union([TracksResponseSchema, TracksByCupResponseSchema])
+  .openapi('TracksQueryResponse');
+
+/**
  * Health check response.
  */
 export const HealthResponseSchema = z
@@ -523,5 +555,7 @@ export type TerrainCoverage = z.infer<typeof TerrainCoverageSchema>;
 export type Track = z.infer<typeof TrackSchema>;
 export type CharactersResponse = z.infer<typeof CharactersResponseSchema>;
 export type VehiclesResponse = z.infer<typeof VehiclesResponseSchema>;
+export type VehiclesQueryResponse = z.infer<typeof VehiclesQueryResponseSchema>;
 export type TracksResponse = z.infer<typeof TracksResponseSchema>;
+export type TracksQueryResponse = z.infer<typeof TracksQueryResponseSchema>;
 export type HealthResponse = z.infer<typeof HealthResponseSchema>;

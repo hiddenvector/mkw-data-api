@@ -18,7 +18,7 @@ Community-maintained REST API for character stats, vehicle data, and track infor
 - **Stats scale:** All stats are 0–20; higher is better.
 - **surfaceCoverage:** Raw surface breakdown including neutral/off-road.
 - **terrainCoverage:** Adjusted road/rough/water mix normalized to 100% (excludes neutral/off-road).
-- **Vehicle tags:** Same `tag` means identical stats; use `/vehicles/tag/{tag}`.
+- **Vehicle tags:** Same `tag` means identical stats; use `/vehicles?tag={tag}`.
 
 Example: score a build with terrainCoverage
 
@@ -88,13 +88,13 @@ curl https://hiddenvector.studio/mkw/api/v1/characters/dry-bones
 curl https://hiddenvector.studio/mkw/api/v1/vehicles
 
 # Get vehicles by stat tag
-curl https://hiddenvector.studio/mkw/api/v1/vehicles/tag/st-a-0
+curl "https://hiddenvector.studio/mkw/api/v1/vehicles?tag=st-a-0"
 
 # Get all tracks
 curl https://hiddenvector.studio/mkw/api/v1/tracks
 
 # Get tracks by cup
-curl https://hiddenvector.studio/mkw/api/v1/tracks/cup/mushroom-cup
+curl "https://hiddenvector.studio/mkw/api/v1/tracks?cup=mushroom-cup"
 ```
 
 ## Endpoints
@@ -106,10 +106,10 @@ curl https://hiddenvector.studio/mkw/api/v1/tracks/cup/mushroom-cup
 | `GET /characters/{id}`    | Get character by ID           |
 | `GET /vehicles`           | List all vehicles             |
 | `GET /vehicles/{id}`      | Get vehicle by ID             |
-| `GET /vehicles/tag/{tag}` | Get vehicles by stat tag      |
+| `GET /vehicles?tag={tag}` | Get vehicles by stat tag      |
 | `GET /tracks`             | List all tracks               |
 | `GET /tracks/{id}`        | Get track by ID               |
-| `GET /tracks/cup/{cup}`   | Get tracks by cup             |
+| `GET /tracks?cup={cup}`   | Get tracks by cup             |
 | `GET /openapi.json`       | OpenAPI 3.1 specification     |
 | `GET /docs`               | Interactive API documentation |
 

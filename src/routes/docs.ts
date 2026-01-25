@@ -35,16 +35,16 @@ Community-maintained data API for Mario Kart World stats, vehicles, and tracks.
 
 **How to use the stats:**
 - All stats are on a 0–20 scale; higher is better.
-- Use `surfaceCoverage` for raw surface breakdowns.
-- Use `terrainCoverage` for combo calculations (normalized road/rough/water mix, excludes neutral/off-road).
+- Use \`surfaceCoverage\` for raw surface breakdowns.
+- Use \`terrainCoverage\` for combo calculations (normalized road/rough/water mix, excludes neutral/off-road).
 - IDs are slugs; fetch list endpoints to discover valid IDs.
 
 **Data contract:**
-- `dataVersion` changes when Statpedia data changes.
-- `terrainCoverage` is derived from the adjusted coverage columns and normalized to 100%.
+- \`dataVersion\` changes when Statpedia data changes.
+- \`terrainCoverage\` is derived from the adjusted coverage columns and normalized to 100%.
 - A small set of character names are normalized to US variants during parsing.
 
-**Stability:** `/v1` is stable; breaking changes go to `/v2`.
+**Stability:** \`/v1\` is stable; breaking changes go to \`/v2\`.
 
 **Rate Limits:** Requests may be rate limited by edge rules and return HTTP 429.
 
@@ -61,12 +61,8 @@ Community-maintained data API for Mario Kart World stats, vehicles, and tracks.
       },
       servers: [
         {
-          url: `https://hiddenvector.studio${API_CONFIG.basePath}`,
+          url: 'https://hiddenvector.studio',
           description: 'Production',
-        },
-        {
-          url: `http://localhost:8787${API_CONFIG.basePath}`,
-          description: 'Local development',
         },
       ],
       externalDocs: {

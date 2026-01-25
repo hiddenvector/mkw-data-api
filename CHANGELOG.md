@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Standardize character names to US versions (`Swoop`, `Fish Bone`).
 - Add `terrainCoverage` (adjusted road/rough/water coverage) to track responses.
+- Replace `/vehicles/tag/{tag}` and `/tracks/cup/{cup}` with query filters on `/vehicles` and `/tracks`.
 - Normalize the "Great ? Block Ruins" track ID to `great-question-block-ruins`.
 - Validate data files on startup (IDs, tags, and dataVersion).
 - Add Prettier configuration and formatting scripts.

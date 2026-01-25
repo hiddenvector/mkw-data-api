@@ -139,10 +139,10 @@ app.notFound((c) => {
     `GET ${API_CONFIG.basePath}/characters/{id}`,
     `GET ${API_CONFIG.basePath}/vehicles`,
     `GET ${API_CONFIG.basePath}/vehicles/{id}`,
-    `GET ${API_CONFIG.basePath}/vehicles/tag/{tag}`,
+    `GET ${API_CONFIG.basePath}/vehicles?tag={tag}`,
     `GET ${API_CONFIG.basePath}/tracks`,
     `GET ${API_CONFIG.basePath}/tracks/{id}`,
-    `GET ${API_CONFIG.basePath}/tracks/cup/{cup}`,
+    `GET ${API_CONFIG.basePath}/tracks?cup={cup}`,
   ]);
 });
 
