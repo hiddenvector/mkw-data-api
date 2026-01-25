@@ -38,8 +38,8 @@
       "coinCurve": 9
     },
     {
-      "id": "swooper",
-      "name": "Swooper",
+      "id": "swoop",
+      "name": "Swoop",
       "speed": {
         "road": 0,
         "rough": 0,
@@ -218,8 +218,8 @@
       "coinCurve": 8
     },
     {
-      "id": "fishbone",
-      "name": "Fishbone",
+      "id": "fish-bone",
+      "name": "Fish Bone",
       "speed": {
         "road": 0,
         "rough": 0,

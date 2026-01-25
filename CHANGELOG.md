@@ -6,12 +6,13 @@ All notable changes to this project will be documented in this file.
 
 ## [2026-01-25]
 
+- Standardize character names to US versions (`Swoop`, `Fish Bone`).
+- Add `terrainCoverage` (adjusted road/rough/water coverage) to track responses.
 - Normalize the "Great ? Block Ruins" track ID to `great-question-block-ruins`.
 - Validate data files on startup (IDs, tags, and dataVersion).
 - Add Prettier configuration and formatting scripts.
 - Fix cup normalization logic for `/tracks/cup/{cup}`.
 - Allow `X-Request-ID` through CORS for client tracing.
-- Add `terrainCoverage` (adjusted road/rough/water coverage) to track responses.
 
 ## [2026-01-23]
 

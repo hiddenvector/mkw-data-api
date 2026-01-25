@@ -131,6 +131,21 @@ function toId(name: string): string {
 }
 
 /**
+ * Normalize Statpedia names to US-standard display names.
+ * Keep this list tiny and well-documented to avoid drifting from source data.
+ */
+function normalizeDisplayName(name: string): string {
+  switch (name) {
+    case 'Swooper':
+      return 'Swoop';
+    case 'Fishbone':
+      return 'Fish Bone';
+    default:
+      return name;
+  }
+}
+
+/**
  * Safely parse an integer from a CSV cell with detailed error context
  * @throws {Error} If value is not a valid integer
  */
@@ -374,9 +389,10 @@ function parseCharacters(csvPath: string): Character[] {
 
       // Create one character per name with shared stats
       for (const name of names) {
+        const displayName = normalizeDisplayName(name);
         const character: Character = {
-          id: toId(name),
-          name,
+          id: toId(displayName),
+          name: displayName,
           ...stats,
         };
 
