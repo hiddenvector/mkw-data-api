@@ -1,7 +1,11 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import app from './index';
 
 const BASE = '/mkw/api/v1';
+
+app.get('/boom', () => {
+  throw new Error('boom');
+});
 
 // Helper to make requests
 async function request(path: string, options?: RequestInit) {
@@ -250,6 +254,12 @@ describe('Response headers', () => {
     const res = await request('/characters');
     expect(res.headers.get('Cache-Control')).toBe('public, max-age=3600, must-revalidate');
   });
+
+  it('uses docs CSP and cache-control for /docs', async () => {
+    const res = await request('/docs');
+    expect(res.headers.get('Content-Security-Policy')).toContain('cdn.jsdelivr.net');
+    expect(res.headers.get('Cache-Control')).toBe('public, max-age=86400');
+  });
 });
 
 describe('304 Not Modified handling', () => {
@@ -329,5 +339,18 @@ describe('404 handler', () => {
     expect(error.code).toBe('NOT_FOUND');
     expect(body.availableEndpoints).toBeDefined();
     expect(Array.isArray(body.availableEndpoints)).toBe(true);
+  });
+});
+
+describe('Global error handler', () => {
+  it('returns structured 500 response', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const res = await request('/boom');
+    expect(res.status).toBe(500);
+    const body = asRecord(await res.json());
+    const error = asRecord(body.error);
+    expect(error.code).toBe('INTERNAL_ERROR');
+    expect(error.message).toBe('An unexpected error occurred');
+    spy.mockRestore();
   });
 });

@@ -48,6 +48,7 @@ normalizedScore = 5.76
 - **dataVersion:** changes when Statpedia data changes; use it to refresh cached results.
 - **terrainCoverage:** derived from the adjusted coverage columns in the Statpedia sheet and normalized to 100% (road/rough/water only).
 - **Name standardization:** a small set of names are normalized to US variants during parsing (see `scripts/parse-statpedia.ts`).
+- **Filters:** `?tag=` and `?cup=` return an empty list when there are no matches.
 
 ## Stability
 

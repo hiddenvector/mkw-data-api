@@ -42,6 +42,7 @@ Community-maintained data API for Mario Kart World stats, vehicles, and tracks.
 - \`dataVersion\` changes when Statpedia data changes.
 - \`terrainCoverage\` is derived from the adjusted coverage columns and normalized to 100%.
 - A small set of character names are normalized to US variants during parsing.
+- \`?tag=\` and \`?cup=\` filters return an empty list when there are no matches.
 
 **Stability:** \`/v1\` is stable; breaking changes go to \`/v2\`.
 
