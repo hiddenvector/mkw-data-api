@@ -18,6 +18,9 @@ import type { Character, Vehicle, Track, BaseStats, SurfaceCoverage } from '../s
 // ============================================================================
 
 const DATA_VERSION = process.env.DATA_VERSION ?? new Date().toISOString().split('T')[0];
+if (process.env.DATA_VERSION) {
+  console.warn(`⚠️  DATA_VERSION override set to ${DATA_VERSION}`);
+}
 
 /** CSV column indices for both characters and vehicles */
 const COL = {
