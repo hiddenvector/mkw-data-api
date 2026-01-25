@@ -37,6 +37,11 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
 - Vehicle grouping by stat tags
 - Versioned data with ETags for efficient caching
 
+**How to use the stats:**
+- All stats are on a 0–20 scale; higher is better.
+- Use `surfaceCoverage` for raw surface breakdowns.
+- Use `terrainCoverage` for combo calculations (normalized road/rough/water mix).
+
 **Rate Limits:** Requests may be rate limited by edge rules and return HTTP 429.
 
 **Legal:** This is an unofficial, fan-created project. Not affiliated with Nintendo. Mario Kart is a registered trademark of Nintendo Co., Ltd.

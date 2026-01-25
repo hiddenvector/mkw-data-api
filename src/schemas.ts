@@ -98,13 +98,13 @@ export const CupParamSchema = z.object({
 export const TerrainStatsSchema = z
   .object({
     road: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
-      description: 'Performance on paved surfaces (asphalt, concrete, bricks)',
+      description: 'Performance on paved surfaces (asphalt, concrete, bricks). Higher is better.',
     }),
     rough: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
-      description: 'Performance on coarse terrain (dirt, gravel, sand, snow, ice)',
+      description: 'Performance on coarse terrain (dirt, gravel, sand, snow, ice). Higher is better.',
     }),
     water: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
-      description: 'Performance on liquid surfaces (water, lava, chocolate)',
+      description: 'Performance on liquid surfaces (water, lava, chocolate). Higher is better.',
     }),
   })
   .openapi('TerrainStats');
@@ -116,16 +116,17 @@ export const BaseStatsSchema = z.object({
   speed: TerrainStatsSchema.openapi({ description: 'Speed stats by surface type' }),
   handling: TerrainStatsSchema.openapi({ description: 'Handling stats by surface type' }),
   acceleration: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
-    description: 'How quickly the vehicle reaches max speed',
+    description: 'How quickly top speed is reached. Higher is better.',
   }),
   miniTurbo: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
-    description: 'Duration/power of mini-turbos, charge jumps, rail/wall jumps',
+    description:
+      'Duration/power of mini-turbos and jump boosts (charge/rail/wall). Higher is better.',
   }),
   weight: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
-    description: 'Bumping power when colliding with other racers',
+    description: 'Bumping power and resistance in collisions. Higher is heavier.',
   }),
   coinCurve: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
-    description: 'How coins affect speed (higher = more benefit from early coins)',
+    description: 'How strongly coins boost speed (higher = more benefit from early coins).',
   }),
 });
 
@@ -177,19 +178,19 @@ export const VehicleSchema = BaseStatsSchema.extend({
 export const SurfaceCoverageSchema = z
   .object({
     road: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track on paved surfaces',
+      description: 'Percentage of track on paved surfaces.',
     }),
     rough: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track on rough terrain',
+      description: 'Percentage of track on rough terrain.',
     }),
     water: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track on water',
+      description: 'Percentage of track on water.',
     }),
     neutral: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track on rails/walls/air (same speed for all)',
+      description: 'Percentage of track on rails/walls/air (same speed for all).',
     }),
     offRoad: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track on off-road penalty zones',
+      description: 'Percentage of track on off-road penalty zones.',
     }),
   })
   .openapi('SurfaceCoverage');
@@ -200,13 +201,13 @@ export const SurfaceCoverageSchema = z
 export const TerrainCoverageSchema = z
   .object({
     road: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Adjusted percentage of track on paved surfaces',
+      description: 'Adjusted percentage of track on paved surfaces (normalized).',
     }),
     rough: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Adjusted percentage of track on rough terrain',
+      description: 'Adjusted percentage of track on rough terrain (normalized).',
     }),
     water: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Adjusted percentage of track on water',
+      description: 'Adjusted percentage of track on water (normalized).',
     }),
   })
   .openapi('TerrainCoverage');
@@ -221,11 +222,11 @@ export const TrackSchema = z
     name: z.string().openapi({ description: 'Track display name' }),
     cup: z.string().openapi({ description: 'The cup this track belongs to' }),
     surfaceCoverage: SurfaceCoverageSchema.openapi({
-      description: 'Breakdown of surface types on this track',
+      description: 'Raw surface breakdown including neutral/off-road.',
     }),
     terrainCoverage: TerrainCoverageSchema.openapi({
       description:
-        'Adjusted terrain-only coverage (road/rough/water), normalized to 100% for combo calculations',
+        'Adjusted road/rough/water mix normalized to 100% for combo calculations.',
     }),
   })
   .openapi('Track', {

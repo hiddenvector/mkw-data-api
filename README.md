@@ -14,6 +14,12 @@ Community-maintained REST API for character stats, vehicle data, and track infor
 - ETag/If-None-Match support for efficient caching
 - OpenAPI 3.1 spec with interactive documentation
 
+## Understanding the Data
+
+- **Stats scale:** All stats are 0–20; higher is better.
+- **surfaceCoverage:** Raw surface breakdown including neutral/off-road.
+- **terrainCoverage:** Adjusted road/rough/water mix normalized to 100% for combo calculations.
+
 ## Quick Start
 
 ```bash
