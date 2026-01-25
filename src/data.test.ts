@@ -111,6 +111,17 @@ describe('data validation', () => {
     ).rejects.toThrow(/Data version mismatch for characters/);
   });
 
+  it('throws when tracks dataVersion mismatches', async () => {
+    await expect(
+      loadData({
+        moduleVersion: 'expected-version',
+        characters: { dataVersion: 'expected-version', characters: [baseCharacter] },
+        vehicles: { dataVersion: 'expected-version', vehicles: [baseVehicle] },
+        tracks: { dataVersion: 'wrong-version', tracks: [baseTrack] },
+      }),
+    ).rejects.toThrow(/Data version mismatch for tracks/);
+  });
+
   it('throws on invalid vehicle tags', async () => {
     await expect(
       loadData({

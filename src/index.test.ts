@@ -158,6 +158,15 @@ describe('Vehicles endpoints', () => {
     expect(Array.isArray(body.vehicles)).toBe(true);
     expect((body.vehicles as unknown[]).length).toBe(0);
   });
+
+  it('GET /vehicles?tag returns 400 for invalid tag format', async () => {
+    const res = await request('/vehicles?tag=INVALID');
+    expect(res.status).toBe(400);
+
+    const body = asRecord(await res.json());
+    const error = asRecord(body.error);
+    expect(error.code).toBe('VALIDATION_ERROR');
+  });
 });
 
 describe('Tracks endpoints', () => {
@@ -221,6 +230,15 @@ describe('Tracks endpoints', () => {
     const body = asRecord(await res.json());
     expect(Array.isArray(body.tracks)).toBe(true);
     expect((body.tracks as unknown[]).length).toBe(0);
+  });
+
+  it('GET /tracks?cup returns 400 for invalid cup format', async () => {
+    const res = await request('/tracks?cup=INVALID');
+    expect(res.status).toBe(400);
+
+    const body = asRecord(await res.json());
+    const error = asRecord(body.error);
+    expect(error.code).toBe('VALIDATION_ERROR');
   });
 });
 

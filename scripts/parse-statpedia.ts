@@ -121,7 +121,7 @@ const CUP_MAPPING: Record<string, string> = {
  * @example toId("Baby Peach") → "baby-peach"
  * @example toId("R.O.B. H.O.G.") → "rob-hog"
  */
-function toId(name: string): string {
+export function toId(name: string): string {
   return name
     .toLowerCase()
     .replace(/\?/g, ' question ')
@@ -137,7 +137,7 @@ function toId(name: string): string {
  * Normalize Statpedia names to US-standard display names.
  * Keep this list tiny and well-documented to avoid drifting from source data.
  */
-function normalizeDisplayName(name: string): string {
+export function normalizeDisplayName(name: string): string {
   switch (name) {
     case 'Swooper':
       return 'Swoop';
@@ -177,7 +177,7 @@ function safeParseInt(
  * @example parsePercent("47%") → 47
  * @example parsePercent("47,5%") → 47.5 (handles European decimals)
  */
-function parsePercent(value: string | undefined): number {
+export function parsePercent(value: string | undefined): number {
   if (!value) return 0;
   return parseFloat(value.replace('%', '').replace(',', '.'));
 }
@@ -242,7 +242,7 @@ function parseStats(row: CsvRow, rowIndex: number): BaseStats {
 /**
  * Parse surface coverage from a CSV row
  */
-function parseSurfaceCoverage(row: CsvRow): SurfaceCoverage {
+export function parseSurfaceCoverage(row: CsvRow): SurfaceCoverage {
   return {
     road: parsePercent(row[COL.COVERAGE_ROAD]),
     rough: parsePercent(row[COL.COVERAGE_ROUGH]),
@@ -255,7 +255,7 @@ function parseSurfaceCoverage(row: CsvRow): SurfaceCoverage {
 /**
  * Parse adjusted terrain coverage (road/rough/water only), normalized to 100%.
  */
-function parseTerrainCoverage(row: CsvRow) {
+export function parseTerrainCoverage(row: CsvRow) {
   const road = parsePercent(row[COL.ADJ_COVERAGE_ROAD]);
   const rough = parsePercent(row[COL.ADJ_COVERAGE_ROUGH]);
   const water = parsePercent(row[COL.ADJ_COVERAGE_WATER]);
@@ -631,7 +631,9 @@ async function main() {
   console.log(`📅 Data version: ${DATA_VERSION}`);
 }
 
-main().catch((err) => {
-  console.error('❌ Fatal error:', err);
-  process.exit(1);
-});
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((err) => {
+    console.error('❌ Fatal error:', err);
+    process.exit(1);
+  });
+}
