@@ -142,18 +142,17 @@ describe('Vehicles endpoints', () => {
     expect(res.status).toBe(200);
 
     const body = asRecord(await res.json());
-    expect(body.tag).toBe(validTag);
     expect(Array.isArray(body.vehicles)).toBe(true);
     expect((body.vehicles as unknown[]).length).toBeGreaterThan(0);
   });
 
-  it('GET /vehicles?tag returns 404 for unknown tag', async () => {
+  it('GET /vehicles?tag returns empty list for unknown tag', async () => {
     const res = await request('/vehicles?tag=not-a-tag');
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(200);
 
     const body = asRecord(await res.json());
-    const error = asRecord(body.error);
-    expect(error.code).toBe('NOT_FOUND');
+    expect(Array.isArray(body.vehicles)).toBe(true);
+    expect((body.vehicles as unknown[]).length).toBe(0);
   });
 });
 
@@ -207,17 +206,17 @@ describe('Tracks endpoints', () => {
     expect(res.status).toBe(200);
 
     const body = asRecord(await res.json());
-    expect(body.cup).toBeDefined();
     expect(Array.isArray(body.tracks)).toBe(true);
+    expect((body.tracks as unknown[]).length).toBeGreaterThan(0);
   });
 
-  it('GET /tracks?cup returns 404 for unknown cup', async () => {
+  it('GET /tracks?cup returns empty list for unknown cup', async () => {
     const res = await request('/tracks?cup=not-a-cup');
-    expect(res.status).toBe(404);
+    expect(res.status).toBe(200);
 
     const body = asRecord(await res.json());
-    const error = asRecord(body.error);
-    expect(error.code).toBe('NOT_FOUND');
+    expect(Array.isArray(body.tracks)).toBe(true);
+    expect((body.tracks as unknown[]).length).toBe(0);
   });
 });
 

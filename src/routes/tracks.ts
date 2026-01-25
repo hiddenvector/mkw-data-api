@@ -4,7 +4,7 @@ import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } 
 import {
   TrackIdParamSchema,
   CupQuerySchema,
-  TracksQueryResponseSchema,
+  TracksResponseSchema,
   TrackSchema,
 } from '../schemas';
 import { checkNotModified } from '../utils';
@@ -20,7 +20,7 @@ const getTracksRoute = createRoute({
   request: { query: CupQuerySchema },
   responses: {
     200: {
-      content: { 'application/json': { schema: TracksQueryResponseSchema } },
+      content: { 'application/json': { schema: TracksResponseSchema } },
       description: 'Success',
     },
     400: {
@@ -77,19 +77,7 @@ tracksRouter.openapi(getTracksRoute, (c) => {
   if (cup) {
     const normalizedCup = normalizeCup(cup);
     const byCup = tracks.filter((t) => normalizeCup(t.cup) === normalizedCup);
-
-    if (byCup.length === 0) {
-      return notFound(c, 'Tracks in cup', cup);
-    }
-
-    return c.json(
-      {
-        cup: byCup[0].cup,
-        dataVersion,
-        tracks: byCup,
-      },
-      200,
-    );
+    return c.json({ dataVersion, tracks: byCup }, 200);
   }
 
   return c.json({ dataVersion, tracks }, 200);

@@ -4,7 +4,7 @@ import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } 
 import {
   VehicleIdParamSchema,
   TagQuerySchema,
-  VehiclesQueryResponseSchema,
+  VehiclesResponseSchema,
   VehicleSchema,
 } from '../schemas';
 import { checkNotModified } from '../utils';
@@ -20,7 +20,7 @@ const getVehiclesRoute = createRoute({
   request: { query: TagQuerySchema },
   responses: {
     200: {
-      content: { 'application/json': { schema: VehiclesQueryResponseSchema } },
+      content: { 'application/json': { schema: VehiclesResponseSchema } },
       description: 'Success',
     },
     400: {
@@ -69,17 +69,7 @@ vehiclesRouter.openapi(getVehiclesRoute, (c) => {
 
   if (tag) {
     const byTag = vehicles.filter((veh) => veh.tag === tag);
-    if (byTag.length === 0) {
-      return notFound(c, 'Vehicles with tag', tag);
-    }
-    return c.json(
-      {
-        tag,
-        dataVersion,
-        vehicles: byTag,
-      },
-      200,
-    );
+    return c.json({ dataVersion, vehicles: byTag }, 200);
   }
 
   return c.json({ dataVersion, vehicles }, 200);

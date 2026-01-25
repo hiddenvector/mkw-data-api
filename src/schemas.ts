@@ -68,14 +68,6 @@ const tagSchema = z
   .max(MAX_ID_LENGTH)
   .regex(ID_PATTERN, 'Tag must be lowercase alphanumeric with hyphens');
 
-/** Vehicle tag path parameter */
-export const TagParamSchema = z.object({
-  tag: tagSchema.openapi({
-    param: { name: 'tag', in: 'path' },
-    example: 'on-l-0',
-  }),
-});
-
 /** Vehicle tag query parameter */
 export const TagQuerySchema = z.object({
   tag: tagSchema.optional().openapi({
@@ -89,14 +81,6 @@ const cupSchema = z
   .min(1)
   .max(MAX_ID_LENGTH)
   .regex(ID_PATTERN, 'Cup must be lowercase with hyphens');
-
-/** Cup name path parameter */
-export const CupParamSchema = z.object({
-  cup: cupSchema.openapi({
-    param: { name: 'cup', in: 'path' },
-    example: 'mushroom-cup',
-  }),
-});
 
 /** Cup name query parameter */
 export const CupQuerySchema = z.object({
@@ -366,53 +350,6 @@ export const VehiclesResponseSchema = z
     },
   });
 
-/**
- * Response containing vehicles filtered by tag.
- * Example shows both vehicles that share the on-l-0 tag.
- */
-export const VehiclesByTagResponseSchema = z
-  .object({
-    tag: z.string().openapi({ description: 'The tag that groups these vehicles' }),
-    dataVersion: DataVersionSchema,
-    vehicles: z.array(VehicleSchema),
-  })
-  .openapi('VehiclesByTagResponse', {
-    example: {
-      tag: 'on-l-0',
-      dataVersion: '2026-01-23',
-      vehicles: [
-        {
-          id: 'mach-rocket',
-          name: 'Mach Rocket',
-          tag: 'on-l-0',
-          speed: { road: 6, rough: 1, water: 1 },
-          handling: { road: 11, rough: 7, water: 7 },
-          acceleration: 7,
-          miniTurbo: 7,
-          weight: 0,
-          coinCurve: 6,
-        },
-        {
-          id: 'rob-hog',
-          name: 'R.O.B. H.O.G.',
-          tag: 'on-l-0',
-          speed: { road: 6, rough: 1, water: 1 },
-          handling: { road: 11, rough: 7, water: 7 },
-          acceleration: 7,
-          miniTurbo: 7,
-          weight: 0,
-          coinCurve: 6,
-        },
-      ],
-    },
-  });
-
-/**
- * Response containing vehicles, optionally filtered by tag.
- */
-export const VehiclesQueryResponseSchema = z
-  .union([VehiclesResponseSchema, VehiclesByTagResponseSchema])
-  .openapi('VehiclesQueryResponse');
 
 /**
  * Response containing all tracks.
@@ -452,59 +389,6 @@ export const TracksResponseSchema = z
     },
   });
 
-/**
- * Response containing tracks filtered by cup.
- * Example shows all 4 tracks in the Mushroom Cup.
- */
-export const TracksByCupResponseSchema = z
-  .object({
-    cup: z.string().openapi({ description: 'The cup name these tracks belong to' }),
-    dataVersion: DataVersionSchema,
-    tracks: z.array(TrackSchema),
-  })
-  .openapi('TracksByCupResponse', {
-    example: {
-      cup: 'Mushroom Cup',
-      dataVersion: '2026-01-23',
-      tracks: [
-        {
-          id: 'mario-bros-circuit',
-          name: 'Mario Bros. Circuit',
-          cup: 'Mushroom Cup',
-          surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
-          terrainCoverage: { road: 76, rough: 24, water: 0 },
-        },
-        {
-          id: 'crown-city',
-          name: 'Crown City',
-          cup: 'Mushroom Cup',
-          surfaceCoverage: { road: 78, rough: 0, water: 0, neutral: 20, offRoad: 2 },
-          terrainCoverage: { road: 100, rough: 0, water: 0 },
-        },
-        {
-          id: 'whistlestop-summit',
-          name: 'Whistlestop Summit',
-          cup: 'Mushroom Cup',
-          surfaceCoverage: { road: 35, rough: 0, water: 0, neutral: 62, offRoad: 3 },
-          terrainCoverage: { road: 100, rough: 0, water: 0 },
-        },
-        {
-          id: 'dk-spaceport',
-          name: 'DK Spaceport',
-          cup: 'Mushroom Cup',
-          surfaceCoverage: { road: 79, rough: 0, water: 0, neutral: 17, offRoad: 4 },
-          terrainCoverage: { road: 100, rough: 0, water: 0 },
-        },
-      ],
-    },
-  });
-
-/**
- * Response containing tracks, optionally filtered by cup.
- */
-export const TracksQueryResponseSchema = z
-  .union([TracksResponseSchema, TracksByCupResponseSchema])
-  .openapi('TracksQueryResponse');
 
 /**
  * Health check response.
@@ -555,7 +439,5 @@ export type TerrainCoverage = z.infer<typeof TerrainCoverageSchema>;
 export type Track = z.infer<typeof TrackSchema>;
 export type CharactersResponse = z.infer<typeof CharactersResponseSchema>;
 export type VehiclesResponse = z.infer<typeof VehiclesResponseSchema>;
-export type VehiclesQueryResponse = z.infer<typeof VehiclesQueryResponseSchema>;
 export type TracksResponse = z.infer<typeof TracksResponseSchema>;
-export type TracksQueryResponse = z.infer<typeof TracksQueryResponseSchema>;
 export type HealthResponse = z.infer<typeof HealthResponseSchema>;
