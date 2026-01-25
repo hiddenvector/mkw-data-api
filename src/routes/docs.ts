@@ -1,6 +1,6 @@
 import { OpenAPIHono } from '@hono/zod-openapi';
 import { Scalar } from '@scalar/hono-api-reference';
-import { createRouter } from '../app';
+import { createRouter, type AppEnv } from '../app';
 import { API_CONFIG } from '../config';
 import { checkNotModified } from '../utils';
 
@@ -8,8 +8,7 @@ import { checkNotModified } from '../utils';
  * Creates the OpenAPI spec and docs routes.
  * Needs the main app instance to generate the spec from registered routes.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function createDocsRoutes(app: OpenAPIHono<any, any, any>) {
+export function createDocsRoutes(app: OpenAPIHono<AppEnv>) {
   const docsRouter = createRouter();
 
   docsRouter.get('/openapi.json', (c) => {
