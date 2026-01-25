@@ -7,6 +7,7 @@ Release checklist for production tags.
 1. Update data (if needed)
 
     - If data changed, update `src/data-version.ts` and `data/*.json` via `npm run generate-data`.
+    - `npm run generate-data` respects `DATA_VERSION` (used in CI to avoid auto-bumping).
 
 2. Update docs
 

@@ -17,7 +17,7 @@ import type { Character, Vehicle, Track, BaseStats, SurfaceCoverage } from '../s
 // Constants
 // ============================================================================
 
-const DATA_VERSION = new Date().toISOString().split('T')[0];
+const DATA_VERSION = process.env.DATA_VERSION ?? new Date().toISOString().split('T')[0];
 
 /** CSV column indices for both characters and vehicles */
 const COL = {

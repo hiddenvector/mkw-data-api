@@ -21,6 +21,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Verify generated data is up to date
+        run: |
+          DATA_VERSION="$(node -e "const fs=require('fs');const m=fs.readFileSync('src/data-version.ts','utf8').match(/DATA_VERSION = '([^']+)'/);console.log(m?m[1]:'');")"
+          DATA_VERSION="$DATA_VERSION" npm run generate-data
+          git diff --exit-code data/ src/data-version.ts
+
       - name: Type check
         run: npm run typecheck
 
