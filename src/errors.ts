@@ -42,33 +42,37 @@ const BaseErrorSchema = z.object({
  * 400 Bad Request error response schema.
  * Example: Invalid ID format (e.g., contains uppercase or special characters).
  */
-export const ValidationErrorResponseSchema = BaseErrorSchema.openapi({
-  ref: 'ValidationErrorResponse',
-  example: {
-    error: {
-      code: 'VALIDATION_ERROR',
-      message: 'ID must be lowercase alphanumeric with hyphens',
-      status: 400,
-      requestId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+export const ValidationErrorResponseSchema = BaseErrorSchema.openapi(
+  'ValidationErrorResponse',
+  {
+    example: {
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'ID must be lowercase alphanumeric with hyphens',
+        status: 400,
+        requestId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+      },
     },
-  },
-});
+  }
+);
 
 /**
  * 404 Not Found error response schema.
  * Example: Valid ID format but entity doesn't exist.
  */
-export const NotFoundErrorResponseSchema = BaseErrorSchema.openapi({
-  ref: 'NotFoundErrorResponse',
-  example: {
-    error: {
-      code: 'NOT_FOUND',
-      message: "Vehicle 'nonexistent-vehicle' not found",
-      status: 404,
-      requestId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+export const NotFoundErrorResponseSchema = BaseErrorSchema.openapi(
+  'NotFoundErrorResponse',
+  {
+    example: {
+      error: {
+        code: 'NOT_FOUND',
+        message: "Vehicle 'nonexistent-vehicle' not found",
+        status: 404,
+        requestId: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+      },
     },
-  },
-});
+  }
+);
 
 /** @deprecated Use ValidationErrorResponseSchema or NotFoundErrorResponseSchema */
 export const ErrorResponseSchema = BaseErrorSchema.openapi('ErrorResponse');

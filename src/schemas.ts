@@ -136,19 +136,21 @@ export const BaseStatsSchema = z.object({
 export const CharacterSchema = BaseStatsSchema.extend({
   id: z.string().openapi({ description: 'Unique identifier (slug format)' }),
   name: z.string().openapi({ description: 'Character display name' }),
-}).openapi({
-  ref: 'Character',
-  example: {
-    id: 'dry-bones',
-    name: 'Dry Bones',
-    speed: { road: 0, rough: 1, water: 0 },
-    handling: { road: 5, rough: 7, water: 5 },
-    acceleration: 6,
-    miniTurbo: 3,
-    weight: 1,
-    coinCurve: 8,
-  },
-});
+}).openapi(
+  'Character',
+  {
+    example: {
+      id: 'dry-bones',
+      name: 'Dry Bones',
+      speed: { road: 0, rough: 1, water: 0 },
+      handling: { road: 5, rough: 7, water: 5 },
+      acceleration: 6,
+      miniTurbo: 3,
+      weight: 1,
+      coinCurve: 8,
+    },
+  }
+);
 
 /**
  * A vehicle with its stats.
@@ -158,20 +160,22 @@ export const VehicleSchema = BaseStatsSchema.extend({
   id: z.string().openapi({ description: 'Unique identifier (slug format)' }),
   name: z.string().openapi({ description: 'Vehicle display name' }),
   tag: z.string().openapi({ description: 'Tag grouping vehicles with identical stats' }),
-}).openapi({
-  ref: 'Vehicle',
-  example: {
-    id: 'mach-rocket',
-    name: 'Mach Rocket',
-    tag: 'on-l-0',
-    speed: { road: 6, rough: 1, water: 1 },
-    handling: { road: 11, rough: 7, water: 7 },
-    acceleration: 7,
-    miniTurbo: 7,
-    weight: 0,
-    coinCurve: 6,
-  },
-});
+}).openapi(
+  'Vehicle',
+  {
+    example: {
+      id: 'mach-rocket',
+      name: 'Mach Rocket',
+      tag: 'on-l-0',
+      speed: { road: 6, rough: 1, water: 1 },
+      handling: { road: 11, rough: 7, water: 7 },
+      acceleration: 7,
+      miniTurbo: 7,
+      weight: 0,
+      coinCurve: 6,
+    },
+  }
+);
 
 /**
  * Surface coverage percentages for a track.
@@ -209,15 +213,17 @@ export const TrackSchema = z
       description: 'Breakdown of surface types on this track',
     }),
   })
-  .openapi({
-    ref: 'Track',
-    example: {
-      id: 'mario-bros-circuit',
-      name: 'Mario Bros. Circuit',
-      cup: 'Mushroom Cup',
-      surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
-    },
-  });
+  .openapi(
+    'Track',
+    {
+      example: {
+        id: 'mario-bros-circuit',
+        name: 'Mario Bros. Circuit',
+        cup: 'Mushroom Cup',
+        surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
+      },
+    }
+  );
 
 // ============================================================================
 // Response Schemas
@@ -240,44 +246,46 @@ export const CharactersResponseSchema = z
     dataVersion: DataVersionSchema,
     characters: z.array(CharacterSchema),
   })
-  .openapi({
-    ref: 'CharactersResponse',
-    example: {
-      dataVersion: '2026-01-23',
-      characters: [
-        {
-          id: 'baby-peach',
-          name: 'Baby Peach',
-          speed: { road: 0, rough: 0, water: 0 },
-          handling: { road: 6, rough: 6, water: 6 },
-          acceleration: 7,
-          miniTurbo: 4,
-          weight: 0,
-          coinCurve: 9,
-        },
-        {
-          id: 'baby-daisy',
-          name: 'Baby Daisy',
-          speed: { road: 0, rough: 0, water: 0 },
-          handling: { road: 6, rough: 6, water: 6 },
-          acceleration: 7,
-          miniTurbo: 4,
-          weight: 0,
-          coinCurve: 9,
-        },
-        {
-          id: 'dry-bones',
-          name: 'Dry Bones',
-          speed: { road: 0, rough: 1, water: 0 },
-          handling: { road: 5, rough: 7, water: 5 },
-          acceleration: 6,
-          miniTurbo: 3,
-          weight: 1,
-          coinCurve: 8,
-        },
-      ],
-    },
-  });
+  .openapi(
+    'CharactersResponse',
+    {
+      example: {
+        dataVersion: '2026-01-23',
+        characters: [
+          {
+            id: 'baby-peach',
+            name: 'Baby Peach',
+            speed: { road: 0, rough: 0, water: 0 },
+            handling: { road: 6, rough: 6, water: 6 },
+            acceleration: 7,
+            miniTurbo: 4,
+            weight: 0,
+            coinCurve: 9,
+          },
+          {
+            id: 'baby-daisy',
+            name: 'Baby Daisy',
+            speed: { road: 0, rough: 0, water: 0 },
+            handling: { road: 6, rough: 6, water: 6 },
+            acceleration: 7,
+            miniTurbo: 4,
+            weight: 0,
+            coinCurve: 9,
+          },
+          {
+            id: 'dry-bones',
+            name: 'Dry Bones',
+            speed: { road: 0, rough: 1, water: 0 },
+            handling: { road: 5, rough: 7, water: 5 },
+            acceleration: 6,
+            miniTurbo: 3,
+            weight: 1,
+            coinCurve: 8,
+          },
+        ],
+      },
+    }
+  );
 
 /**
  * Response containing all vehicles.
@@ -288,47 +296,49 @@ export const VehiclesResponseSchema = z
     dataVersion: DataVersionSchema,
     vehicles: z.array(VehicleSchema),
   })
-  .openapi({
-    ref: 'VehiclesResponse',
-    example: {
-      dataVersion: '2026-01-23',
-      vehicles: [
-        {
-          id: 'standard-bike',
-          name: 'Standard Bike',
-          tag: 'st-a-0',
-          speed: { road: 1, rough: 1, water: 1 },
-          handling: { road: 8, rough: 8, water: 8 },
-          acceleration: 9,
-          miniTurbo: 9,
-          weight: 0,
-          coinCurve: 6,
-        },
-        {
-          id: 'tune-thumper',
-          name: 'Tune Thumper',
-          tag: 'st-a-0',
-          speed: { road: 1, rough: 1, water: 1 },
-          handling: { road: 8, rough: 8, water: 8 },
-          acceleration: 9,
-          miniTurbo: 9,
-          weight: 0,
-          coinCurve: 6,
-        },
-        {
-          id: 'mach-rocket',
-          name: 'Mach Rocket',
-          tag: 'on-l-0',
-          speed: { road: 6, rough: 1, water: 1 },
-          handling: { road: 11, rough: 7, water: 7 },
-          acceleration: 7,
-          miniTurbo: 7,
-          weight: 0,
-          coinCurve: 6,
-        },
-      ],
-    },
-  });
+  .openapi(
+    'VehiclesResponse',
+    {
+      example: {
+        dataVersion: '2026-01-23',
+        vehicles: [
+          {
+            id: 'standard-bike',
+            name: 'Standard Bike',
+            tag: 'st-a-0',
+            speed: { road: 1, rough: 1, water: 1 },
+            handling: { road: 8, rough: 8, water: 8 },
+            acceleration: 9,
+            miniTurbo: 9,
+            weight: 0,
+            coinCurve: 6,
+          },
+          {
+            id: 'tune-thumper',
+            name: 'Tune Thumper',
+            tag: 'st-a-0',
+            speed: { road: 1, rough: 1, water: 1 },
+            handling: { road: 8, rough: 8, water: 8 },
+            acceleration: 9,
+            miniTurbo: 9,
+            weight: 0,
+            coinCurve: 6,
+          },
+          {
+            id: 'mach-rocket',
+            name: 'Mach Rocket',
+            tag: 'on-l-0',
+            speed: { road: 6, rough: 1, water: 1 },
+            handling: { road: 11, rough: 7, water: 7 },
+            acceleration: 7,
+            miniTurbo: 7,
+            weight: 0,
+            coinCurve: 6,
+          },
+        ],
+      },
+    }
+  );
 
 /**
  * Response containing vehicles filtered by tag.
@@ -340,37 +350,39 @@ export const VehiclesByTagResponseSchema = z
     dataVersion: DataVersionSchema,
     vehicles: z.array(VehicleSchema),
   })
-  .openapi({
-    ref: 'VehiclesByTagResponse',
-    example: {
-      tag: 'on-l-0',
-      dataVersion: '2026-01-23',
-      vehicles: [
-        {
-          id: 'mach-rocket',
-          name: 'Mach Rocket',
-          tag: 'on-l-0',
-          speed: { road: 6, rough: 1, water: 1 },
-          handling: { road: 11, rough: 7, water: 7 },
-          acceleration: 7,
-          miniTurbo: 7,
-          weight: 0,
-          coinCurve: 6,
-        },
-        {
-          id: 'rob-hog',
-          name: 'R.O.B. H.O.G.',
-          tag: 'on-l-0',
-          speed: { road: 6, rough: 1, water: 1 },
-          handling: { road: 11, rough: 7, water: 7 },
-          acceleration: 7,
-          miniTurbo: 7,
-          weight: 0,
-          coinCurve: 6,
-        },
-      ],
-    },
-  });
+  .openapi(
+    'VehiclesByTagResponse',
+    {
+      example: {
+        tag: 'on-l-0',
+        dataVersion: '2026-01-23',
+        vehicles: [
+          {
+            id: 'mach-rocket',
+            name: 'Mach Rocket',
+            tag: 'on-l-0',
+            speed: { road: 6, rough: 1, water: 1 },
+            handling: { road: 11, rough: 7, water: 7 },
+            acceleration: 7,
+            miniTurbo: 7,
+            weight: 0,
+            coinCurve: 6,
+          },
+          {
+            id: 'rob-hog',
+            name: 'R.O.B. H.O.G.',
+            tag: 'on-l-0',
+            speed: { road: 6, rough: 1, water: 1 },
+            handling: { road: 11, rough: 7, water: 7 },
+            acceleration: 7,
+            miniTurbo: 7,
+            weight: 0,
+            coinCurve: 6,
+          },
+        ],
+      },
+    }
+  );
 
 /**
  * Response containing all tracks.
@@ -381,32 +393,34 @@ export const TracksResponseSchema = z
     dataVersion: DataVersionSchema,
     tracks: z.array(TrackSchema),
   })
-  .openapi({
-    ref: 'TracksResponse',
-    example: {
-      dataVersion: '2026-01-23',
-      tracks: [
-        {
-          id: 'mario-bros-circuit',
-          name: 'Mario Bros. Circuit',
-          cup: 'Mushroom Cup',
-          surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
-        },
-        {
-          id: 'crown-city',
-          name: 'Crown City',
-          cup: 'Mushroom Cup',
-          surfaceCoverage: { road: 78, rough: 0, water: 0, neutral: 20, offRoad: 2 },
-        },
-        {
-          id: 'whistlestop-summit',
-          name: 'Whistlestop Summit',
-          cup: 'Mushroom Cup',
-          surfaceCoverage: { road: 35, rough: 0, water: 0, neutral: 62, offRoad: 3 },
-        },
-      ],
-    },
-  });
+  .openapi(
+    'TracksResponse',
+    {
+      example: {
+        dataVersion: '2026-01-23',
+        tracks: [
+          {
+            id: 'mario-bros-circuit',
+            name: 'Mario Bros. Circuit',
+            cup: 'Mushroom Cup',
+            surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
+          },
+          {
+            id: 'crown-city',
+            name: 'Crown City',
+            cup: 'Mushroom Cup',
+            surfaceCoverage: { road: 78, rough: 0, water: 0, neutral: 20, offRoad: 2 },
+          },
+          {
+            id: 'whistlestop-summit',
+            name: 'Whistlestop Summit',
+            cup: 'Mushroom Cup',
+            surfaceCoverage: { road: 35, rough: 0, water: 0, neutral: 62, offRoad: 3 },
+          },
+        ],
+      },
+    }
+  );
 
 /**
  * Response containing tracks filtered by cup.
@@ -418,39 +432,41 @@ export const TracksByCupResponseSchema = z
     dataVersion: DataVersionSchema,
     tracks: z.array(TrackSchema),
   })
-  .openapi({
-    ref: 'TracksByCupResponse',
-    example: {
-      cup: 'Mushroom Cup',
-      dataVersion: '2026-01-23',
-      tracks: [
-        {
-          id: 'mario-bros-circuit',
-          name: 'Mario Bros. Circuit',
-          cup: 'Mushroom Cup',
-          surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
-        },
-        {
-          id: 'crown-city',
-          name: 'Crown City',
-          cup: 'Mushroom Cup',
-          surfaceCoverage: { road: 78, rough: 0, water: 0, neutral: 20, offRoad: 2 },
-        },
-        {
-          id: 'whistlestop-summit',
-          name: 'Whistlestop Summit',
-          cup: 'Mushroom Cup',
-          surfaceCoverage: { road: 35, rough: 0, water: 0, neutral: 62, offRoad: 3 },
-        },
-        {
-          id: 'dk-spaceport',
-          name: 'DK Spaceport',
-          cup: 'Mushroom Cup',
-          surfaceCoverage: { road: 79, rough: 0, water: 0, neutral: 17, offRoad: 4 },
-        },
-      ],
-    },
-  });
+  .openapi(
+    'TracksByCupResponse',
+    {
+      example: {
+        cup: 'Mushroom Cup',
+        dataVersion: '2026-01-23',
+        tracks: [
+          {
+            id: 'mario-bros-circuit',
+            name: 'Mario Bros. Circuit',
+            cup: 'Mushroom Cup',
+            surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
+          },
+          {
+            id: 'crown-city',
+            name: 'Crown City',
+            cup: 'Mushroom Cup',
+            surfaceCoverage: { road: 78, rough: 0, water: 0, neutral: 20, offRoad: 2 },
+          },
+          {
+            id: 'whistlestop-summit',
+            name: 'Whistlestop Summit',
+            cup: 'Mushroom Cup',
+            surfaceCoverage: { road: 35, rough: 0, water: 0, neutral: 62, offRoad: 3 },
+          },
+          {
+            id: 'dk-spaceport',
+            name: 'DK Spaceport',
+            cup: 'Mushroom Cup',
+            surfaceCoverage: { road: 79, rough: 0, water: 0, neutral: 17, offRoad: 4 },
+          },
+        ],
+      },
+    }
+  );
 
 /**
  * Health check response.
@@ -470,21 +486,23 @@ export const HealthResponseSchema = z
       })
       .openapi({ description: 'Count of loaded data items' }),
   })
-  .openapi({
-    ref: 'HealthResponse',
-    example: {
-      status: 'ok',
-      apiVersion: 'v1',
-      serviceVersion: '1.0.0',
-      timestamp: '2026-01-23T12:00:00.000Z',
-      dataVersion: '2026-01-23',
-      dataLoaded: {
-        characters: 50,
-        vehicles: 40,
-        tracks: 30,
+  .openapi(
+    'HealthResponse',
+    {
+      example: {
+        status: 'ok',
+        apiVersion: 'v1',
+        serviceVersion: '1.0.0',
+        timestamp: '2026-01-23T12:00:00.000Z',
+        dataVersion: '2026-01-23',
+        dataLoaded: {
+          characters: 50,
+          vehicles: 40,
+          tracks: 30,
+        },
       },
-    },
-  });
+    }
+  );
 
 // ============================================================================
 // Inferred TypeScript Types
