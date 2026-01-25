@@ -11,7 +11,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { parse } from 'csv-parse/sync';
-import type { Character, Vehicle, Track, BaseStats, SurfaceCoverage } from '../src/types';
+import type { Character, Vehicle, Track, BaseStats, SurfaceCoverage } from '../src/schemas';
 
 // ============================================================================
 // Constants
