@@ -106,11 +106,14 @@ vehiclesRouter.openapi(getVehiclesByTagRoute, (c) => {
     return notFound(c, 'Vehicles with tag', tag);
   }
 
-  return c.json({
-    tag,
-    dataVersion,
-    vehicles: byTag,
-  }, 200);
+  return c.json(
+    {
+      tag,
+      dataVersion,
+      vehicles: byTag,
+    },
+    200,
+  );
 });
 
 export default vehiclesRouter;

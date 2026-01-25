@@ -233,7 +233,9 @@ describe('Response headers', () => {
     expect(res.headers.get('X-Content-Type-Options')).toBe('nosniff');
     expect(res.headers.get('X-Frame-Options')).toBe('DENY');
     expect(res.headers.get('Referrer-Policy')).toBe('no-referrer');
-    expect(res.headers.get('Content-Security-Policy')).toBe("default-src 'none'; frame-ancestors 'none'");
+    expect(res.headers.get('Content-Security-Policy')).toBe(
+      "default-src 'none'; frame-ancestors 'none'",
+    );
   });
 
   it('includes cache-control with must-revalidate for data endpoints', async () => {

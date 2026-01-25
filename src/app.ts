@@ -26,7 +26,7 @@ export function createRouter() {
               ...(requestId && { requestId }),
             },
           },
-          400
+          400,
         );
       }
     },

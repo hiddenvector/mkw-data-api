@@ -1,11 +1,7 @@
 import { createRoute } from '@hono/zod-openapi';
 import { createRouter } from '../app';
 import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } from '../errors';
-import {
-  CharacterIdParamSchema,
-  CharactersResponseSchema,
-  CharacterSchema,
-} from '../schemas';
+import { CharacterIdParamSchema, CharactersResponseSchema, CharacterSchema } from '../schemas';
 import { checkNotModified } from '../utils';
 import { characters, dataVersion } from '../data';
 
@@ -14,7 +10,8 @@ const getCharactersRoute = createRoute({
   path: '/characters',
   tags: ['Characters'],
   summary: 'List All Characters',
-  description: 'Returns all playable characters with their stats. Supports ETag/If-None-Match for caching.',
+  description:
+    'Returns all playable characters with their stats. Supports ETag/If-None-Match for caching.',
   responses: {
     200: {
       content: { 'application/json': { schema: CharactersResponseSchema } },

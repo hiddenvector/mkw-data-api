@@ -117,12 +117,12 @@ function toId(name: string): string {
   return name
     .toLowerCase()
     .replace(/\?/g, ' question ')
-    .replace(/\s+/g, '-')        // spaces → hyphens
-    .replace(/\./g, '')          // remove periods
-    .replace(/'/g, '')           // remove apostrophes
-    .replace(/_/g, '-')          // underscores → hyphens
-    .replace(/-+/g, '-')         // collapse multiple hyphens
-    .replace(/^-+|-+$/g, '');    // trim leading/trailing hyphens
+    .replace(/\s+/g, '-') // spaces → hyphens
+    .replace(/\./g, '') // remove periods
+    .replace(/'/g, '') // remove apostrophes
+    .replace(/_/g, '-') // underscores → hyphens
+    .replace(/-+/g, '-') // collapse multiple hyphens
+    .replace(/^-+|-+$/g, ''); // trim leading/trailing hyphens
 }
 
 /**
@@ -131,7 +131,7 @@ function toId(name: string): string {
  */
 function safeParseInt(
   value: any,
-  context?: { row?: number; col?: number; rowData?: any[] }
+  context?: { row?: number; col?: number; rowData?: any[] },
 ): number {
   const n = parseInt(value, 10);
   if (isNaN(n)) {
@@ -174,9 +174,7 @@ function hasStats(row: any[], startCol: number): boolean {
  */
 function isHeaderRow(value: any, headerText: string): boolean {
   return (
-    value &&
-    typeof value === 'string' &&
-    value.trim().toLowerCase() === headerText.toLowerCase()
+    value && typeof value === 'string' && value.trim().toLowerCase() === headerText.toLowerCase()
   );
 }
 
@@ -186,7 +184,7 @@ function isHeaderRow(value: any, headerText: string): boolean {
 function extractNames(row: any[]): string[] {
   return [row[COL.NAME_1], row[COL.NAME_2], row[COL.NAME_3], row[COL.NAME_4]]
     .filter((name): name is string => Boolean(name && name.trim()))
-    .map(name => name.trim());
+    .map((name) => name.trim());
 }
 
 // ============================================================================
@@ -299,7 +297,7 @@ function validateTrack(track: Track, index: number): void {
 
     if (total < 95 || total > 105) {
       console.warn(
-        `⚠️  Track ${track.name}: surface coverage sums to ${total.toFixed(1)}% (expected ~100%)`
+        `⚠️  Track ${track.name}: surface coverage sums to ${total.toFixed(1)}% (expected ~100%)`,
       );
     }
   }
@@ -499,7 +497,7 @@ function writeJSON<T>(filePath: string, data: T, label: string): void {
       [label]: data,
     },
     null,
-    2
+    2,
   );
 
   fs.writeFileSync(filePath, json);

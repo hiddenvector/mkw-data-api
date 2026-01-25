@@ -29,7 +29,7 @@ app.onError((err, c) => {
         ...(requestId && { requestId }),
       },
     },
-    500
+    500,
   );
 });
 
@@ -62,7 +62,7 @@ app.use(
     allowHeaders: ['If-None-Match', 'X-Request-ID'],
     exposeHeaders: ['ETag', 'X-Request-ID', 'X-Response-Time', 'API-Version'],
     maxAge: 86400,
-  })
+  }),
 );
 
 // Security headers
@@ -83,7 +83,7 @@ app.use('/*', async (c, next) => {
   if (c.req.path.endsWith('/docs')) {
     c.header(
       'Content-Security-Policy',
-      "default-src 'self'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline'; font-src https://fonts.scalar.com; connect-src 'self' https://hiddenvector.studio; frame-ancestors 'none'"
+      "default-src 'self'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline'; font-src https://fonts.scalar.com; connect-src 'self' https://hiddenvector.studio; frame-ancestors 'none'",
     );
   } else {
     c.header('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");

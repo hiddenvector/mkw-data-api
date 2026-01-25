@@ -3,7 +3,7 @@
  */
 export function checkNotModified(
   c: { req: { header: (name: string) => string | undefined } },
-  etag: string
+  etag: string,
 ): boolean {
   const ifNoneMatch = c.req.header('If-None-Match');
   if (!ifNoneMatch) return false;

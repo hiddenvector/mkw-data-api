@@ -16,7 +16,8 @@ const getTracksRoute = createRoute({
   path: '/tracks',
   tags: ['Tracks'],
   summary: 'List All Tracks',
-  description: 'Returns all race tracks with surface coverage data. Supports ETag/If-None-Match for caching.',
+  description:
+    'Returns all race tracks with surface coverage data. Supports ETag/If-None-Match for caching.',
   responses: {
     200: {
       content: { 'application/json': { schema: TracksResponseSchema } },
@@ -115,11 +116,14 @@ tracksRouter.openapi(getTracksByCupRoute, (c) => {
     return notFound(c, 'Tracks in cup', cup);
   }
 
-  return c.json({
-    cup: byCup[0].cup,
-    dataVersion,
-    tracks: byCup,
-  }, 200);
+  return c.json(
+    {
+      cup: byCup[0].cup,
+      dataVersion,
+      tracks: byCup,
+    },
+    200,
+  );
 });
 
 export default tracksRouter;

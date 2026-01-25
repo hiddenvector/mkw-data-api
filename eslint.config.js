@@ -20,5 +20,5 @@ export default tseslint.config(
   },
   {
     ignores: ['node_modules/', '.wrangler/', 'dist/', '*.config.js'],
-  }
+  },
 );

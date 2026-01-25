@@ -38,19 +38,19 @@ curl https://hiddenvector.studio/mkw/api/v1/tracks/cup/mushroom-cup
 
 ## Endpoints
 
-| Endpoint | Description |
-|----------|-------------|
-| `GET /health` | API health and version info |
-| `GET /characters` | List all characters |
-| `GET /characters/{id}` | Get character by ID |
-| `GET /vehicles` | List all vehicles |
-| `GET /vehicles/{id}` | Get vehicle by ID |
-| `GET /vehicles/tag/{tag}` | Get vehicles by stat tag |
-| `GET /tracks` | List all tracks |
-| `GET /tracks/{id}` | Get track by ID |
-| `GET /tracks/cup/{cup}` | Get tracks by cup |
-| `GET /openapi.json` | OpenAPI 3.1 specification |
-| `GET /docs` | Interactive API documentation |
+| Endpoint                  | Description                   |
+| ------------------------- | ----------------------------- |
+| `GET /health`             | API health and version info   |
+| `GET /characters`         | List all characters           |
+| `GET /characters/{id}`    | Get character by ID           |
+| `GET /vehicles`           | List all vehicles             |
+| `GET /vehicles/{id}`      | Get vehicle by ID             |
+| `GET /vehicles/tag/{tag}` | Get vehicles by stat tag      |
+| `GET /tracks`             | List all tracks               |
+| `GET /tracks/{id}`        | Get track by ID               |
+| `GET /tracks/cup/{cup}`   | Get tracks by cup             |
+| `GET /openapi.json`       | OpenAPI 3.1 specification     |
+| `GET /docs`               | Interactive API documentation |
 
 ## Caching
 

@@ -14,7 +14,7 @@ function formatZodIssues(issues: unknown) {
 function assertDataVersion(label: string, dataVersion: string) {
   if (dataVersion !== DATA_VERSION) {
     throw new Error(
-      `Data version mismatch for ${label}: json=${dataVersion} expected=${DATA_VERSION}`
+      `Data version mismatch for ${label}: json=${dataVersion} expected=${DATA_VERSION}`,
     );
   }
 }
@@ -31,22 +31,34 @@ if (!charactersParsed.success) {
   throw new Error(`Invalid characters data:\n${formatZodIssues(charactersParsed.error.issues)}`);
 }
 assertDataVersion('characters', charactersParsed.data.dataVersion);
-assertIds('characters', charactersParsed.data.characters.map((c) => c.id));
+assertIds(
+  'characters',
+  charactersParsed.data.characters.map((c) => c.id),
+);
 
 const vehiclesParsed = VehiclesResponseSchema.safeParse(vehiclesData);
 if (!vehiclesParsed.success) {
   throw new Error(`Invalid vehicles data:\n${formatZodIssues(vehiclesParsed.error.issues)}`);
 }
 assertDataVersion('vehicles', vehiclesParsed.data.dataVersion);
-assertIds('vehicles', vehiclesParsed.data.vehicles.map((v) => v.id));
-assertIds('vehicle tags', vehiclesParsed.data.vehicles.map((v) => v.tag));
+assertIds(
+  'vehicles',
+  vehiclesParsed.data.vehicles.map((v) => v.id),
+);
+assertIds(
+  'vehicle tags',
+  vehiclesParsed.data.vehicles.map((v) => v.tag),
+);
 
 const tracksParsed = TracksResponseSchema.safeParse(tracksData);
 if (!tracksParsed.success) {
   throw new Error(`Invalid tracks data:\n${formatZodIssues(tracksParsed.error.issues)}`);
 }
 assertDataVersion('tracks', tracksParsed.data.dataVersion);
-assertIds('tracks', tracksParsed.data.tracks.map((t) => t.id));
+assertIds(
+  'tracks',
+  tracksParsed.data.tracks.map((t) => t.id),
+);
 
 export const dataVersion = DATA_VERSION;
 export const characters = charactersParsed.data.characters;

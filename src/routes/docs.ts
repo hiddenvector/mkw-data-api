@@ -70,7 +70,7 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
     Scalar({
       url: `${API_CONFIG.basePath}/openapi.json`,
       pageTitle: 'Mario Kart World Data API Documentation',
-    })
+    }),
   );
 
   return docsRouter;
