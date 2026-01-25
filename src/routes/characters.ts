@@ -8,10 +8,12 @@ import {
   type CharactersResponse,
 } from '../schemas';
 import { checkNotModified } from '../utils';
+import { DATA_VERSION } from '../data-version';
 
 import charactersData from '../../data/characters.json';
 
-const { dataVersion, characters } = charactersData as CharactersResponse;
+const { characters } = charactersData as CharactersResponse;
+const dataVersion = DATA_VERSION;
 
 const getCharactersRoute = createRoute({
   method: 'get',

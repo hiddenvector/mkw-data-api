@@ -2,14 +2,16 @@ import { createRoute } from '@hono/zod-openapi';
 import { createRouter } from '../app';
 import { API_CONFIG } from '../config';
 import { HealthResponseSchema, type CharactersResponse, type VehiclesResponse, type TracksResponse } from '../schemas';
+import { DATA_VERSION } from '../data-version';
 
 import charactersData from '../../data/characters.json';
 import vehiclesData from '../../data/vehicles.json';
 import tracksData from '../../data/tracks.json';
 
-const { dataVersion, characters } = charactersData as CharactersResponse;
+const { characters } = charactersData as CharactersResponse;
 const { vehicles } = vehiclesData as VehiclesResponse;
 const { tracks } = tracksData as TracksResponse;
+const dataVersion = DATA_VERSION;
 
 const healthRoute = createRoute({
   method: 'get',

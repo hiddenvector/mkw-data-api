@@ -10,12 +10,12 @@ import {
   type VehiclesResponse,
 } from '../schemas';
 import { checkNotModified } from '../utils';
+import { DATA_VERSION } from '../data-version';
 
 import vehiclesData from '../../data/vehicles.json';
-import charactersData from '../../data/characters.json';
 
-const { dataVersion } = charactersData;
 const { vehicles } = vehiclesData as VehiclesResponse;
+const dataVersion = DATA_VERSION;
 
 const getVehiclesRoute = createRoute({
   method: 'get',

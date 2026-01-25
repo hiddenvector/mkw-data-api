@@ -10,12 +10,12 @@ import {
   type TracksResponse,
 } from '../schemas';
 import { checkNotModified } from '../utils';
+import { DATA_VERSION } from '../data-version';
 
 import tracksData from '../../data/tracks.json';
-import charactersData from '../../data/characters.json';
 
-const { dataVersion } = charactersData;
 const { tracks } = tracksData as TracksResponse;
+const dataVersion = DATA_VERSION;
 
 const getTracksRoute = createRoute({
   method: 'get',
