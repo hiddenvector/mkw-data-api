@@ -18,7 +18,16 @@ Community-maintained REST API for character stats, vehicle data, and track infor
 
 - **Stats scale:** All stats are 0–20; higher is better.
 - **surfaceCoverage:** Raw surface breakdown including neutral/off-road.
-- **terrainCoverage:** Adjusted road/rough/water mix normalized to 100% for combo calculations.
+- **terrainCoverage:** Adjusted road/rough/water mix normalized to 100% (excludes neutral/off-road) for combo calculations.
+
+Example: pick a build that favors the terrain mix
+
+```text
+// Example scoring for a track using terrainCoverage
+score = (speed.road * terrainCoverage.road)
+      + (speed.rough * terrainCoverage.rough)
+      + (speed.water * terrainCoverage.water)
+```
 
 ## Quick Start
 

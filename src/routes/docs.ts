@@ -40,7 +40,7 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
 **How to use the stats:**
 - All stats are on a 0–20 scale; higher is better.
 - Use `surfaceCoverage` for raw surface breakdowns.
-- Use `terrainCoverage` for combo calculations (normalized road/rough/water mix).
+- Use `terrainCoverage` for combo calculations (normalized road/rough/water mix, excludes neutral/off-road).
 
 **Rate Limits:** Requests may be rate limited by edge rules and return HTTP 429.
 
