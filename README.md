@@ -10,7 +10,7 @@ Community-maintained REST API for character stats, vehicle data, and track infor
 
 - **50 playable characters** with terrain-specific stats (road, rough, water)
 - **40 vehicles** with stat tags for easy grouping
-- **30 tracks** with surface coverage percentages
+- **30 tracks** with raw surface coverage and adjusted terrain coverage
 - ETag/If-None-Match support for efficient caching
 - OpenAPI 3.1 spec with interactive documentation
 

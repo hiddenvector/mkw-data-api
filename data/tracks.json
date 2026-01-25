@@ -11,6 +11,11 @@
         "water": 0,
         "neutral": 34,
         "offRoad": 4
+      },
+      "terrainCoverage": {
+        "road": 76,
+        "rough": 24,
+        "water": 0
       }
     },
     {
@@ -23,6 +28,11 @@
         "water": 0,
         "neutral": 20,
         "offRoad": 2
+      },
+      "terrainCoverage": {
+        "road": 100,
+        "rough": 0,
+        "water": 0
       }
     },
     {
@@ -35,6 +45,11 @@
         "water": 0,
         "neutral": 62,
         "offRoad": 3
+      },
+      "terrainCoverage": {
+        "road": 100,
+        "rough": 0,
+        "water": 0
       }
     },
     {
@@ -47,6 +62,11 @@
         "water": 0,
         "neutral": 17,
         "offRoad": 4
+      },
+      "terrainCoverage": {
+        "road": 100,
+        "rough": 0,
+        "water": 0
       }
     },
     {
@@ -59,6 +79,11 @@
         "water": 2,
         "neutral": 4,
         "offRoad": 10
+      },
+      "terrainCoverage": {
+        "road": 83,
+        "rough": 15,
+        "water": 2
       }
     },
     {
@@ -71,6 +96,11 @@
         "water": 0,
         "neutral": 36,
         "offRoad": 2
+      },
+      "terrainCoverage": {
+        "road": 100,
+        "rough": 0,
+        "water": 0
       }
     },
     {
@@ -83,6 +113,11 @@
         "water": 0,
         "neutral": 38,
         "offRoad": 2
+      },
+      "terrainCoverage": {
+        "road": 60,
+        "rough": 40,
+        "water": 0
       }
     },
     {
@@ -95,6 +130,11 @@
         "water": 0,
         "neutral": 34,
         "offRoad": 2
+      },
+      "terrainCoverage": {
+        "road": 100,
+        "rough": 0,
+        "water": 0
       }
     },
     {
@@ -107,6 +147,11 @@
         "water": 0,
         "neutral": 20,
         "offRoad": 11
+      },
+      "terrainCoverage": {
+        "road": 62,
+        "rough": 38,
+        "water": 0
       }
     },
     {
@@ -119,6 +164,11 @@
         "water": 13,
         "neutral": 27,
         "offRoad": 4
+      },
+      "terrainCoverage": {
+        "road": 19,
+        "rough": 62,
+        "water": 19
       }
     },
     {
@@ -131,6 +181,11 @@
         "water": 0,
         "neutral": 24,
         "offRoad": 3
+      },
+      "terrainCoverage": {
+        "road": 100,
+        "rough": 0,
+        "water": 0
       }
     },
     {
@@ -143,6 +198,11 @@
         "water": 26,
         "neutral": 24,
         "offRoad": 4
+      },
+      "terrainCoverage": {
+        "road": 64,
+        "rough": 0,
+        "water": 36
       }
     },
     {
@@ -155,6 +215,11 @@
         "water": 13,
         "neutral": 0,
         "offRoad": 6
+      },
+      "terrainCoverage": {
+        "road": 0,
+        "rough": 86,
+        "water": 14
       }
     },
     {
@@ -167,6 +232,11 @@
         "water": 22,
         "neutral": 22,
         "offRoad": 4
+      },
+      "terrainCoverage": {
+        "road": 37.62,
+        "rough": 32.67,
+        "water": 29.7
       }
     },
     {
@@ -179,6 +249,11 @@
         "water": 0,
         "neutral": 6,
         "offRoad": 2
+      },
+      "terrainCoverage": {
+        "road": 100,
+        "rough": 0,
+        "water": 0
       }
     },
     {
@@ -191,6 +266,11 @@
         "water": 23,
         "neutral": 10,
         "offRoad": 2
+      },
+      "terrainCoverage": {
+        "road": 58,
+        "rough": 16,
+        "water": 26
       }
     },
     {
@@ -203,6 +283,11 @@
         "water": 42,
         "neutral": 15,
         "offRoad": 1
+      },
+      "terrainCoverage": {
+        "road": 50,
+        "rough": 0,
+        "water": 50
       }
     },
     {
@@ -215,6 +300,11 @@
         "water": 0,
         "neutral": 16,
         "offRoad": 4
+      },
+      "terrainCoverage": {
+        "road": 30,
+        "rough": 70,
+        "water": 0
       }
     },
     {
@@ -227,6 +317,11 @@
         "water": 0,
         "neutral": 27,
         "offRoad": 7
+      },
+      "terrainCoverage": {
+        "road": 100,
+        "rough": 0,
+        "water": 0
       }
     },
     {
@@ -239,6 +334,11 @@
         "water": 40,
         "neutral": 0,
         "offRoad": 9
+      },
+      "terrainCoverage": {
+        "road": 56,
+        "rough": 0,
+        "water": 44
       }
     },
     {
@@ -251,6 +351,11 @@
         "water": 14,
         "neutral": 1,
         "offRoad": 2
+      },
+      "terrainCoverage": {
+        "road": 66,
+        "rough": 20,
+        "water": 14
       }
     },
     {
@@ -263,6 +368,11 @@
         "water": 0,
         "neutral": 17,
         "offRoad": 3
+      },
+      "terrainCoverage": {
+        "road": 100,
+        "rough": 0,
+        "water": 0
       }
     },
     {
@@ -275,6 +385,11 @@
         "water": 2,
         "neutral": 23,
         "offRoad": 0
+      },
+      "terrainCoverage": {
+        "road": 97,
+        "rough": 0,
+        "water": 3
       }
     },
     {
@@ -287,6 +402,11 @@
         "water": 0,
         "neutral": 0,
         "offRoad": 7
+      },
+      "terrainCoverage": {
+        "road": 5,
+        "rough": 95,
+        "water": 0
       }
     },
     {
@@ -299,6 +419,11 @@
         "water": 10,
         "neutral": 0,
         "offRoad": 0
+      },
+      "terrainCoverage": {
+        "road": 39,
+        "rough": 51,
+        "water": 10
       }
     },
     {
@@ -311,6 +436,11 @@
         "water": 0,
         "neutral": 12,
         "offRoad": 7
+      },
+      "terrainCoverage": {
+        "road": 85,
+        "rough": 15,
+        "water": 0
       }
     },
     {
@@ -323,6 +453,11 @@
         "water": 5,
         "neutral": 29,
         "offRoad": 0
+      },
+      "terrainCoverage": {
+        "road": 93,
+        "rough": 0,
+        "water": 7
       }
     },
     {
@@ -335,6 +470,11 @@
         "water": 0,
         "neutral": 50,
         "offRoad": 2
+      },
+      "terrainCoverage": {
+        "road": 58,
+        "rough": 42,
+        "water": 0
       }
     },
     {
@@ -347,6 +487,11 @@
         "water": 0,
         "neutral": 0,
         "offRoad": 10
+      },
+      "terrainCoverage": {
+        "road": 100,
+        "rough": 0,
+        "water": 0
       }
     },
     {
@@ -359,6 +504,11 @@
         "water": 7,
         "neutral": 18,
         "offRoad": 4
+      },
+      "terrainCoverage": {
+        "road": 91,
+        "rough": 0,
+        "water": 9
       }
     }
   ]

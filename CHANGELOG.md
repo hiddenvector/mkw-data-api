@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - Add Prettier configuration and formatting scripts.
 - Fix cup normalization logic for `/tracks/cup/{cup}`.
 - Allow `X-Request-ID` through CORS for client tracing.
+- Add `terrainCoverage` (adjusted road/rough/water coverage) to track responses.
 
 ## [2026-01-23]
 

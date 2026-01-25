@@ -195,6 +195,23 @@ export const SurfaceCoverageSchema = z
   .openapi('SurfaceCoverage');
 
 /**
+ * Adjusted terrain coverage (road/rough/water only), normalized to 100%.
+ */
+export const TerrainCoverageSchema = z
+  .object({
+    road: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
+      description: 'Adjusted percentage of track on paved surfaces',
+    }),
+    rough: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
+      description: 'Adjusted percentage of track on rough terrain',
+    }),
+    water: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
+      description: 'Adjusted percentage of track on water',
+    }),
+  })
+  .openapi('TerrainCoverage');
+
+/**
  * A race track with surface coverage data.
  * Example based on Mario Bros. Circuit.
  */
@@ -206,6 +223,10 @@ export const TrackSchema = z
     surfaceCoverage: SurfaceCoverageSchema.openapi({
       description: 'Breakdown of surface types on this track',
     }),
+    terrainCoverage: TerrainCoverageSchema.openapi({
+      description:
+        'Adjusted terrain-only coverage (road/rough/water), normalized to 100% for combo calculations',
+    }),
   })
   .openapi('Track', {
     example: {
@@ -213,6 +234,7 @@ export const TrackSchema = z
       name: 'Mario Bros. Circuit',
       cup: 'Mushroom Cup',
       surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
+      terrainCoverage: { road: 76, rough: 24, water: 0 },
     },
   });
 
@@ -384,18 +406,21 @@ export const TracksResponseSchema = z
           name: 'Mario Bros. Circuit',
           cup: 'Mushroom Cup',
           surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
+          terrainCoverage: { road: 76, rough: 24, water: 0 },
         },
         {
           id: 'crown-city',
           name: 'Crown City',
           cup: 'Mushroom Cup',
           surfaceCoverage: { road: 78, rough: 0, water: 0, neutral: 20, offRoad: 2 },
+          terrainCoverage: { road: 100, rough: 0, water: 0 },
         },
         {
           id: 'whistlestop-summit',
           name: 'Whistlestop Summit',
           cup: 'Mushroom Cup',
           surfaceCoverage: { road: 35, rough: 0, water: 0, neutral: 62, offRoad: 3 },
+          terrainCoverage: { road: 100, rough: 0, water: 0 },
         },
       ],
     },
@@ -421,24 +446,28 @@ export const TracksByCupResponseSchema = z
           name: 'Mario Bros. Circuit',
           cup: 'Mushroom Cup',
           surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
+          terrainCoverage: { road: 76, rough: 24, water: 0 },
         },
         {
           id: 'crown-city',
           name: 'Crown City',
           cup: 'Mushroom Cup',
           surfaceCoverage: { road: 78, rough: 0, water: 0, neutral: 20, offRoad: 2 },
+          terrainCoverage: { road: 100, rough: 0, water: 0 },
         },
         {
           id: 'whistlestop-summit',
           name: 'Whistlestop Summit',
           cup: 'Mushroom Cup',
           surfaceCoverage: { road: 35, rough: 0, water: 0, neutral: 62, offRoad: 3 },
+          terrainCoverage: { road: 100, rough: 0, water: 0 },
         },
         {
           id: 'dk-spaceport',
           name: 'DK Spaceport',
           cup: 'Mushroom Cup',
           surfaceCoverage: { road: 79, rough: 0, water: 0, neutral: 17, offRoad: 4 },
+          terrainCoverage: { road: 100, rough: 0, water: 0 },
         },
       ],
     },
@@ -489,6 +518,7 @@ export type BaseStats = z.infer<typeof BaseStatsSchema>;
 export type Character = z.infer<typeof CharacterSchema>;
 export type Vehicle = z.infer<typeof VehicleSchema>;
 export type SurfaceCoverage = z.infer<typeof SurfaceCoverageSchema>;
+export type TerrainCoverage = z.infer<typeof TerrainCoverageSchema>;
 export type Track = z.infer<typeof TrackSchema>;
 export type CharactersResponse = z.infer<typeof CharactersResponseSchema>;
 export type VehiclesResponse = z.infer<typeof VehiclesResponseSchema>;

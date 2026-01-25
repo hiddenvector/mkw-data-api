@@ -50,6 +50,7 @@ vi.mock('../data/tracks.json', () => ({
         name: 'Test Track',
         cup: 'Test Cup',
         surfaceCoverage: { road: 20, rough: 20, water: 20, neutral: 20, offRoad: 20 },
+        terrainCoverage: { road: 50, rough: 30, water: 20 },
       },
     ],
   },
