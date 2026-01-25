@@ -109,7 +109,7 @@ export function notFound(
   c: Context,
   entityType: string,
   id: string
-): Response {
+) {
   const requestId = c.get('requestId') as string | undefined;
   const error = createError(
     ErrorCode.NOT_FOUND,
@@ -123,7 +123,7 @@ export function notFound(
 /**
  * Returns a 400 Bad Request error for invalid ID format.
  */
-export function invalidId(c: Context, id: string): Response {
+export function invalidId(c: Context, id: string) {
   const requestId = c.get('requestId') as string | undefined;
   const error = createError(
     ErrorCode.INVALID_ID,
@@ -137,7 +137,7 @@ export function invalidId(c: Context, id: string): Response {
 /**
  * Returns a 400 Bad Request error for invalid tag format.
  */
-export function invalidTag(c: Context, tag: string): Response {
+export function invalidTag(c: Context, tag: string) {
   const requestId = c.get('requestId') as string | undefined;
   const error = createError(
     ErrorCode.INVALID_TAG,
@@ -151,7 +151,7 @@ export function invalidTag(c: Context, tag: string): Response {
 /**
  * Returns a 400 Bad Request error for invalid cup format.
  */
-export function invalidCup(c: Context, cup: string): Response {
+export function invalidCup(c: Context, cup: string) {
   const requestId = c.get('requestId') as string | undefined;
   const error = createError(
     ErrorCode.INVALID_CUP,
@@ -165,7 +165,7 @@ export function invalidCup(c: Context, cup: string): Response {
 /**
  * Returns a 400 Bad Request error for validation failures.
  */
-export function validationError(c: Context, message: string): Response {
+export function validationError(c: Context, message: string) {
   const requestId = c.get('requestId') as string | undefined;
   const error = createError(ErrorCode.VALIDATION_ERROR, message, 400, requestId);
   return c.json(error, 400);

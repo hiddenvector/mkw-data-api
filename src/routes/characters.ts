@@ -5,15 +5,9 @@ import {
   CharacterIdParamSchema,
   CharactersResponseSchema,
   CharacterSchema,
-  type CharactersResponse,
 } from '../schemas';
 import { checkNotModified } from '../utils';
-import { DATA_VERSION } from '../data-version';
-
-import charactersData from '../../data/characters.json';
-
-const { characters } = charactersData as CharactersResponse;
-const dataVersion = DATA_VERSION;
+import { characters, dataVersion } from '../data';
 
 const getCharactersRoute = createRoute({
   method: 'get',
@@ -68,7 +62,6 @@ charactersRouter.openapi(getCharactersRoute, (c) => {
   return c.json({ dataVersion, characters });
 });
 
-// @ts-expect-error - OpenAPIHono strict typing doesn't handle error response returns well
 charactersRouter.openapi(getCharacterByIdRoute, (c) => {
   const { id } = c.req.valid('param');
   const character = characters.find((char) => char.id === id);
@@ -77,7 +70,7 @@ charactersRouter.openapi(getCharacterByIdRoute, (c) => {
     return notFound(c, 'Character', id);
   }
 
-  return c.json(character);
+  return c.json(character, 200);
 });
 
 export default charactersRouter;

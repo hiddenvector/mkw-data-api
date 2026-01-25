@@ -59,7 +59,7 @@ app.use(
   cors({
     origin: '*',
     allowMethods: ['GET', 'OPTIONS'],
-    allowHeaders: ['If-None-Match'],
+    allowHeaders: ['If-None-Match', 'X-Request-ID'],
     exposeHeaders: ['ETag', 'X-Request-ID', 'X-Response-Time', 'API-Version'],
     maxAge: 86400,
   })

@@ -7,15 +7,9 @@ import {
   TracksResponseSchema,
   TrackSchema,
   TracksByCupResponseSchema,
-  type TracksResponse,
 } from '../schemas';
 import { checkNotModified } from '../utils';
-import { DATA_VERSION } from '../data-version';
-
-import tracksData from '../../data/tracks.json';
-
-const { tracks } = tracksData as TracksResponse;
-const dataVersion = DATA_VERSION;
+import { tracks, dataVersion } from '../data';
 
 const getTracksRoute = createRoute({
   method: 'get',
@@ -82,6 +76,13 @@ const getTracksByCupRoute = createRoute({
 
 const tracksRouter = createRouter();
 
+const normalizeCup = (value: string) =>
+  value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
 tracksRouter.openapi(getTracksRoute, (c) => {
   const currentEtag = `"${dataVersion}"`;
   c.header('ETag', currentEtag);
@@ -93,7 +94,6 @@ tracksRouter.openapi(getTracksRoute, (c) => {
   return c.json({ dataVersion, tracks });
 });
 
-// @ts-expect-error - OpenAPIHono strict typing doesn't handle error response returns well
 tracksRouter.openapi(getTrackByIdRoute, (c) => {
   const { id } = c.req.valid('param');
   const track = tracks.find((t) => t.id === id);
@@ -102,16 +102,14 @@ tracksRouter.openapi(getTrackByIdRoute, (c) => {
     return notFound(c, 'Track', id);
   }
 
-  return c.json(track);
+  return c.json(track, 200);
 });
 
-// @ts-expect-error - OpenAPIHono strict typing doesn't handle error response returns well
 tracksRouter.openapi(getTracksByCupRoute, (c) => {
   const { cup } = c.req.valid('param');
 
-  // Normalize cup name for matching (slug to display format)
-  const normalizedCup = cup.replace(/-/g, ' ');
-  const byCup = tracks.filter((t) => t.cup.toLowerCase() === normalizedCup);
+  const normalizedCup = normalizeCup(cup);
+  const byCup = tracks.filter((t) => normalizeCup(t.cup) === normalizedCup);
 
   if (byCup.length === 0) {
     return notFound(c, 'Tracks in cup', cup);
@@ -121,7 +119,7 @@ tracksRouter.openapi(getTracksByCupRoute, (c) => {
     cup: byCup[0].cup,
     dataVersion,
     tracks: byCup,
-  });
+  }, 200);
 });
 
 export default tracksRouter;

@@ -116,6 +116,7 @@ const CUP_MAPPING: Record<string, string> = {
 function toId(name: string): string {
   return name
     .toLowerCase()
+    .replace(/\?/g, ' question ')
     .replace(/\s+/g, '-')        // spaces → hyphens
     .replace(/\./g, '')          // remove periods
     .replace(/'/g, '')           // remove apostrophes

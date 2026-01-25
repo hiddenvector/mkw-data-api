@@ -7,15 +7,9 @@ import {
   VehiclesResponseSchema,
   VehicleSchema,
   VehiclesByTagResponseSchema,
-  type VehiclesResponse,
 } from '../schemas';
 import { checkNotModified } from '../utils';
-import { DATA_VERSION } from '../data-version';
-
-import vehiclesData from '../../data/vehicles.json';
-
-const { vehicles } = vehiclesData as VehiclesResponse;
-const dataVersion = DATA_VERSION;
+import { vehicles, dataVersion } from '../data';
 
 const getVehiclesRoute = createRoute({
   method: 'get',
@@ -93,7 +87,6 @@ vehiclesRouter.openapi(getVehiclesRoute, (c) => {
   return c.json({ dataVersion, vehicles });
 });
 
-// @ts-expect-error - OpenAPIHono strict typing doesn't handle error response returns well
 vehiclesRouter.openapi(getVehicleByIdRoute, (c) => {
   const { id } = c.req.valid('param');
   const vehicle = vehicles.find((veh) => veh.id === id);
@@ -102,10 +95,9 @@ vehiclesRouter.openapi(getVehicleByIdRoute, (c) => {
     return notFound(c, 'Vehicle', id);
   }
 
-  return c.json(vehicle);
+  return c.json(vehicle, 200);
 });
 
-// @ts-expect-error - OpenAPIHono strict typing doesn't handle error response returns well
 vehiclesRouter.openapi(getVehiclesByTagRoute, (c) => {
   const { tag } = c.req.valid('param');
   const byTag = vehicles.filter((veh) => veh.tag === tag);
@@ -118,7 +110,7 @@ vehiclesRouter.openapi(getVehiclesByTagRoute, (c) => {
     tag,
     dataVersion,
     vehicles: byTag,
-  });
+  }, 200);
 });
 
 export default vehiclesRouter;
