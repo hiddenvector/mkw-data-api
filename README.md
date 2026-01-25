@@ -28,6 +28,37 @@ score = (speed.road * terrainCoverage.road)
       + (speed.water * terrainCoverage.water)
 ```
 
+Worked example (Mario Bros. Circuit + Wario)
+
+```text
+terrainCoverage: { road: 76, rough: 24, water: 0 }
+Wario speed:     { road: 6,  rough: 5,  water: 5 }
+
+score = 6*76 + 5*24 + 5*0 = 576
+```
+
+To normalize, divide by 100:
+
+```text
+normalizedScore = 5.76
+```
+
+## Data Contract
+
+- **dataVersion:** changes when Statpedia data changes; use it to refresh cached results.
+- **terrainCoverage:** derived from the adjusted coverage columns in the Statpedia sheet and normalized to 100% (road/rough/water only).
+- **Name standardization:** a small set of names are normalized to US variants during parsing (see `scripts/parse-statpedia.ts`).
+
+## Stability
+
+- Field meanings are stable within `/v1`.
+- New fields and endpoints are additive; breaking changes require `/v2`.
+
+## Data Provenance
+
+- Source: Mario Kart World Statpedia (linked below).
+- Updates are synced when the sheet changes; `dataVersion` reflects the import date.
+
 ## Quick Start
 
 ### Fetch and render a list
@@ -96,8 +127,6 @@ curl -I https://hiddenvector.studio/mkw/api/v1/characters
 curl -I -H 'If-None-Match: "2026-01-25"' https://hiddenvector.studio/mkw/api/v1/characters
 # HTTP/2 304
 ```
-
-`dataVersion` changes when Statpedia data changes. Use it to refresh cached results.
 
 ## Common Pitfalls
 

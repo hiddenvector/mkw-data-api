@@ -39,6 +39,13 @@ Community-maintained data API for Mario Kart World stats, vehicles, and tracks.
 - Use `terrainCoverage` for combo calculations (normalized road/rough/water mix, excludes neutral/off-road).
 - IDs are slugs; fetch list endpoints to discover valid IDs.
 
+**Data contract:**
+- `dataVersion` changes when Statpedia data changes.
+- `terrainCoverage` is derived from the adjusted coverage columns and normalized to 100%.
+- A small set of character names are normalized to US variants during parsing.
+
+**Stability:** `/v1` is stable; breaking changes go to `/v2`.
+
 **Rate Limits:** Requests may be rate limited by edge rules and return HTTP 429.
 
 **Legal:** This is an unofficial, fan-created project. Not affiliated with Nintendo. Mario Kart is a registered trademark of Nintendo Co., Ltd.
