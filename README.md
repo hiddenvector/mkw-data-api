@@ -9,27 +9,42 @@ Community-maintained REST API for character stats, vehicle data, and track infor
 ## Features
 
 - **50 playable characters** with terrain-specific stats (road, rough, water)
-- **40 vehicles** with stat tags for easy grouping
+- **40 vehicles** with stat tags for identical builds
 - **30 tracks** with raw surface coverage and adjusted terrain coverage
-- ETag/If-None-Match support for efficient caching
-- OpenAPI 3.1 spec with interactive documentation
+- ETag-based caching and OpenAPI 3.1 docs
 
 ## Understanding the Data
 
 - **Stats scale:** All stats are 0–20; higher is better.
 - **surfaceCoverage:** Raw surface breakdown including neutral/off-road.
-- **terrainCoverage:** Adjusted road/rough/water mix normalized to 100% (excludes neutral/off-road) for combo calculations.
+- **terrainCoverage:** Adjusted road/rough/water mix normalized to 100% (excludes neutral/off-road).
+- **Vehicle tags:** Same `tag` means identical stats; use `/vehicles/tag/{tag}`.
 
-Example: pick a build that favors the terrain mix
+Example: score a build with terrainCoverage
 
 ```text
-// Example scoring for a track using terrainCoverage
 score = (speed.road * terrainCoverage.road)
       + (speed.rough * terrainCoverage.rough)
       + (speed.water * terrainCoverage.water)
 ```
 
 ## Quick Start
+
+### Fetch and render a list
+
+```ts
+// Minimal example: fetch characters and print the first 3
+const res = await fetch('https://hiddenvector.studio/mkw/api/v1/characters');
+const data = await res.json();
+
+console.log('Data version:', data.dataVersion);
+console.log(data.characters.slice(0, 3));
+```
+
+### Use IDs correctly
+
+- IDs are slugs. Fetch list endpoints and use `id`.
+- Example: `/characters/dry-bones`, `/vehicles/mach-rocket`, `/tracks/mario-bros-circuit`.
 
 ```bash
 # Get all characters
@@ -69,7 +84,8 @@ curl https://hiddenvector.studio/mkw/api/v1/tracks/cup/mushroom-cup
 
 ## Caching
 
-Collection endpoints (`/characters`, `/vehicles`, `/tracks`) return an `ETag` header based on the data version. Use `If-None-Match` to get a `304 Not Modified` response when data hasn't changed:
+Collection endpoints (`/characters`, `/vehicles`, `/tracks`) return an `ETag` based on `dataVersion`.
+Use `If-None-Match` to get `304 Not Modified` when nothing changed.
 
 ```bash
 # First request - get the ETag
@@ -81,9 +97,19 @@ curl -I -H 'If-None-Match: "2026-01-25"' https://hiddenvector.studio/mkw/api/v1/
 # HTTP/2 304
 ```
 
-## Rate Limits
+`dataVersion` changes when Statpedia data changes. Use it to refresh cached results.
 
-Requests may be rate limited by Cloudflare edge rules and return HTTP 429.
+## Common Pitfalls
+
+- **304 responses:** `If-None-Match` may return `304` with an empty body—use cached data.
+- **429 rate limits:** Cloudflare may return `429`; retry with backoff.
+
+```ts
+// Handling 304 in JS
+const res = await fetch(url, { headers: { 'If-None-Match': etag } });
+if (res.status === 304) return cachedData;
+const data = await res.json();
+```
 
 ## Data Source
 
@@ -112,27 +138,14 @@ npm run deploy
 
 Local API will be available at `http://localhost:8787/mkw/api/v1`.
 
-## Versioning & Releases (Pre-1.0 Policy)
+## Versioning & Releases
 
-The API is not yet at 1.0.0. We still use semantic versioning internally, but treat all changes as potentially unstable until the public 1.0 release.
-
-**Current approach:**
-
-- `package.json` version tracks the **service version** (runtime/code changes).
-- `dataVersion` tracks **Statpedia data updates** and does not necessarily imply a service version bump.
-- `/v1` is the **API major** and will remain until a breaking change requires `/v2`.
-
-**Rules:**
-
-- **PATCH**: internal fixes, performance, docs, or data-only updates.
-- **MINOR**: new endpoints or backward-compatible schema additions.
-- **MAJOR**: breaking changes and a new base path (`/v2`, `/v3`, ...).
-
-**Releases:**
-
-- Tag releases as `vX.Y.Z` matching `package.json`.
-- Publish GitHub releases from tags and summarize changes from `CHANGELOG.md`.
-- See `RELEASING.md` for the release checklist.
+- `package.json` version tracks the service release.
+- `dataVersion` tracks Statpedia data changes.
+- `/v1` is the API major; breaking changes require `/v2`.
+- Releases use semantic versioning: PATCH (fixes/data), MINOR (additive), MAJOR (breaking).
+- Tag releases as `vX.Y.Z` and publish release notes from `CHANGELOG.md`.
+- See `RELEASING.md` for the checklist.
 
 ## Roadmap
 

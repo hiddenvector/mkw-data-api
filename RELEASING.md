@@ -1,10 +1,10 @@
 # Releasing
 
-This project is pre-1.0, but we still follow a structured release process to prepare for 1.0.
+Release checklist for production tags.
 
 ## Release checklist
 
-1. Update data version
+1. Update data (if needed)
 
     - If data changed, update `src/data-version.ts` and `data/*.json` via `npm run generate-data`.
 
