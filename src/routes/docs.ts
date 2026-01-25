@@ -27,12 +27,11 @@ export function createDocsRoutes(app: OpenAPIHono<any, any, any>) {
         title: 'Mario Kart World Data API',
         version: API_CONFIG.serviceVersion,
         description: `
-Free, community-maintained data API for Mario Kart World stats, combos, and track information.
+Community-maintained data API for Mario Kart World stats, vehicles, and tracks.
 
 **Data Source:** [Mario Kart World Statpedia](https://docs.google.com/spreadsheets/d/1EQd2XYGlB3EFFNE-35hFLaBzJo4cipU9DZT4MRSjBlc/edit)
 
-**Features:**
-- Terrain stats (road/rough/water), track coverage, vehicle tag groupings, and ETag caching.
+**Features:** terrain stats, track coverage, vehicle tag groupings, ETag caching.
 
 **How to use the stats:**
 - All stats are on a 0–20 scale; higher is better.
