@@ -1,11 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
-import app from './index';
+import app, { createApp } from './index';
 
 const BASE = '/mkw/api/v1';
 
-app.get('/boom', () => {
-  throw new Error('boom');
-});
 
 // Helper to make requests
 async function request(path: string, options?: RequestInit) {
@@ -363,7 +360,11 @@ describe('404 handler', () => {
 describe('Global error handler', () => {
   it('returns structured 500 response', async () => {
     const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
-    const res = await request('/boom');
+    const testApp = createApp();
+    testApp.get('/boom', () => {
+      throw new Error('boom');
+    });
+    const res = await testApp.request(`${BASE}/boom`);
     expect(res.status).toBe(500);
     const body = asRecord(await res.json());
     const error = asRecord(body.error);

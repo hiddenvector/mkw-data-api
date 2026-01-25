@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { normalizeDisplayName, parsePercent, parseSurfaceCoverage, parseTerrainCoverage, toId } from '../scripts/parse-statpedia';
+import {
+  normalizeDisplayName,
+  parsePercent,
+  parseSurfaceCoverage,
+  parseTerrainCoverage,
+  toId,
+} from './lib/parser';
 
 describe('parse-statpedia helpers', () => {
   it('normalizes US display names', () => {

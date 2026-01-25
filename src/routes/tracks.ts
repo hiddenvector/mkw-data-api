@@ -58,7 +58,7 @@ const getTrackByIdRoute = createRoute({
 
 const tracksRouter = createRouter();
 
-const normalizeCup = (value: string) =>
+const normalizeStoredCup = (value: string) =>
   value
     .trim()
     .toLowerCase()
@@ -75,8 +75,7 @@ tracksRouter.openapi(getTracksRoute, (c) => {
   }
 
   if (cup) {
-    const normalizedCup = normalizeCup(cup);
-    const byCup = tracks.filter((t) => normalizeCup(t.cup) === normalizedCup);
+    const byCup = tracks.filter((t) => normalizeStoredCup(t.cup) === cup);
     return c.json({ dataVersion, tracks: byCup }, 200);
   }
 

@@ -10,7 +10,7 @@ import {
 } from './errors';
 
 const makeApp = () => {
-  const app = new Hono();
+  const app = new Hono<{ Variables: { requestId: string } }>();
   app.use('*', async (c, next) => {
     c.set('requestId', 'test-request');
     await next();
