@@ -145,15 +145,17 @@ function normalizeDisplayName(name: string): string {
   }
 }
 
+type CsvRow = string[];
+
 /**
  * Safely parse an integer from a CSV cell with detailed error context
  * @throws {Error} If value is not a valid integer
  */
 function safeParseInt(
-  value: any,
-  context?: { row?: number; col?: number; rowData?: any[] },
+  value: string | undefined,
+  context?: { row?: number; col?: number; rowData?: CsvRow },
 ): number {
-  const n = parseInt(value, 10);
+  const n = parseInt(value ?? '', 10);
   if (isNaN(n)) {
     let msg = `Invalid number in CSV: '${value}'`;
     if (context?.row !== undefined && context?.col !== undefined) {
@@ -172,7 +174,7 @@ function safeParseInt(
  * @example parsePercent("47%") → 47
  * @example parsePercent("47,5%") → 47.5 (handles European decimals)
  */
-function parsePercent(value: string): number {
+function parsePercent(value: string | undefined): number {
   if (!value) return 0;
   return parseFloat(value.replace('%', '').replace(',', '.'));
 }
@@ -180,7 +182,7 @@ function parsePercent(value: string): number {
 /**
  * Check if a CSV row contains stat data (non-empty numeric value at startCol)
  */
-function hasStats(row: any[], startCol: number): boolean {
+function hasStats(row: CsvRow, startCol: number): boolean {
   return (
     row &&
     row[startCol] !== undefined &&
@@ -192,16 +194,15 @@ function hasStats(row: any[], startCol: number): boolean {
 /**
  * Check if a string is a header row identifier
  */
-function isHeaderRow(value: any, headerText: string): boolean {
-  return (
-    value && typeof value === 'string' && value.trim().toLowerCase() === headerText.toLowerCase()
-  );
+function isHeaderRow(value: string | undefined, headerText: string): boolean {
+  if (!value) return false;
+  return value.trim().toLowerCase() === headerText.toLowerCase();
 }
 
 /**
  * Extract names from a CSV row (columns 3-6)
  */
-function extractNames(row: any[]): string[] {
+function extractNames(row: CsvRow): string[] {
   return [row[COL.NAME_1], row[COL.NAME_2], row[COL.NAME_3], row[COL.NAME_4]]
     .filter((name): name is string => Boolean(name && name.trim()))
     .map((name) => name.trim());
@@ -214,7 +215,7 @@ function extractNames(row: any[]): string[] {
 /**
  * Parse BaseStats from a CSV row (shared by characters and vehicles)
  */
-function parseStats(row: any[], rowIndex: number): BaseStats {
+function parseStats(row: CsvRow, rowIndex: number): BaseStats {
   const ctx = (col: number) => ({ row: rowIndex, col, rowData: row });
 
   return {
@@ -238,7 +239,7 @@ function parseStats(row: any[], rowIndex: number): BaseStats {
 /**
  * Parse surface coverage from a CSV row
  */
-function parseSurfaceCoverage(row: any[]): SurfaceCoverage {
+function parseSurfaceCoverage(row: CsvRow): SurfaceCoverage {
   return {
     road: parsePercent(row[COL.COVERAGE_ROAD]),
     rough: parsePercent(row[COL.COVERAGE_ROUGH]),
@@ -251,7 +252,7 @@ function parseSurfaceCoverage(row: any[]): SurfaceCoverage {
 /**
  * Parse adjusted terrain coverage (road/rough/water only), normalized to 100%.
  */
-function parseTerrainCoverage(row: any[]) {
+function parseTerrainCoverage(row: CsvRow) {
   const road = parsePercent(row[COL.ADJ_COVERAGE_ROAD]);
   const rough = parsePercent(row[COL.ADJ_COVERAGE_ROUGH]);
   const water = parsePercent(row[COL.ADJ_COVERAGE_WATER]);
