@@ -37,6 +37,8 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
 - Vehicle grouping by stat tags
 - Versioned data with ETags for efficient caching
 
+**Rate Limits:** Requests may be rate limited by edge rules and return HTTP 429.
+
 **Legal:** This is an unofficial, fan-created project. Not affiliated with Nintendo. Mario Kart is a registered trademark of Nintendo Co., Ltd.
         `.trim(),
         contact: {
@@ -50,10 +52,18 @@ Free, community-maintained data API for Mario Kart World stats, combos, and trac
       },
       servers: [
         {
-          url: 'https://hiddenvector.studio',
+          url: `https://hiddenvector.studio${API_CONFIG.basePath}`,
           description: 'Production',
         },
+        {
+          url: `http://localhost:8787${API_CONFIG.basePath}`,
+          description: 'Local development',
+        },
       ],
+      externalDocs: {
+        description: 'Interactive API documentation',
+        url: `https://hiddenvector.studio${API_CONFIG.basePath}/docs`,
+      },
       tags: [
         { name: 'Health', description: 'API health and status' },
         { name: 'Characters', description: 'Playable characters and their stats' },

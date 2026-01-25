@@ -59,12 +59,16 @@ Collection endpoints (`/characters`, `/vehicles`, `/tracks`) return an `ETag` he
 ```bash
 # First request - get the ETag
 curl -I https://hiddenvector.studio/mkw/api/v1/characters
-# ETag: "2026-01-23"
+# ETag: "2026-01-25"
 
 # Subsequent request - use If-None-Match
-curl -I -H 'If-None-Match: "2026-01-23"' https://hiddenvector.studio/mkw/api/v1/characters
+curl -I -H 'If-None-Match: "2026-01-25"' https://hiddenvector.studio/mkw/api/v1/characters
 # HTTP/2 304
 ```
+
+## Rate Limits
+
+Requests may be rate limited by Cloudflare edge rules and return HTTP 429.
 
 ## Data Source
 
@@ -92,6 +96,28 @@ npm run deploy
 ```
 
 Local API will be available at `http://localhost:8787/mkw/api/v1`.
+
+## Versioning & Releases (Pre-1.0 Policy)
+
+The API is not yet at 1.0.0. We still use semantic versioning internally, but treat all changes as potentially unstable until the public 1.0 release.
+
+**Current approach:**
+
+- `package.json` version tracks the **service version** (runtime/code changes).
+- `dataVersion` tracks **Statpedia data updates** and does not necessarily imply a service version bump.
+- `/v1` is the **API major** and will remain until a breaking change requires `/v2`.
+
+**Rules:**
+
+- **PATCH**: internal fixes, performance, docs, or data-only updates.
+- **MINOR**: new endpoints or backward-compatible schema additions.
+- **MAJOR**: breaking changes and a new base path (`/v2`, `/v3`, ...).
+
+**Releases:**
+
+- Tag releases as `vX.Y.Z` matching `package.json`.
+- Publish GitHub releases from tags and summarize changes from `CHANGELOG.md`.
+- See `RELEASING.md` for the release checklist.
 
 ## Roadmap
 
