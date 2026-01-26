@@ -6,60 +6,6 @@ Community-maintained REST API for character stats, vehicle data, and track infor
 
 **Documentation:** [Interactive API Docs](https://hiddenvector.studio/mkw/api/v1/docs)
 
-## Features
-
-- **50 playable characters** with terrain-specific stats (road, rough, water)
-- **40 vehicles** with stat tags for identical builds
-- **30 tracks** with raw surface coverage and adjusted terrain coverage
-- ETag-based caching and OpenAPI 3.1 docs
-
-## Understanding the Data
-
-- **Stats scale:** All stats are 0–20; higher is better.
-- **surfaceCoverage:** Raw surface breakdown including neutral/off-road.
-- **terrainCoverage:** Adjusted road/rough/water mix normalized to 100% (excludes neutral/off-road).
-- **Vehicle tags:** Same `tag` means identical stats; use `/vehicles?tag={tag}`.
-
-Example: score a build with terrainCoverage
-
-```text
-score = (speed.road * terrainCoverage.road)
-      + (speed.rough * terrainCoverage.rough)
-      + (speed.water * terrainCoverage.water)
-```
-
-Worked example (Mario Bros. Circuit + Wario)
-
-```text
-terrainCoverage: { road: 76, rough: 24, water: 0 }
-Wario speed:     { road: 6,  rough: 5,  water: 5 }
-
-score = 6*76 + 5*24 + 5*0 = 576
-```
-
-To normalize, divide by 100:
-
-```text
-normalizedScore = 5.76
-```
-
-## Data Contract
-
-- **dataVersion:** changes when Statpedia data changes; use it to refresh cached results.
-- **terrainCoverage:** derived from the adjusted coverage columns in the Statpedia sheet and normalized to 100% (road/rough/water only).
-- **Name standardization:** a small set of names are normalized to US variants during parsing (see `scripts/parse-statpedia.ts`).
-- **Filters:** `?tag=` and `?cup=` return an empty list when there are no matches.
-
-## Stability
-
-- Field meanings are stable within `/v1`.
-- New fields and endpoints are additive; breaking changes require `/v2`.
-
-## Data Provenance
-
-- Source: Mario Kart World Statpedia (linked below).
-- Updates are synced when the sheet changes; `dataVersion` reflects the import date.
-
 ## Quick Start
 
 ### Fetch and render a list
@@ -114,6 +60,39 @@ curl "https://hiddenvector.studio/mkw/api/v1/tracks?cup=mushroom-cup"
 | `GET /openapi.json`       | OpenAPI 3.1 specification     |
 | `GET /docs`               | Interactive API documentation |
 
+## Understanding the Data
+
+- **Stats scale:** 0–11 in current data (higher is better).
+- **surfaceCoverage:** Raw surface mix including neutral/off-road.
+- **terrainCoverage:** Adjusted road/rough/water mix normalized to 100% for scoring.
+- **Vehicle tags:** Same `tag` means identical stats; use `/vehicles?tag={tag}`.
+
+Example scoring formula:
+
+```text
+score = (speed.road * terrainCoverage.road)
+      + (speed.rough * terrainCoverage.rough)
+      + (speed.water * terrainCoverage.water)
+```
+
+Worked example (Mario Bros. Circuit + Wario):
+
+```text
+terrainCoverage: { road: 76, rough: 24, water: 0 }
+Wario speed:     { road: 6,  rough: 5,  water: 5 }
+
+score = 6*76 + 5*24 + 5*0 = 576
+normalizedScore = 5.76
+```
+
+## Data Contract
+
+- **dataVersion:** changes when Statpedia changes; refresh cached results when it updates.
+- **terrainCoverage:** derived from adjusted coverage columns, normalized to 100%.
+- **Name normalization:** a small set of names are normalized to US variants during parsing.
+- **Filters:** `?tag=` and `?cup=` return an empty list when there are no matches.
+- **Stability:** field meanings are stable within `/v1`; breaking changes go to `/v2`.
+
 ## Caching
 
 Collection endpoints (`/characters`, `/vehicles`, `/tracks`) return an `ETag` based on `dataVersion`.
@@ -145,6 +124,8 @@ const data = await res.json();
 
 Stats are sourced from the [Mario Kart World Statpedia](https://docs.google.com/spreadsheets/d/1EQd2XYGlB3EFFNE-35hFLaBzJo4cipU9DZT4MRSjBlc/edit) maintained by the community.
 
+Updates follow the Statpedia sheet; there is no fixed schedule.
+
 ## Development
 
 This project runs on [Cloudflare Workers](https://developers.cloudflare.com/workers/) using [Wrangler](https://developers.cloudflare.com/workers/wrangler/).
@@ -170,11 +151,10 @@ Local API will be available at `http://localhost:8787/mkw/api/v1`.
 
 ## Versioning & Releases
 
-- `package.json` version tracks the service release.
-- `dataVersion` tracks Statpedia data changes.
-- `/v1` is the API major; breaking changes require `/v2`.
-- Releases use semantic versioning: PATCH (fixes/data), MINOR (additive), MAJOR (breaking).
-- Tag releases as `vX.Y.Z` and publish release notes from `CHANGELOG.md`.
+- Service version = `package.json`; data version = Statpedia import date.
+- `/v1` is stable; breaking changes go to `/v2`.
+- Semver: PATCH (fixes/data), MINOR (additive), MAJOR (breaking).
+- Tag releases `vX.Y.Z` and publish notes from `CHANGELOG.md`.
 - See `RELEASING.md` for the checklist.
 
 ## Roadmap

@@ -33,7 +33,7 @@ Community-maintained data API for Mario Kart World stats, vehicles, and tracks.
 **Features:** terrain stats, track coverage, vehicle tag groupings, ETag caching.
 
 **How to use the stats:**
-- All stats are on a 0–20 scale; higher is better.
+- Stats are 0–11 in current data; higher is better.
 - Use \`surfaceCoverage\` for raw surface breakdowns.
 - Use \`terrainCoverage\` for combo calculations (normalized road/rough/water mix, excludes neutral/off-road).
 - IDs are slugs; fetch list endpoints to discover valid IDs.
