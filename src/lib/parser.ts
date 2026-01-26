@@ -79,7 +79,7 @@ export function normalizeDisplayName(name: string): string {
  */
 export function parsePercent(value: string | undefined): number {
   if (!value) return 0;
-  return parseFloat(value.replace('%', '').replace(',', '.'));
+  return parseFloat(value.replace(/%/g, '').replace(/,/g, '.'));
 }
 
 /**
