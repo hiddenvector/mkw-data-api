@@ -8,22 +8,6 @@ Community-maintained REST API for character stats, vehicle data, and track infor
 
 ## Quick Start
 
-### Fetch and render a list
-
-```ts
-// Minimal example: fetch characters and print the first 3
-const res = await fetch('https://hiddenvector.studio/mkw/api/v1/characters');
-const data = await res.json();
-
-console.log('Data version:', data.dataVersion);
-console.log(data.characters.slice(0, 3));
-```
-
-### Use IDs correctly
-
-- IDs are slugs. Fetch list endpoints and use `id`.
-- Example: `/characters/dry-bones`, `/vehicles/mach-rocket`, `/tracks/mario-bros-circuit`.
-
 ```bash
 # Get all characters
 curl https://hiddenvector.studio/mkw/api/v1/characters
@@ -43,6 +27,11 @@ curl https://hiddenvector.studio/mkw/api/v1/tracks
 # Get tracks by cup
 curl "https://hiddenvector.studio/mkw/api/v1/tracks?cup=mushroom-cup"
 ```
+
+### Use IDs correctly
+
+- IDs are slugs. Fetch list endpoints and use `id`.
+- Example: `/characters/dry-bones`, `/vehicles/mach-rocket`, `/tracks/mario-bros-circuit`.
 
 ## Endpoints
 
