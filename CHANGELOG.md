@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-01-26
+
+- Stabilize API surface for `/v1` and document data contract and coverage semantics.
+- Add query filtering on `/vehicles?tag=` and `/tracks?cup=` (empty list on no matches).
+- Add `terrainCoverage` for tracks and US name normalization in the parser.
+- Strengthen validation and error handling, plus full test coverage and CI guardrails.
+
 ## [2026-01-25]
 
 - Standardize character names to US versions (`Swoop`, `Fish Bone`).
