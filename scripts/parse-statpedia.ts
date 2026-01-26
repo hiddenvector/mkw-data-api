@@ -441,7 +441,7 @@ function writeJSON<T>(filePath: string, data: T, label: string): void {
     2,
   );
 
-  fs.writeFileSync(filePath, json);
+  fs.writeFileSync(filePath, `${json}\n`);
 }
 
 /**
