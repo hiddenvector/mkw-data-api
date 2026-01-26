@@ -2,6 +2,8 @@
 
 Community-maintained REST API for character stats, vehicle data, and track information from Mario Kart World.
 
+Data source: [Mario Kart World Statpedia](https://docs.google.com/spreadsheets/d/1EQd2XYGlB3EFFNE-35hFLaBzJo4cipU9DZT4MRSjBlc/edit).
+
 **Base URL:** `https://hiddenvector.studio/mkw/api/v1`
 
 **Documentation:** [Interactive API Docs](https://hiddenvector.studio/mkw/api/v1/docs)
