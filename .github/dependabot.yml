@@ -4,6 +4,12 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # @types/node must match the Node major we run (.nvmrc / engines).
+      # Bump all three together by hand when moving to a new Node LTS.
+      - dependency-name: '@types/node'
+        update-types:
+          - version-update:semver-major
     groups:
       minor-and-patch:
         update-types:
