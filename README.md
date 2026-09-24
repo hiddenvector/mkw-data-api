@@ -109,12 +109,19 @@ curl -I -H 'If-None-Match: "1.1.0-4k2j9x0q1z8"' https://hiddenvector.studio/mkw/
 
 - **304 responses:** `If-None-Match` may return `304` with an empty body—use cached data.
 - **ETags are opaque:** don't parse them; the format may change.
-- **429 rate limits:** Cloudflare may return `429`; retry with backoff.
+- **429 rate limits:** requests are rate limited per client IP at Cloudflare's edge (currently 60 requests per 10 seconds).
+  Limited requests get `429` with a **plain-text** body (`error code: 1015`), not JSON, and a `Retry-After` header in seconds.
+  Check the status before calling `res.json()`, and wait `Retry-After` before retrying.
+  ETag revalidations count toward the limit too, but a `304` has no body, so it's the cheapest request you can make.
 
 ```ts
-// Handling 304 in JS
+// Handling 304 and 429 in JS
 const res = await fetch(url, { headers: { 'If-None-Match': etag } });
 if (res.status === 304) return cachedData;
+if (res.status === 429) {
+  const waitSeconds = Number(res.headers.get('Retry-After') ?? 10);
+  // back off for waitSeconds, then retry
+}
 const data = await res.json();
 ```
 

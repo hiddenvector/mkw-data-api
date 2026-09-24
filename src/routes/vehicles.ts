@@ -1,6 +1,11 @@
 import { createRoute } from '@hono/zod-openapi';
 import { createRouter } from '../app';
-import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } from '../errors';
+import {
+  notFound,
+  NotFoundErrorResponseSchema,
+  rateLimitedResponse,
+  ValidationErrorResponseSchema,
+} from '../errors';
 import {
   ConditionalRequestHeadersSchema,
   EtagResponseHeadersSchema,
@@ -21,6 +26,7 @@ const getVehiclesRoute = createRoute({
     'Returns all vehicles with their stats. Use ?tag= to filter. Supports ETag/If-None-Match for caching.',
   request: { query: TagQuerySchema, headers: ConditionalRequestHeadersSchema },
   responses: {
+    429: rateLimitedResponse,
     200: {
       content: { 'application/json': { schema: VehiclesResponseSchema } },
       headers: EtagResponseHeadersSchema,
@@ -44,6 +50,7 @@ const getVehicleByIdRoute = createRoute({
   description: 'Returns a single vehicle by its ID. Supports ETag/If-None-Match for caching.',
   request: { params: VehicleIdParamSchema, headers: ConditionalRequestHeadersSchema },
   responses: {
+    429: rateLimitedResponse,
     200: {
       content: { 'application/json': { schema: VehicleSchema } },
       headers: EtagResponseHeadersSchema,

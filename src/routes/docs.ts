@@ -25,7 +25,7 @@ Community-maintained data API for Mario Kart World stats, vehicles, and tracks.
 
 **Stability:** \`/v1\` is stable; breaking changes go to \`/v2\`.
 
-**Rate Limits:** Requests may be rate limited by edge rules and return HTTP 429.
+**Rate Limits:** Requests are rate limited per client IP at Cloudflare's edge. Limited requests get HTTP 429 with a plain-text body (\`error code: 1015\`, not JSON) and a \`Retry-After\` header; check the status before parsing and wait that many seconds before retrying.
 
 **Legal:** This is an unofficial, fan-created project. Not affiliated with Nintendo. Mario Kart is a registered trademark of Nintendo Co., Ltd.
 `.trim();
