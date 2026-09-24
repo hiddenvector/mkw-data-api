@@ -1,6 +1,11 @@
 import { createRoute } from '@hono/zod-openapi';
 import { createRouter } from '../app';
-import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } from '../errors';
+import {
+  notFound,
+  NotFoundErrorResponseSchema,
+  rateLimitedResponse,
+  ValidationErrorResponseSchema,
+} from '../errors';
 import {
   ConditionalRequestHeadersSchema,
   CupQuerySchema,
@@ -21,6 +26,7 @@ const getTracksRoute = createRoute({
     'Returns all race tracks with surface coverage data. Use ?cup= (a cupId) to filter. Supports ETag/If-None-Match for caching.',
   request: { query: CupQuerySchema, headers: ConditionalRequestHeadersSchema },
   responses: {
+    429: rateLimitedResponse,
     200: {
       content: { 'application/json': { schema: TracksResponseSchema } },
       headers: EtagResponseHeadersSchema,
@@ -44,6 +50,7 @@ const getTrackByIdRoute = createRoute({
   description: 'Returns a single track by its ID. Supports ETag/If-None-Match for caching.',
   request: { params: TrackIdParamSchema, headers: ConditionalRequestHeadersSchema },
   responses: {
+    429: rateLimitedResponse,
     200: {
       content: { 'application/json': { schema: TrackSchema } },
       headers: EtagResponseHeadersSchema,

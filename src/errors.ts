@@ -63,6 +63,26 @@ export const NotFoundErrorResponseSchema = BaseErrorSchema.openapi('NotFoundErro
   },
 });
 
+/**
+ * 429 Too Many Requests. Sent by Cloudflare's edge rate limiting before the Worker runs,
+ * so it is plain text (`error code: 1015`) rather than the JSON error shape above.
+ */
+export const rateLimitedResponse = {
+  description:
+    'Rate limited at the edge (per client IP). Plain-text body; wait `Retry-After` seconds before retrying.',
+  headers: z.object({
+    'Retry-After': z.string().openapi({
+      description: 'Seconds to wait before retrying',
+      example: '10',
+    }),
+  }),
+  content: {
+    'text/plain': {
+      schema: z.string().openapi({ example: 'error code: 1015' }),
+    },
+  },
+};
+
 export type ErrorResponse = z.infer<typeof BaseErrorSchema>;
 
 // ============================================================================

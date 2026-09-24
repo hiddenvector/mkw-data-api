@@ -406,6 +406,18 @@ describe('OpenAPI spec', () => {
     expect(asRecord(ok.headers).ETag).toBeDefined();
   });
 
+  it('documents the edge 429 response on every route', async () => {
+    const spec = asRecord(await (await request('/openapi.json')).json());
+    const paths = asRecord(spec.paths);
+    const routes = Object.values(paths).map((item) => asRecord(asRecord(item).get));
+    expect(routes).toHaveLength(7);
+    for (const route of routes) {
+      const limited = asRecord(asRecord(route.responses)['429']);
+      expect(Object.keys(asRecord(limited.content))).toEqual(['text/plain']);
+      expect(asRecord(limited.headers)['Retry-After']).toBeDefined();
+    }
+  });
+
   it('GET /openapi.json returns 304 when ETag matches', async () => {
     const firstRes = await request('/openapi.json');
     const etag = firstRes.headers.get('ETag');
