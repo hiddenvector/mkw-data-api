@@ -76,9 +76,14 @@ const get = (path: string, headers: Record<string, string> = {}) => request(path
 
 const getJson = async (path: string) => (await (await get(path)).json()) as Json;
 
-const ETAG_PATTERN = new RegExp(
-  `^(W/)?"${expected.serviceVersion.replace(/\./g, '\\.')}-[0-9a-z]+"$`,
-);
+/**
+ * True if the ETag has the form "<serviceVersion>-<hash>" (optionally weak). The version is
+ * compared as a plain string, so no user-controlled text ends up inside a RegExp.
+ */
+function isCurrentEtag(etag: string): boolean {
+  const match = /^(?:W\/)?"(.+)-[0-9a-z]+"$/.exec(etag);
+  return match?.[1] === expected.serviceVersion;
+}
 const DATA_CACHE_CONTROL = 'public, max-age=3600, must-revalidate';
 
 class CheckError extends Error {}
@@ -141,7 +146,7 @@ const checks: Array<[name: string, run: () => Promise<void>]> = [
         expectEqual(res.status, 200, 'status');
         expectEqual(res.headers.get('cache-control'), DATA_CACHE_CONTROL, 'cache-control');
         const etag = res.headers.get('etag') ?? '';
-        expect(ETAG_PATTERN.test(etag), `unexpected ETag ${etag}`);
+        expect(isCurrentEtag(etag), `unexpected ETag ${etag}`);
         const body = (await res.json()) as Json;
         expectEqual((body[collection] as unknown[]).length, expected.counts[collection], 'count');
 
@@ -171,7 +176,7 @@ const checks: Array<[name: string, run: () => Promise<void>]> = [
     async () => {
       const path = `/tracks/${expected.track.id}`;
       const etag = (await get(path)).headers.get('etag') ?? '';
-      expect(ETAG_PATTERN.test(etag), `unexpected ETag ${etag}`);
+      expect(isCurrentEtag(etag), `unexpected ETag ${etag}`);
       expectEqual((await get(path, { 'If-None-Match': etag })).status, 304, '304 status');
     },
   ],
