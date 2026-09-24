@@ -58,3 +58,8 @@ jobs:
         run: npx wrangler deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      # Waits for /health to report this version, then checks the live API.
+      # A failure here does not roll back; investigate and use `wrangler rollback` if needed.
+      - name: Smoke test production
+        run: npm run smoke

@@ -24,8 +24,9 @@ Release checklist for production tags. Pushing a `vX.Y.Z` tag deploys automatica
    - Push with `git push --follow-tags`.
 
 5. Deploy and verify
-   - The tag push runs CI, checks that the tag matches `package.json` and is on `main`, then deploys.
-   - Verify `/health` (`serviceVersion`, `dataVersion`), `/openapi.json`, and key endpoints in production.
+   - The tag push runs CI, checks that the tag matches `package.json` and is on `main`, deploys,
+     then runs `npm run smoke` against production (versions, ETags/304s, filters, errors, docs).
+   - If the smoke test fails, the deploy is already live: fix forward or run `npx wrangler rollback`.
    - Publish a GitHub release from the tag with notes from `CHANGELOG.md`.
 
 ## Versioning guide
