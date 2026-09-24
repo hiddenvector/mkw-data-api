@@ -1,6 +1,10 @@
 name = "mkw-data-api"
 main = "src/index.ts"
-compatibility_date = "2024-01-19"
+compatibility_date = "2026-09-01"
+
+# Serve only through the zone route so edge rules (WAF, rate limiting) always apply.
+workers_dev = false
+preview_urls = false
 
 routes = [
     { pattern = "hiddenvector.studio/mkw/api/*", zone_name = "hiddenvector.studio" }

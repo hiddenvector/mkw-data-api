@@ -1,9 +1,15 @@
 import { createRoute } from '@hono/zod-openapi';
 import { createRouter } from '../app';
 import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } from '../errors';
-import { CharacterIdParamSchema, CharactersResponseSchema, CharacterSchema } from '../schemas';
-import { checkNotModified } from '../utils';
-import { characters, dataVersion } from '../data';
+import {
+  CharacterIdParamSchema,
+  CharactersResponseSchema,
+  CharacterSchema,
+  ConditionalRequestHeadersSchema,
+  EtagResponseHeadersSchema,
+} from '../schemas';
+import { isNotModified } from '../utils';
+import { characters, dataVersion, etags } from '../data';
 
 const getCharactersRoute = createRoute({
   method: 'get',
@@ -12,9 +18,11 @@ const getCharactersRoute = createRoute({
   summary: 'List All Characters',
   description:
     'Returns all playable characters with their stats. Supports ETag/If-None-Match for caching.',
+  request: { headers: ConditionalRequestHeadersSchema },
   responses: {
     200: {
       content: { 'application/json': { schema: CharactersResponseSchema } },
+      headers: EtagResponseHeadersSchema,
       description: 'Success',
     },
     304: {
@@ -28,12 +36,16 @@ const getCharacterByIdRoute = createRoute({
   path: '/characters/{id}',
   tags: ['Characters'],
   summary: 'Get Character by ID',
-  description: 'Returns a single character by their ID',
-  request: { params: CharacterIdParamSchema },
+  description: 'Returns a single character by their ID. Supports ETag/If-None-Match for caching.',
+  request: { params: CharacterIdParamSchema, headers: ConditionalRequestHeadersSchema },
   responses: {
     200: {
       content: { 'application/json': { schema: CharacterSchema } },
+      headers: EtagResponseHeadersSchema,
       description: 'Character found',
+    },
+    304: {
+      description: 'Not Modified - use cached response',
     },
     400: {
       content: { 'application/json': { schema: ValidationErrorResponseSchema } },
@@ -49,14 +61,11 @@ const getCharacterByIdRoute = createRoute({
 const charactersRouter = createRouter();
 
 charactersRouter.openapi(getCharactersRoute, (c) => {
-  const currentEtag = `"${dataVersion}"`;
-  c.header('ETag', currentEtag);
-
-  if (checkNotModified(c, currentEtag)) {
+  if (isNotModified(c, etags.characters)) {
     return c.body(null, 304);
   }
 
-  return c.json({ dataVersion, characters });
+  return c.json({ dataVersion, characters }, 200);
 });
 
 charactersRouter.openapi(getCharacterByIdRoute, (c) => {
@@ -65,6 +74,10 @@ charactersRouter.openapi(getCharacterByIdRoute, (c) => {
 
   if (!character) {
     return notFound(c, 'Character', id);
+  }
+
+  if (isNotModified(c, etags.characters)) {
+    return c.body(null, 304);
   }
 
   return c.json(character, 200);

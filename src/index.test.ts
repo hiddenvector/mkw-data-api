@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import app, { createApp } from './index';
 
 const BASE = '/mkw/api/v1';
-
+const ETAG_PATTERN = /^"\d+\.\d+\.\d+-[0-9a-z]+"$/;
 
 // Helper to make requests
 async function request(path: string, options?: RequestInit) {
@@ -21,9 +21,9 @@ describe('Health endpoint', () => {
     const body = asRecord(await res.json());
     expect(body.status).toBe('ok');
     expect(body.apiVersion).toBe('v1');
-    expect(body.serviceVersion).toBeDefined();
-    expect(body.timestamp).toBeDefined();
-    expect(body.dataVersion).toBeDefined();
+    expect(body.serviceVersion).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(Date.parse(body.timestamp as string)).not.toBeNaN();
+    expect(body.dataVersion).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(body.dataLoaded as JsonRecord).toMatchObject({
       characters: expect.any(Number),
       vehicles: expect.any(Number),
@@ -33,7 +33,7 @@ describe('Health endpoint', () => {
 
   it('has no-cache headers', async () => {
     const res = await request('/health');
-    expect(res.headers.get('Cache-Control')).toBe('no-cache, no-store, must-revalidate');
+    expect(res.headers.get('Cache-Control')).toBe('no-store');
   });
 });
 
@@ -41,10 +41,10 @@ describe('Characters endpoints', () => {
   it('GET /characters returns all characters with dataVersion', async () => {
     const res = await request('/characters');
     expect(res.status).toBe(200);
-    expect(res.headers.get('ETag')).toBeDefined();
+    expect(res.headers.get('ETag')).toMatch(ETAG_PATTERN);
 
     const body = asRecord(await res.json());
-    expect(body.dataVersion).toBeDefined();
+    expect(body.dataVersion).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(Array.isArray(body.characters)).toBe(true);
     expect((body.characters as unknown[]).length).toBeGreaterThan(0);
   });
@@ -53,7 +53,7 @@ describe('Characters endpoints', () => {
     // First request to get the ETag
     const firstRes = await request('/characters');
     const etag = firstRes.headers.get('ETag');
-    expect(etag).toBeDefined();
+    expect(etag).toMatch(ETAG_PATTERN);
 
     // Second request with If-None-Match
     const res = await request('/characters', {
@@ -97,10 +97,10 @@ describe('Vehicles endpoints', () => {
   it('GET /vehicles returns all vehicles with dataVersion', async () => {
     const res = await request('/vehicles');
     expect(res.status).toBe(200);
-    expect(res.headers.get('ETag')).toBeDefined();
+    expect(res.headers.get('ETag')).toMatch(ETAG_PATTERN);
 
     const body = asRecord(await res.json());
-    expect(body.dataVersion).toBeDefined();
+    expect(body.dataVersion).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(Array.isArray(body.vehicles)).toBe(true);
   });
 
@@ -130,6 +130,13 @@ describe('Vehicles endpoints', () => {
     const body = asRecord(await res.json());
     const error = asRecord(body.error);
     expect(error.code).toBe('NOT_FOUND');
+  });
+
+  it('GET /vehicles?tag filter only returns matching vehicles', async () => {
+    const res = await request('/vehicles?tag=st-a-0');
+    const vehicles = asRecord(await res.json()).vehicles as JsonRecord[];
+    expect(vehicles.length).toBeGreaterThan(0);
+    expect(vehicles.every((v) => v.tag === 'st-a-0')).toBe(true);
   });
 
   it('GET /vehicles?tag returns vehicles by tag', async () => {
@@ -170,10 +177,10 @@ describe('Tracks endpoints', () => {
   it('GET /tracks returns all tracks with dataVersion', async () => {
     const res = await request('/tracks');
     expect(res.status).toBe(200);
-    expect(res.headers.get('ETag')).toBeDefined();
+    expect(res.headers.get('ETag')).toMatch(ETAG_PATTERN);
 
     const body = asRecord(await res.json());
-    expect(body.dataVersion).toBeDefined();
+    expect(body.dataVersion).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(Array.isArray(body.tracks)).toBe(true);
   });
 
@@ -211,13 +218,17 @@ describe('Tracks endpoints', () => {
     expect(error.code).toBe('NOT_FOUND');
   });
 
-  it('GET /tracks?cup returns tracks by cup', async () => {
+  it('GET /tracks?cup returns tracks by cupId', async () => {
     const res = await request('/tracks?cup=mushroom-cup');
     expect(res.status).toBe(200);
 
     const body = asRecord(await res.json());
-    expect(Array.isArray(body.tracks)).toBe(true);
-    expect((body.tracks as unknown[]).length).toBeGreaterThan(0);
+    const tracks = body.tracks as JsonRecord[];
+    expect(tracks).toHaveLength(4);
+    for (const track of tracks) {
+      expect(track.cupId).toBe('mushroom-cup');
+      expect(track.cup).toBe('Mushroom Cup');
+    }
   });
 
   it('GET /tracks?cup returns empty list for unknown cup', async () => {
@@ -242,7 +253,7 @@ describe('Tracks endpoints', () => {
 describe('Response headers', () => {
   it('includes X-Request-ID header', async () => {
     const res = await request('/health');
-    expect(res.headers.get('X-Request-ID')).toBeDefined();
+    expect(res.headers.get('X-Request-ID')).toMatch(/^[0-9a-f-]{36}$/);
   });
 
   it('includes X-Response-Time header', async () => {
@@ -272,12 +283,74 @@ describe('Response headers', () => {
 
   it('uses docs CSP and cache-control for /docs', async () => {
     const res = await request('/docs');
-    expect(res.headers.get('Content-Security-Policy')).toContain('cdn.jsdelivr.net');
+    const csp = res.headers.get('Content-Security-Policy');
+    expect(csp).toContain('https://cdn.jsdelivr.net/npm/@scalar/api-reference@');
     expect(res.headers.get('Cache-Control')).toBe('public, max-age=86400');
+    // The page must load exactly the bundle the CSP allows
+    const html = await res.text();
+    const src = /<script[^>]+src="([^"]+)"/.exec(html)?.[1];
+    expect(src).toBeDefined();
+    expect(csp).toContain(src);
+  });
+
+  it('never caches error responses', async () => {
+    for (const path of ['/characters/not-a-character', '/characters/INVALID', '/nope']) {
+      const res = await request(path);
+      expect(res.status).toBeGreaterThanOrEqual(400);
+      expect(res.headers.get('Cache-Control')).toBe('no-store');
+    }
+  });
+
+  it('includes cache-control on 304 responses', async () => {
+    const etag = (await request('/characters')).headers.get('ETag')!;
+    const res = await request('/characters', { headers: { 'If-None-Match': etag } });
+    expect(res.status).toBe(304);
+    expect(res.headers.get('Cache-Control')).toBe('public, max-age=3600, must-revalidate');
+    expect(res.headers.get('ETag')).toBe(etag);
+  });
+
+  it('preserves a well-formed upstream X-Request-ID', async () => {
+    const res = await request('/health', { headers: { 'X-Request-ID': 'upstream-123.abc' } });
+    expect(res.headers.get('X-Request-ID')).toBe('upstream-123.abc');
+  });
+
+  it('replaces oversized or malformed upstream X-Request-IDs', async () => {
+    for (const bad of ['x'.repeat(129), 'has spaces', '<script>']) {
+      const res = await request('/characters/nope', { headers: { 'X-Request-ID': bad } });
+      const id = res.headers.get('X-Request-ID');
+      expect(id).toMatch(/^[0-9a-f-]{36}$/);
+      const body = asRecord(await res.json());
+      expect(asRecord(body.error).requestId).toBe(id);
+    }
   });
 });
 
 describe('304 Not Modified handling', () => {
+  it.each(['/characters/dry-bones', '/vehicles/standard-bike', '/tracks/crown-city'])(
+    'supports ETags on item endpoint %s',
+    async (path) => {
+      const first = await request(path);
+      const etag = first.headers.get('ETag');
+      expect(etag).toMatch(ETAG_PATTERN);
+      const res = await request(path, { headers: { 'If-None-Match': etag! } });
+      expect(res.status).toBe(304);
+    },
+  );
+
+  it('does not return 304 for a missing item even with a wildcard', async () => {
+    const res = await request('/tracks/not-a-track', { headers: { 'If-None-Match': '*' } });
+    expect(res.status).toBe(404);
+  });
+
+  it('uses distinct ETags per collection', async () => {
+    const etags = await Promise.all(
+      ['/characters', '/vehicles', '/tracks'].map(async (p) =>
+        (await request(p)).headers.get('ETag'),
+      ),
+    );
+    expect(new Set(etags).size).toBe(3);
+  });
+
   it('supports wildcard If-None-Match', async () => {
     const res = await request('/characters', {
       headers: { 'If-None-Match': '*' },
@@ -324,13 +397,19 @@ describe('OpenAPI spec', () => {
     expect(info.title).toBeDefined();
     expect(body.paths).toBeDefined();
     const components = asRecord(body.components);
-    expect(components.schemas).toBeDefined();
+    expect(asRecord(components.schemas).Track).toBeDefined();
+    const paths = asRecord(body.paths);
+    const listTracks = asRecord(asRecord(paths[`${BASE}/tracks`]).get);
+    const params = listTracks.parameters as JsonRecord[];
+    expect(params.map((p) => p.name)).toEqual(expect.arrayContaining(['cup', 'if-none-match']));
+    const ok = asRecord(asRecord(listTracks.responses)['200']);
+    expect(asRecord(ok.headers).ETag).toBeDefined();
   });
 
   it('GET /openapi.json returns 304 when ETag matches', async () => {
     const firstRes = await request('/openapi.json');
     const etag = firstRes.headers.get('ETag');
-    expect(etag).toBeDefined();
+    expect(etag).toMatch(ETAG_PATTERN);
 
     const res = await request('/openapi.json', {
       headers: { 'If-None-Match': etag! },
@@ -352,8 +431,17 @@ describe('404 handler', () => {
     const body = asRecord(await res.json());
     const error = asRecord(body.error);
     expect(error.code).toBe('NOT_FOUND');
-    expect(body.availableEndpoints).toBeDefined();
-    expect(Array.isArray(body.availableEndpoints)).toBe(true);
+    expect(body.availableEndpoints).toEqual([
+      `GET ${BASE}/health`,
+      `GET ${BASE}/characters`,
+      `GET ${BASE}/characters/{id}`,
+      `GET ${BASE}/vehicles`,
+      `GET ${BASE}/vehicles/{id}`,
+      `GET ${BASE}/tracks`,
+      `GET ${BASE}/tracks/{id}`,
+      `GET ${BASE}/openapi.json`,
+      `GET ${BASE}/docs`,
+    ]);
   });
 });
 
@@ -370,6 +458,7 @@ describe('Global error handler', () => {
     const error = asRecord(body.error);
     expect(error.code).toBe('INTERNAL_ERROR');
     expect(error.message).toBe('An unexpected error occurred');
+    expect(res.headers.get('Cache-Control')).toBe('no-store');
     spy.mockRestore();
   });
 });

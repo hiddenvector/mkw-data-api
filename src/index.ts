@@ -1,7 +1,7 @@
 import { cors } from 'hono/cors';
 import { createRouter } from './app';
 import { API_CONFIG } from './config';
-import { endpointNotFound, ErrorCode } from './errors';
+import { endpointNotFound, ErrorCode, errorBody } from './errors';
 
 // Route modules
 import healthRouter from './routes/health';
@@ -14,33 +14,53 @@ import { createDocsRoutes } from './routes/docs';
 // App Setup
 // ============================================================================
 
+/** Accept upstream request IDs only if they are short and header/log-safe. */
+const REQUEST_ID_PATTERN = /^[\w.:-]{1,128}$/;
+
+const DOCS_CSP = [
+  "default-src 'self'",
+  `script-src 'unsafe-inline' ${API_CONFIG.scalarCdn}`,
+  "style-src 'unsafe-inline'",
+  'font-src https://fonts.scalar.com',
+  "img-src 'self' data:",
+  "connect-src 'self'",
+  "frame-ancestors 'none'",
+].join('; ');
+
+const API_CSP = "default-src 'none'; frame-ancestors 'none'";
+
+/**
+ * Cache policy for successful (2xx/304) responses. Errors are never cached.
+ */
+function cachePolicy(path: string): string {
+  if (path.endsWith('/docs') || path.endsWith('/openapi.json')) {
+    return 'public, max-age=86400';
+  }
+  if (path.endsWith('/health')) {
+    return 'no-store';
+  }
+  // Data endpoints: cache for 1 hour, then revalidate via ETag
+  return 'public, max-age=3600, must-revalidate';
+}
+
 export function createApp() {
   const app = createRouter().basePath(API_CONFIG.basePath);
 
   // Global error handler for unexpected errors
   app.onError((err, c) => {
-    const requestId = c.get('requestId');
     console.error('Unhandled error:', err);
-    return c.json(
-      {
-        error: {
-          code: ErrorCode.INTERNAL_ERROR,
-          message: 'An unexpected error occurred',
-          status: 500,
-          ...(requestId && { requestId }),
-        },
-      },
-      500,
-    );
+    return c.json(errorBody(c, ErrorCode.INTERNAL_ERROR, 'An unexpected error occurred', 500), 500);
   });
 
   // ============================================================================
   // Middleware
   // ============================================================================
 
-  // Request ID - preserve from upstream or generate new
+  // Request ID - preserve a well-formed upstream ID or generate a new one
   app.use('/*', async (c, next) => {
-    const requestId = c.req.header('X-Request-ID') ?? crypto.randomUUID();
+    const upstream = c.req.header('X-Request-ID');
+    const requestId =
+      upstream && REQUEST_ID_PATTERN.test(upstream) ? upstream : crypto.randomUUID();
     c.set('requestId', requestId);
     c.header('X-Request-ID', requestId);
     await next();
@@ -68,28 +88,11 @@ export function createApp() {
 
   // Security headers
   app.use('/*', async (c, next) => {
-    // API version header
     c.header('API-Version', API_CONFIG.apiVersion);
-
-    // Prevent MIME type sniffing
     c.header('X-Content-Type-Options', 'nosniff');
-
-    // Don't send referrer for privacy
     c.header('Referrer-Policy', 'no-referrer');
-
-    // Prevent clickjacking
     c.header('X-Frame-Options', 'DENY');
-
-    // Content Security Policy
-    if (c.req.path.endsWith('/docs')) {
-      c.header(
-        'Content-Security-Policy',
-        "default-src 'self'; script-src 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'unsafe-inline'; font-src https://fonts.scalar.com; connect-src 'self' https://hiddenvector.studio; frame-ancestors 'none'",
-      );
-    } else {
-      c.header('Content-Security-Policy', "default-src 'none'; frame-ancestors 'none'");
-    }
-
+    c.header('Content-Security-Policy', c.req.path.endsWith('/docs') ? DOCS_CSP : API_CSP);
     await next();
   });
 
@@ -97,25 +100,12 @@ export function createApp() {
   app.use('/*', async (c, next) => {
     await next();
 
-    // Skip if already set or if it's a 304
-    if (c.res.headers.get('Cache-Control') || c.res.status === 304) {
-      return;
-    }
-
-    const path = c.req.path;
-
-    if (path.endsWith('/docs')) {
-      // Docs page: cache for 1 day
-      c.header('Cache-Control', 'public, max-age=86400');
-    } else if (path.endsWith('/openapi.json')) {
-      // OpenAPI spec: cache for 1 day, revalidate on version change via ETag
-      c.header('Cache-Control', 'public, max-age=86400');
-    } else if (path.endsWith('/health')) {
-      // Health endpoint: no caching (should always be fresh)
-      c.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+    if (c.res.status >= 400) {
+      // Never let a transient error (or a 404 during a deploy) stick in shared caches
+      c.header('Cache-Control', 'no-store');
     } else {
-      // Data endpoints: cache for 1 hour, but revalidate via ETag
-      c.header('Cache-Control', 'public, max-age=3600, must-revalidate');
+      // Includes 304s, which must repeat the policy a 200 would carry (RFC 9110 §15.4.5)
+      c.header('Cache-Control', cachePolicy(c.req.path));
     }
   });
 
@@ -133,19 +123,16 @@ export function createApp() {
   // 404 Handler
   // ============================================================================
 
-  app.notFound((c) => {
-    return endpointNotFound(c, c.req.path, [
-      `GET ${API_CONFIG.basePath}/health`,
-      `GET ${API_CONFIG.basePath}/characters`,
-      `GET ${API_CONFIG.basePath}/characters/{id}`,
-      `GET ${API_CONFIG.basePath}/vehicles`,
-      `GET ${API_CONFIG.basePath}/vehicles/{id}`,
-      `GET ${API_CONFIG.basePath}/vehicles?tag={tag}`,
-      `GET ${API_CONFIG.basePath}/tracks`,
-      `GET ${API_CONFIG.basePath}/tracks/{id}`,
-      `GET ${API_CONFIG.basePath}/tracks?cup={cup}`,
-    ]);
-  });
+  // Derived from the registered routes so it cannot drift from reality
+  const availableEndpoints = [
+    ...new Set(
+      app.routes
+        .filter((r) => r.method === 'GET')
+        .map((r) => `GET ${r.path.replace(/:(\w+)/g, '{$1}')}`),
+    ),
+  ];
+
+  app.notFound((c) => endpointNotFound(c, c.req.path, availableEndpoints));
 
   return app;
 }

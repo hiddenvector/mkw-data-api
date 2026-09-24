@@ -2,13 +2,15 @@ import { createRoute } from '@hono/zod-openapi';
 import { createRouter } from '../app';
 import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } from '../errors';
 import {
-  TrackIdParamSchema,
+  ConditionalRequestHeadersSchema,
   CupQuerySchema,
+  EtagResponseHeadersSchema,
+  TrackIdParamSchema,
   TracksResponseSchema,
   TrackSchema,
 } from '../schemas';
-import { checkNotModified } from '../utils';
-import { tracks, dataVersion } from '../data';
+import { isNotModified } from '../utils';
+import { tracks, dataVersion, etags } from '../data';
 
 const getTracksRoute = createRoute({
   method: 'get',
@@ -16,19 +18,20 @@ const getTracksRoute = createRoute({
   tags: ['Tracks'],
   summary: 'List All Tracks',
   description:
-    'Returns all race tracks with surface coverage data. Use ?cup= to filter. Supports ETag/If-None-Match for caching.',
-  request: { query: CupQuerySchema },
+    'Returns all race tracks with surface coverage data. Use ?cup= (a cupId) to filter. Supports ETag/If-None-Match for caching.',
+  request: { query: CupQuerySchema, headers: ConditionalRequestHeadersSchema },
   responses: {
     200: {
       content: { 'application/json': { schema: TracksResponseSchema } },
+      headers: EtagResponseHeadersSchema,
       description: 'Success',
+    },
+    304: {
+      description: 'Not Modified - use cached response',
     },
     400: {
       content: { 'application/json': { schema: ValidationErrorResponseSchema } },
       description: 'Invalid cup format',
-    },
-    304: {
-      description: 'Not Modified - use cached response',
     },
   },
 });
@@ -38,12 +41,16 @@ const getTrackByIdRoute = createRoute({
   path: '/tracks/{id}',
   tags: ['Tracks'],
   summary: 'Get Track by ID',
-  description: 'Returns a single track by its ID',
-  request: { params: TrackIdParamSchema },
+  description: 'Returns a single track by its ID. Supports ETag/If-None-Match for caching.',
+  request: { params: TrackIdParamSchema, headers: ConditionalRequestHeadersSchema },
   responses: {
     200: {
       content: { 'application/json': { schema: TrackSchema } },
+      headers: EtagResponseHeadersSchema,
       description: 'Track found',
+    },
+    304: {
+      description: 'Not Modified - use cached response',
     },
     400: {
       content: { 'application/json': { schema: ValidationErrorResponseSchema } },
@@ -58,28 +65,15 @@ const getTrackByIdRoute = createRoute({
 
 const tracksRouter = createRouter();
 
-const normalizeStoredCup = (value: string) =>
-  value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-
 tracksRouter.openapi(getTracksRoute, (c) => {
   const { cup } = c.req.valid('query');
-  const currentEtag = `"${dataVersion}"`;
-  c.header('ETag', currentEtag);
 
-  if (checkNotModified(c, currentEtag)) {
+  if (isNotModified(c, etags.tracks)) {
     return c.body(null, 304);
   }
 
-  if (cup) {
-    const byCup = tracks.filter((t) => normalizeStoredCup(t.cup) === cup);
-    return c.json({ dataVersion, tracks: byCup }, 200);
-  }
-
-  return c.json({ dataVersion, tracks }, 200);
+  const result = cup ? tracks.filter((t) => t.cupId === cup) : tracks;
+  return c.json({ dataVersion, tracks: result }, 200);
 });
 
 tracksRouter.openapi(getTrackByIdRoute, (c) => {
@@ -88,6 +82,10 @@ tracksRouter.openapi(getTrackByIdRoute, (c) => {
 
   if (!track) {
     return notFound(c, 'Track', id);
+  }
+
+  if (isNotModified(c, etags.tracks)) {
+    return c.body(null, 304);
   }
 
   return c.json(track, 200);

@@ -5,7 +5,8 @@ import {
   parseSurfaceCoverage,
   parseTerrainCoverage,
   toId,
-} from './lib/parser';
+} from './parser';
+import { assertValidIds } from './validate';
 
 describe('parse-statpedia helpers', () => {
   it('normalizes US display names', () => {
@@ -23,7 +24,15 @@ describe('parse-statpedia helpers', () => {
   it('parses percent values with EU decimals', () => {
     expect(parsePercent('47%')).toBe(47);
     expect(parsePercent('47,5%')).toBe(47.5);
-    expect(parsePercent(undefined)).toBe(0);
+    expect(parsePercent(' 0% ')).toBe(0);
+  });
+
+  it('rejects empty or non-numeric percent cells', () => {
+    expect(() => parsePercent(undefined)).toThrow(/Invalid percentage/);
+    expect(() => parsePercent('')).toThrow(/Invalid percentage/);
+    expect(() => parsePercent('N/A', 'road coverage')).toThrow(
+      "Invalid road coverage in CSV: 'N/A'",
+    );
   });
 
   it('parses surface coverage', () => {
@@ -46,6 +55,19 @@ describe('parse-statpedia helpers', () => {
     expect(coverage).toEqual({ road: 76, rough: 24, water: 0 });
   });
 
+  it('rounds terrain coverage so it sums to exactly 100', () => {
+    const row = [''] as string[];
+    row[8] = '1%';
+    row[9] = '1%';
+    row[10] = '1%';
+    const coverage = parseTerrainCoverage(row);
+    expect(coverage).toEqual({ road: 33.34, rough: 33.33, water: 33.33 });
+    const hundredths = [coverage.road, coverage.rough, coverage.water].map((v) =>
+      Math.round(v * 100),
+    );
+    expect(hundredths.reduce((a, b) => a + b)).toBe(10_000);
+  });
+
   it('handles zero terrain coverage safely', () => {
     const row = [''] as string[];
     row[8] = '0%';
@@ -53,5 +75,24 @@ describe('parse-statpedia helpers', () => {
     row[10] = '0%';
     const coverage = parseTerrainCoverage(row);
     expect(coverage).toEqual({ road: 0, rough: 0, water: 0 });
+  });
+});
+
+describe('assertValidIds', () => {
+  it('accepts valid unique slugs', () => {
+    expect(() => assertValidIds('things', ['a', 'b-2'])).not.toThrow();
+  });
+
+  it('rejects malformed slugs', () => {
+    expect(() => assertValidIds('things', ['ok', 'Not-Ok', '-x'])).toThrow(
+      "Invalid IDs in things: 'Not-Ok', '-x'",
+    );
+  });
+
+  it('rejects duplicates unless disabled', () => {
+    expect(() => assertValidIds('things', ['a', 'a', 'b', 'b', 'b'])).toThrow(
+      'Duplicate IDs in things: a, b',
+    );
+    expect(() => assertValidIds('tags', ['a', 'a'], { unique: false })).not.toThrow();
   });
 });

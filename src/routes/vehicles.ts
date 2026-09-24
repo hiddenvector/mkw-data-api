@@ -2,13 +2,15 @@ import { createRoute } from '@hono/zod-openapi';
 import { createRouter } from '../app';
 import { notFound, ValidationErrorResponseSchema, NotFoundErrorResponseSchema } from '../errors';
 import {
-  VehicleIdParamSchema,
+  ConditionalRequestHeadersSchema,
+  EtagResponseHeadersSchema,
   TagQuerySchema,
+  VehicleIdParamSchema,
   VehiclesResponseSchema,
   VehicleSchema,
 } from '../schemas';
-import { checkNotModified } from '../utils';
-import { vehicles, dataVersion } from '../data';
+import { isNotModified } from '../utils';
+import { vehicles, dataVersion, etags } from '../data';
 
 const getVehiclesRoute = createRoute({
   method: 'get',
@@ -17,18 +19,19 @@ const getVehiclesRoute = createRoute({
   summary: 'List All Vehicles',
   description:
     'Returns all vehicles with their stats. Use ?tag= to filter. Supports ETag/If-None-Match for caching.',
-  request: { query: TagQuerySchema },
+  request: { query: TagQuerySchema, headers: ConditionalRequestHeadersSchema },
   responses: {
     200: {
       content: { 'application/json': { schema: VehiclesResponseSchema } },
+      headers: EtagResponseHeadersSchema,
       description: 'Success',
+    },
+    304: {
+      description: 'Not Modified - use cached response',
     },
     400: {
       content: { 'application/json': { schema: ValidationErrorResponseSchema } },
       description: 'Invalid tag format',
-    },
-    304: {
-      description: 'Not Modified - use cached response',
     },
   },
 });
@@ -38,12 +41,16 @@ const getVehicleByIdRoute = createRoute({
   path: '/vehicles/{id}',
   tags: ['Vehicles'],
   summary: 'Get Vehicle by ID',
-  description: 'Returns a single vehicle by its ID',
-  request: { params: VehicleIdParamSchema },
+  description: 'Returns a single vehicle by its ID. Supports ETag/If-None-Match for caching.',
+  request: { params: VehicleIdParamSchema, headers: ConditionalRequestHeadersSchema },
   responses: {
     200: {
       content: { 'application/json': { schema: VehicleSchema } },
+      headers: EtagResponseHeadersSchema,
       description: 'Vehicle found',
+    },
+    304: {
+      description: 'Not Modified - use cached response',
     },
     400: {
       content: { 'application/json': { schema: ValidationErrorResponseSchema } },
@@ -60,19 +67,13 @@ const vehiclesRouter = createRouter();
 
 vehiclesRouter.openapi(getVehiclesRoute, (c) => {
   const { tag } = c.req.valid('query');
-  const currentEtag = `"${dataVersion}"`;
-  c.header('ETag', currentEtag);
 
-  if (checkNotModified(c, currentEtag)) {
+  if (isNotModified(c, etags.vehicles)) {
     return c.body(null, 304);
   }
 
-  if (tag) {
-    const byTag = vehicles.filter((veh) => veh.tag === tag);
-    return c.json({ dataVersion, vehicles: byTag }, 200);
-  }
-
-  return c.json({ dataVersion, vehicles }, 200);
+  const result = tag ? vehicles.filter((veh) => veh.tag === tag) : vehicles;
+  return c.json({ dataVersion, vehicles: result }, 200);
 });
 
 vehiclesRouter.openapi(getVehicleByIdRoute, (c) => {
@@ -81,6 +82,10 @@ vehiclesRouter.openapi(getVehicleByIdRoute, (c) => {
 
   if (!vehicle) {
     return notFound(c, 'Vehicle', id);
+  }
+
+  if (isNotModified(c, etags.vehicles)) {
+    return c.body(null, 304);
   }
 
   return c.json(vehicle, 200);

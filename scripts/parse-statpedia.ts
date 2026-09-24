@@ -8,10 +8,20 @@
  * Usage: npm run generate-data
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { parse } from 'csv-parse/sync';
-import type { Character, Vehicle, Track, BaseStats } from '../src/schemas';
+import {
+  CharactersResponseSchema,
+  TracksResponseSchema,
+  VehiclesResponseSchema,
+  type BaseStats,
+  type Character,
+  type Track,
+  type Vehicle,
+} from '../src/schemas';
+import { assertValidIds } from '../src/lib/validate';
 import {
   COL,
   type CsvRow,
@@ -25,10 +35,11 @@ import {
 // Constants
 // ============================================================================
 
-const DATA_VERSION = process.env.DATA_VERSION ?? new Date().toISOString().split('T')[0];
-if (process.env.DATA_VERSION && !process.env.DATA_VERSION_SILENT) {
-  console.warn(`⚠️  DATA_VERSION override set to ${DATA_VERSION}`);
-}
+/**
+ * Version to stamp on data that actually changed. Unchanged output keeps its existing
+ * version, so re-running the generator is idempotent (CI relies on this).
+ */
+const NEW_DATA_VERSION = process.env.DATA_VERSION ?? new Date().toISOString().split('T')[0];
 
 /** Cup assignments for tracks */
 const CUP_MAPPING: Record<string, string> = {
@@ -85,8 +96,6 @@ const CUP_MAPPING: Record<string, string> = {
 // Utility Functions
 // ============================================================================
 
-
-
 /**
  * Safely parse an integer from a CSV cell with detailed error context
  * @throws {Error} If value is not a valid integer
@@ -95,9 +104,10 @@ function safeParseInt(
   value: string | undefined,
   context?: { row?: number; col?: number; rowData?: CsvRow },
 ): number {
-  const n = parseInt(value ?? '', 10);
-  if (isNaN(n)) {
-    let msg = `Invalid number in CSV: '${value}'`;
+  const trimmed = (value ?? '').trim();
+  const n = trimmed === '' ? NaN : Number(trimmed);
+  if (!Number.isInteger(n)) {
+    let msg = `Invalid integer in CSV: '${value}'`;
     if (context?.row !== undefined && context?.col !== undefined) {
       msg += ` (row ${context.row + 1}, col ${context.col + 1})`;
     }
@@ -166,79 +176,27 @@ function parseStats(row: CsvRow, rowIndex: number): BaseStats {
   };
 }
 
-
 // ============================================================================
 // Validation
 // ============================================================================
 
-/**
- * Validate a character has required fields and reasonable stat values
- */
-function validateCharacter(char: Character, index: number): void {
-  if (!char.id || !char.name) {
-    throw new Error(`Character ${index}: missing id or name`);
-  }
-
-  // Sanity check: stats should be in reasonable ranges (0-20)
-  const stats = [
-    char.speed.road,
-    char.speed.rough,
-    char.speed.water,
-    char.handling.road,
-    char.handling.rough,
-    char.handling.water,
-    char.acceleration,
-    char.miniTurbo,
-    char.weight,
-    char.coinCurve,
-  ];
-
-  for (const stat of stats) {
-    if (stat < 0 || stat > 20) {
-      throw new Error(`Character ${char.name}: invalid stat value ${stat} (expected 0-20)`);
-    }
-  }
-}
+/** Allowed drift from 100% in raw surface coverage (source data is hand-estimated). */
+const SURFACE_COVERAGE_TOLERANCE = 5;
 
 /**
- * Validate a vehicle has required fields and reasonable stat values
+ * Validate a track's source-specific invariants. Shape and ranges are checked
+ * later against the same Zod schemas the Worker uses.
  */
-function validateVehicle(vehicle: Vehicle, index: number): void {
-  if (!vehicle.id || !vehicle.name) {
-    throw new Error(`Vehicle ${index}: missing id or name`);
+function validateTrack(track: Track): void {
+  if (!CUP_MAPPING[track.name]) {
+    throw new Error(`Track '${track.name}': not in CUP_MAPPING (new track? add it)`);
   }
 
-  if (!vehicle.tag) {
-    console.warn(`⚠️  Vehicle ${vehicle.name}: missing tag`);
-  }
-}
-
-/**
- * Validate a track has required fields
- */
-function validateTrack(track: Track, index: number): void {
-  if (!track.id || !track.name) {
-    throw new Error(`Track ${index}: missing id or name`);
-  }
-
-  if (track.cup === 'Unknown Cup') {
-    console.warn(`⚠️  Track ${track.name}: unknown cup (not in mapping)`);
-  }
-
-  // Validate surface coverage adds up to ~100% (allow some tolerance for rounding)
-  if (track.surfaceCoverage) {
-    const total =
-      track.surfaceCoverage.road +
-      track.surfaceCoverage.rough +
-      track.surfaceCoverage.water +
-      track.surfaceCoverage.neutral +
-      track.surfaceCoverage.offRoad;
-
-    if (total < 95 || total > 105) {
-      console.warn(
-        `⚠️  Track ${track.name}: surface coverage sums to ${total.toFixed(1)}% (expected ~100%)`,
-      );
-    }
+  const total = Object.values(track.surfaceCoverage).reduce((a, b) => a + b, 0);
+  if (Math.abs(total - 100) > SURFACE_COVERAGE_TOLERANCE) {
+    throw new Error(
+      `Track '${track.name}': surface coverage sums to ${total.toFixed(1)}% (expected 100 ± ${SURFACE_COVERAGE_TOLERANCE})`,
+    );
   }
 }
 
@@ -273,14 +231,12 @@ function parseCharacters(csvPath: string): Character[] {
       // Get character names from next row
       const nextRow = rows[i + 1];
       if (!nextRow) {
-        console.warn(`⚠️  Row ${i + 1}: stat row has no following name row`);
-        continue;
+        throw new Error(`Row ${i + 1}: stat row has no following name row`);
       }
 
       const names = extractNames(nextRow);
       if (names.length === 0) {
-        console.warn(`⚠️  Row ${i + 1}: no character names found`);
-        continue;
+        throw new Error(`Row ${i + 1}: no character names found`);
       }
 
       // Create one character per name with shared stats
@@ -292,7 +248,6 @@ function parseCharacters(csvPath: string): Character[] {
           ...stats,
         };
 
-        validateCharacter(character, characters.length);
         characters.push(character);
       }
     }
@@ -328,18 +283,19 @@ function parseVehicles(csvPath: string): Vehicle[] {
     if (hasStats(row, COL.SPEED_ROAD)) {
       const stats = parseStats(row, i);
       const tag = (row[COL.TAG] || '').trim().toLowerCase();
+      if (!tag) {
+        throw new Error(`Row ${i + 1}: vehicle stat row has no tag`);
+      }
 
       // Get vehicle names from next row
       const nextRow = rows[i + 1];
       if (!nextRow) {
-        console.warn(`⚠️  Row ${i + 1}: stat row has no following name row`);
-        continue;
+        throw new Error(`Row ${i + 1}: stat row has no following name row`);
       }
 
       const names = extractNames(nextRow);
       if (names.length === 0) {
-        console.warn(`⚠️  Row ${i + 1}: no vehicle names found`);
-        continue;
+        throw new Error(`Row ${i + 1}: no vehicle names found`);
       }
 
       // Create one vehicle per name with shared stats
@@ -351,7 +307,6 @@ function parseVehicles(csvPath: string): Vehicle[] {
           ...stats,
         };
 
-        validateVehicle(vehicle, vehicles.length);
         vehicles.push(vehicle);
       }
     }
@@ -408,15 +363,17 @@ function parseTracks(csvPath: string): Track[] {
         continue;
       }
 
+      const cup = CUP_MAPPING[trackName] ?? '';
       const track: Track = {
         id: toId(trackName),
         name: trackName,
-        cup: CUP_MAPPING[trackName] || 'Unknown Cup',
+        cup,
+        cupId: toId(cup),
         surfaceCoverage: parseSurfaceCoverage(row),
         terrainCoverage: parseTerrainCoverage(row),
       };
 
-      validateTrack(track, tracks.length);
+      validateTrack(track);
       tracks.push(track);
     }
   }
@@ -425,107 +382,139 @@ function parseTracks(csvPath: string): Track[] {
 }
 
 // ============================================================================
-// File I/O
+// Output
 // ============================================================================
 
-/**
- * Write parsed data to JSON file with versioning
- */
-function writeJSON<T>(filePath: string, data: T, label: string): void {
-  const json = JSON.stringify(
-    {
-      dataVersion: DATA_VERSION,
-      [label]: data,
-    },
-    null,
-    2,
-  );
+type Dataset = {
+  label: 'characters' | 'vehicles' | 'tracks';
+  csv: string;
+  parse: (csvPath: string) => unknown[];
+  validate: (payload: unknown) => void;
+};
 
-  fs.writeFileSync(filePath, `${json}\n`);
+const DATASETS: Dataset[] = [
+  {
+    label: 'characters',
+    csv: 'characters.csv',
+    parse: parseCharacters,
+    validate: (payload) => {
+      const { characters } = CharactersResponseSchema.parse(payload);
+      assertValidIds(
+        'characters',
+        characters.map((c) => c.id),
+      );
+    },
+  },
+  {
+    label: 'vehicles',
+    csv: 'vehicles.csv',
+    parse: parseVehicles,
+    validate: (payload) => {
+      const { vehicles } = VehiclesResponseSchema.parse(payload);
+      assertValidIds(
+        'vehicles',
+        vehicles.map((v) => v.id),
+      );
+      assertValidIds(
+        'vehicle tags',
+        vehicles.map((v) => v.tag),
+        { unique: false },
+      );
+    },
+  },
+  {
+    label: 'tracks',
+    csv: 'surface-coverage.csv',
+    parse: parseTracks,
+    validate: (payload) => {
+      const { tracks } = TracksResponseSchema.parse(payload);
+      assertValidIds(
+        'tracks',
+        tracks.map((t) => t.id),
+      );
+    },
+  },
+];
+
+const serialize = (dataVersion: string, label: string, items: unknown[]) =>
+  `${JSON.stringify({ dataVersion, [label]: items }, null, 2)}\n`;
+
+function readExistingVersion(filePath: string): string | undefined {
+  if (!fs.existsSync(filePath)) return undefined;
+  const existing = JSON.parse(fs.readFileSync(filePath, 'utf-8')) as { dataVersion?: unknown };
+  return typeof existing.dataVersion === 'string' ? existing.dataVersion : undefined;
 }
 
-/**
- * Write the data version constant to TypeScript file
- */
-function writeDataVersion(): void {
+function writeDataVersion(dataVersion: string): void {
   const content = `/**
  * Data version - updated when Statpedia source data is imported
  *
  * This file is auto-generated by scripts/parse-statpedia.ts
  * DO NOT EDIT MANUALLY
  */
-export const DATA_VERSION = '${DATA_VERSION}';
+export const DATA_VERSION = '${dataVersion}';
 `;
 
-  const filePath = path.join(process.cwd(), 'src', 'data-version.ts');
-  fs.writeFileSync(filePath, content);
+  fs.writeFileSync(path.join(process.cwd(), 'src', 'data-version.ts'), content);
 }
 
 // ============================================================================
 // Main
 // ============================================================================
 
-async function main() {
+function main() {
   console.log('🚀 Parsing Statpedia CSVs...\n');
 
   const csvDir = path.join(process.cwd(), 'scripts', 'csv');
   const dataDir = path.join(process.cwd(), 'data');
+  fs.mkdirSync(dataDir, { recursive: true });
 
-  // Ensure data directory exists
-  if (!fs.existsSync(dataDir)) {
-    fs.mkdirSync(dataDir, { recursive: true });
+  // Parse and validate everything before writing anything
+  const parsed = DATASETS.map((dataset) => {
+    const csvPath = path.join(csvDir, dataset.csv);
+    if (!fs.existsSync(csvPath)) {
+      throw new Error(`Missing source CSV: scripts/csv/${dataset.csv}`);
+    }
+    console.log(`📊 Parsing ${dataset.label}...`);
+    const items = dataset.parse(csvPath);
+    dataset.validate({ dataVersion: NEW_DATA_VERSION, [dataset.label]: items });
+    console.log(`   ✅ Parsed ${items.length} ${dataset.label}`);
+    return { ...dataset, items, filePath: path.join(dataDir, `${dataset.label}.json`) };
+  });
+
+  // Keep the existing version if every file would be byte-identical under it
+  const versions = new Set(parsed.map((d) => readExistingVersion(d.filePath)));
+  const [existingVersion] = versions;
+  const unchanged =
+    versions.size === 1 &&
+    existingVersion !== undefined &&
+    parsed.every(
+      (d) => fs.readFileSync(d.filePath, 'utf-8') === serialize(existingVersion, d.label, d.items),
+    );
+  const dataVersion = unchanged && !process.env.DATA_VERSION ? existingVersion : NEW_DATA_VERSION;
+
+  if (process.env.DATA_VERSION) {
+    console.warn(`\n⚠️  DATA_VERSION override set to ${dataVersion}`);
   }
 
-  // Write data version constant
-  writeDataVersion();
-  console.log(`📅 Generated src/data-version.ts (${DATA_VERSION})\n`);
-
-  // Parse characters
-  const charactersPath = path.join(csvDir, 'characters.csv');
-  if (fs.existsSync(charactersPath)) {
-    console.log('📊 Parsing characters...');
-    const characters = parseCharacters(charactersPath);
-    console.log(`   ✅ Parsed ${characters.length} characters`);
-
-    writeJSON(path.join(dataDir, 'characters.json'), characters, 'characters');
-    console.log('   💾 Wrote data/characters.json\n');
-  } else {
-    console.log('   ⚠️  characters.csv not found, skipping\n');
+  for (const d of parsed) {
+    fs.writeFileSync(d.filePath, serialize(dataVersion, d.label, d.items));
   }
+  writeDataVersion(dataVersion);
 
-  // Parse vehicles
-  const vehiclesPath = path.join(csvDir, 'vehicles.csv');
-  if (fs.existsSync(vehiclesPath)) {
-    console.log('📊 Parsing vehicles...');
-    const vehicles = parseVehicles(vehiclesPath);
-    console.log(`   ✅ Parsed ${vehicles.length} vehicles`);
-
-    writeJSON(path.join(dataDir, 'vehicles.json'), vehicles, 'vehicles');
-    console.log('   💾 Wrote data/vehicles.json\n');
-  } else {
-    console.log('   ⚠️  vehicles.csv not found, skipping\n');
-  }
-
-  // Parse tracks
-  const tracksPath = path.join(csvDir, 'surface-coverage.csv');
-  if (fs.existsSync(tracksPath)) {
-    console.log('📊 Parsing tracks...');
-    const tracks = parseTracks(tracksPath);
-    console.log(`   ✅ Parsed ${tracks.length} tracks`);
-
-    writeJSON(path.join(dataDir, 'tracks.json'), tracks, 'tracks');
-    console.log('   💾 Wrote data/tracks.json\n');
-  } else {
-    console.log('   ⚠️  surface-coverage.csv not found, skipping\n');
-  }
-
-  console.log('✨ Done! Data files generated in data/');
-  console.log(`📅 Data version: ${DATA_VERSION}`);
+  console.log(
+    unchanged
+      ? '\n✨ Data unchanged.'
+      : `\n✨ Data files generated in data/ and src/data-version.ts`,
+  );
+  console.log(`📅 Data version: ${dataVersion}`);
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch((err) => {
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  try {
+    main();
+  } catch (err) {
     console.error('❌ Fatal error:', err);
     process.exit(1);
-  });
+  }
 }

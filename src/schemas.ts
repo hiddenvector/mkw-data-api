@@ -4,7 +4,7 @@
  * These schemas serve three purposes:
  * 1. Runtime validation of request parameters
  * 2. Auto-generation of OpenAPI specification
- * 3. TypeScript type inference (can replace types.ts)
+ * 3. TypeScript type inference
  */
 
 import { z } from '@hono/zod-openapi';
@@ -17,7 +17,7 @@ import { z } from '@hono/zod-openapi';
 const MAX_ID_LENGTH = 64;
 
 /** Regex for valid entity IDs: lowercase alphanumeric with hyphens, no leading/trailing hyphens */
-const ID_PATTERN = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
+export const ID_PATTERN = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
 
 /** Stat range for character/vehicle stats (0-20 covers all known values with headroom) */
 const STAT_MIN = 0;
@@ -91,6 +91,30 @@ export const CupQuerySchema = z.object({
 });
 
 // ============================================================================
+// Conditional Request Schemas
+// ============================================================================
+
+/** If-None-Match request header for ETag revalidation (keys are lowercase for Hono's validator). */
+export const ConditionalRequestHeadersSchema = z.object({
+  'if-none-match': z
+    .string()
+    .optional()
+    .openapi({
+      param: { name: 'if-none-match', in: 'header' },
+      description: 'ETag from a previous response; returns 304 Not Modified if unchanged.',
+      example: '"1.1.0-1x2y3z4w5v"',
+    }),
+});
+
+/** ETag response header returned by all data endpoints. */
+export const EtagResponseHeadersSchema = z.object({
+  ETag: z.string().openapi({
+    description: 'Opaque validator; changes whenever the data or service version changes.',
+    example: '"1.1.0-1x2y3z4w5v"',
+  }),
+});
+
+// ============================================================================
 // Core Data Schemas
 // ============================================================================
 
@@ -103,7 +127,8 @@ export const TerrainStatsSchema = z
       description: 'Performance on paved surfaces (asphalt, concrete, bricks). Higher is better.',
     }),
     rough: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
-      description: 'Performance on coarse terrain (dirt, gravel, sand, snow, ice). Higher is better.',
+      description:
+        'Performance on coarse terrain (dirt, gravel, sand, snow, ice). Higher is better.',
     }),
     water: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
       description: 'Performance on liquid surfaces (water, lava, chocolate). Higher is better.',
@@ -222,13 +247,15 @@ export const TrackSchema = z
   .object({
     id: z.string().openapi({ description: 'Unique identifier (slug format)' }),
     name: z.string().openapi({ description: 'Track display name' }),
-    cup: z.string().openapi({ description: 'The cup this track belongs to' }),
+    cup: z.string().openapi({ description: 'Display name of the cup this track belongs to' }),
+    cupId: z
+      .string()
+      .openapi({ description: 'Slug of the cup this track belongs to (use with ?cup=)' }),
     surfaceCoverage: SurfaceCoverageSchema.openapi({
       description: 'Raw surface breakdown including neutral/off-road.',
     }),
     terrainCoverage: TerrainCoverageSchema.openapi({
-      description:
-        'Adjusted road/rough/water mix normalized to 100% for combo calculations.',
+      description: 'Adjusted road/rough/water mix normalized to 100% for combo calculations.',
     }),
   })
   .openapi('Track', {
@@ -236,6 +263,7 @@ export const TrackSchema = z
       id: 'mario-bros-circuit',
       name: 'Mario Bros. Circuit',
       cup: 'Mushroom Cup',
+      cupId: 'mushroom-cup',
       surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
       terrainCoverage: { road: 76, rough: 24, water: 0 },
     },
@@ -350,7 +378,6 @@ export const VehiclesResponseSchema = z
     },
   });
 
-
 /**
  * Response containing all tracks.
  * Example shows first 3 tracks (full response contains 30).
@@ -368,6 +395,7 @@ export const TracksResponseSchema = z
           id: 'mario-bros-circuit',
           name: 'Mario Bros. Circuit',
           cup: 'Mushroom Cup',
+          cupId: 'mushroom-cup',
           surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
           terrainCoverage: { road: 76, rough: 24, water: 0 },
         },
@@ -375,6 +403,7 @@ export const TracksResponseSchema = z
           id: 'crown-city',
           name: 'Crown City',
           cup: 'Mushroom Cup',
+          cupId: 'mushroom-cup',
           surfaceCoverage: { road: 78, rough: 0, water: 0, neutral: 20, offRoad: 2 },
           terrainCoverage: { road: 100, rough: 0, water: 0 },
         },
@@ -382,13 +411,13 @@ export const TracksResponseSchema = z
           id: 'whistlestop-summit',
           name: 'Whistlestop Summit',
           cup: 'Mushroom Cup',
+          cupId: 'mushroom-cup',
           surfaceCoverage: { road: 35, rough: 0, water: 0, neutral: 62, offRoad: 3 },
           terrainCoverage: { road: 100, rough: 0, water: 0 },
         },
       ],
     },
   });
-
 
 /**
  * Health check response.
