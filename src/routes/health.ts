@@ -3,7 +3,7 @@ import { createRouter } from '../app';
 import { API_CONFIG } from '../config';
 import { rateLimitedResponse } from '../errors';
 import { HealthResponseSchema } from '../schemas';
-import { characters, vehicles, tracks, dataVersion } from '../data';
+import { characters, vehicles, tracks, rallies, dataVersion } from '../data';
 
 const healthRoute = createRoute({
   method: 'get',
@@ -34,6 +34,7 @@ health.openapi(healthRoute, (c) => {
         characters: characters.length,
         vehicles: vehicles.length,
         tracks: tracks.length,
+        rallies: rallies.length,
       },
     },
     200,

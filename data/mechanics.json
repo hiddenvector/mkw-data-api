@@ -1,0 +1,1281 @@
+{
+  "dataVersion": "2026-09-24",
+  "speed": {
+    "road": [
+      {
+        "level": 0,
+        "units": 100,
+        "bonusPercent": 0
+      },
+      {
+        "level": 1,
+        "units": 100.312,
+        "bonusPercent": 0.312
+      },
+      {
+        "level": 2,
+        "units": 100.624,
+        "bonusPercent": 0.624
+      },
+      {
+        "level": 3,
+        "units": 100.936,
+        "bonusPercent": 0.936
+      },
+      {
+        "level": 4,
+        "units": 101.248,
+        "bonusPercent": 1.248
+      },
+      {
+        "level": 5,
+        "units": 101.56,
+        "bonusPercent": 1.56
+      },
+      {
+        "level": 6,
+        "units": 101.872,
+        "bonusPercent": 1.872
+      },
+      {
+        "level": 7,
+        "units": 102.184,
+        "bonusPercent": 2.184
+      },
+      {
+        "level": 8,
+        "units": 102.496,
+        "bonusPercent": 2.496
+      },
+      {
+        "level": 9,
+        "units": 102.808,
+        "bonusPercent": 2.808
+      },
+      {
+        "level": 10,
+        "units": 103.12,
+        "bonusPercent": 3.12
+      },
+      {
+        "level": 11,
+        "units": 103.432,
+        "bonusPercent": 3.432
+      },
+      {
+        "level": 12,
+        "units": 103.744,
+        "bonusPercent": 3.744
+      },
+      {
+        "level": 13,
+        "units": 104.056,
+        "bonusPercent": 4.056
+      },
+      {
+        "level": 14,
+        "units": 104.368,
+        "bonusPercent": 4.368
+      },
+      {
+        "level": 15,
+        "units": 104.68,
+        "bonusPercent": 4.68
+      },
+      {
+        "level": 16,
+        "units": 104.992,
+        "bonusPercent": 4.992
+      }
+    ],
+    "rough": [
+      {
+        "level": 0,
+        "units": 100,
+        "bonusPercent": 0
+      },
+      {
+        "level": 1,
+        "units": 100.312,
+        "bonusPercent": 0.312
+      },
+      {
+        "level": 2,
+        "units": 100.624,
+        "bonusPercent": 0.624
+      },
+      {
+        "level": 3,
+        "units": 100.936,
+        "bonusPercent": 0.936
+      },
+      {
+        "level": 4,
+        "units": 101.248,
+        "bonusPercent": 1.248
+      },
+      {
+        "level": 5,
+        "units": 101.56,
+        "bonusPercent": 1.56
+      },
+      {
+        "level": 6,
+        "units": 101.872,
+        "bonusPercent": 1.872
+      },
+      {
+        "level": 7,
+        "units": 102.184,
+        "bonusPercent": 2.184
+      },
+      {
+        "level": 8,
+        "units": 102.496,
+        "bonusPercent": 2.496
+      },
+      {
+        "level": 9,
+        "units": 102.808,
+        "bonusPercent": 2.808
+      },
+      {
+        "level": 10,
+        "units": 103.12,
+        "bonusPercent": 3.12
+      },
+      {
+        "level": 11,
+        "units": 103.432,
+        "bonusPercent": 3.432
+      },
+      {
+        "level": 12,
+        "units": 103.744,
+        "bonusPercent": 3.744
+      },
+      {
+        "level": 13,
+        "units": 104.056,
+        "bonusPercent": 4.056
+      },
+      {
+        "level": 14,
+        "units": 104.368,
+        "bonusPercent": 4.368
+      },
+      {
+        "level": 15,
+        "units": 104.68,
+        "bonusPercent": 4.68
+      },
+      {
+        "level": 16,
+        "units": 104.992,
+        "bonusPercent": 4.992
+      }
+    ],
+    "water": [
+      {
+        "level": 0,
+        "units": 90,
+        "bonusPercent": 0
+      },
+      {
+        "level": 1,
+        "units": 90.281,
+        "bonusPercent": 0.312
+      },
+      {
+        "level": 2,
+        "units": 90.562,
+        "bonusPercent": 0.624
+      },
+      {
+        "level": 3,
+        "units": 90.842,
+        "bonusPercent": 0.936
+      },
+      {
+        "level": 4,
+        "units": 91.123,
+        "bonusPercent": 1.248
+      },
+      {
+        "level": 5,
+        "units": 91.404,
+        "bonusPercent": 1.56
+      },
+      {
+        "level": 6,
+        "units": 91.685,
+        "bonusPercent": 1.872
+      },
+      {
+        "level": 7,
+        "units": 91.966,
+        "bonusPercent": 2.184
+      },
+      {
+        "level": 8,
+        "units": 92.246,
+        "bonusPercent": 2.496
+      },
+      {
+        "level": 9,
+        "units": 92.527,
+        "bonusPercent": 2.808
+      },
+      {
+        "level": 10,
+        "units": 92.808,
+        "bonusPercent": 3.12
+      },
+      {
+        "level": 11,
+        "units": 93.089,
+        "bonusPercent": 3.432
+      },
+      {
+        "level": 12,
+        "units": 93.37,
+        "bonusPercent": 3.744
+      },
+      {
+        "level": 13,
+        "units": 93.65,
+        "bonusPercent": 4.056
+      },
+      {
+        "level": 14,
+        "units": 93.931,
+        "bonusPercent": 4.368
+      },
+      {
+        "level": 15,
+        "units": 94.212,
+        "bonusPercent": 4.68
+      },
+      {
+        "level": 16,
+        "units": 94.493,
+        "bonusPercent": 4.992
+      },
+      {
+        "level": 17,
+        "units": 94.774,
+        "bonusPercent": 5.304
+      }
+    ],
+    "gliding": [
+      {
+        "level": 0,
+        "units": 102.496,
+        "bonusPercent": 0
+      },
+      {
+        "level": 1,
+        "units": 102.998,
+        "bonusPercent": 0.49
+      },
+      {
+        "level": 2,
+        "units": 103.5,
+        "bonusPercent": 0.98
+      },
+      {
+        "level": 3,
+        "units": 104.003,
+        "bonusPercent": 1.47
+      }
+    ]
+  },
+  "coinCurve": [
+    {
+      "level": 0,
+      "bonusPercentByCoins": [
+        0,
+        0.26,
+        0.34,
+        0.46,
+        0.52,
+        0.64,
+        0.72,
+        0.85,
+        0.94,
+        1.1,
+        1.22,
+        1.38,
+        1.53,
+        1.72,
+        1.94,
+        2.17,
+        2.45,
+        2.76,
+        3.14,
+        3.69,
+        5
+      ]
+    },
+    {
+      "level": 1,
+      "bonusPercentByCoins": [
+        0,
+        0.34,
+        0.45,
+        0.59,
+        0.67,
+        0.8,
+        0.89,
+        1.02,
+        1.12,
+        1.27,
+        1.4,
+        1.56,
+        1.71,
+        1.89,
+        2.1,
+        2.33,
+        2.6,
+        2.89,
+        3.25,
+        3.76,
+        5
+      ]
+    },
+    {
+      "level": 2,
+      "bonusPercentByCoins": [
+        0,
+        0.41,
+        0.56,
+        0.71,
+        0.81,
+        0.95,
+        1.05,
+        1.19,
+        1.3,
+        1.45,
+        1.59,
+        1.74,
+        1.89,
+        2.07,
+        2.27,
+        2.48,
+        2.74,
+        3.01,
+        3.35,
+        3.84,
+        5
+      ]
+    },
+    {
+      "level": 3,
+      "bonusPercentByCoins": [
+        0,
+        0.49,
+        0.66,
+        0.84,
+        0.96,
+        1.11,
+        1.22,
+        1.37,
+        1.48,
+        1.63,
+        1.77,
+        1.92,
+        2.07,
+        2.24,
+        2.44,
+        2.64,
+        2.88,
+        3.14,
+        3.46,
+        3.91,
+        5
+      ]
+    },
+    {
+      "level": 4,
+      "bonusPercentByCoins": [
+        0,
+        0.56,
+        0.77,
+        0.97,
+        1.11,
+        1.26,
+        1.39,
+        1.54,
+        1.66,
+        1.81,
+        1.95,
+        2.11,
+        2.25,
+        2.42,
+        2.6,
+        2.79,
+        3.03,
+        3.27,
+        3.57,
+        3.99,
+        5
+      ]
+    },
+    {
+      "level": 5,
+      "bonusPercentByCoins": [
+        0,
+        0.64,
+        0.88,
+        1.09,
+        1.25,
+        1.42,
+        1.56,
+        1.71,
+        1.84,
+        1.99,
+        2.14,
+        2.29,
+        2.43,
+        2.59,
+        2.77,
+        2.95,
+        3.17,
+        3.4,
+        3.67,
+        4.06,
+        5
+      ]
+    },
+    {
+      "level": 6,
+      "bonusPercentByCoins": [
+        0,
+        0.72,
+        0.99,
+        1.22,
+        1.4,
+        1.58,
+        1.72,
+        1.88,
+        2.02,
+        2.17,
+        2.32,
+        2.47,
+        2.6,
+        2.76,
+        2.94,
+        3.11,
+        3.32,
+        3.53,
+        3.78,
+        4.14,
+        5
+      ]
+    },
+    {
+      "level": 7,
+      "bonusPercentByCoins": [
+        0,
+        0.79,
+        1.1,
+        1.35,
+        1.55,
+        1.73,
+        1.89,
+        2.06,
+        2.2,
+        2.35,
+        2.5,
+        2.65,
+        2.78,
+        2.94,
+        3.1,
+        3.26,
+        3.46,
+        3.66,
+        3.89,
+        4.22,
+        5
+      ]
+    },
+    {
+      "level": 8,
+      "bonusPercentByCoins": [
+        0,
+        0.87,
+        1.2,
+        1.47,
+        1.7,
+        1.89,
+        2.06,
+        2.23,
+        2.38,
+        2.53,
+        2.69,
+        2.83,
+        2.96,
+        3.11,
+        3.27,
+        3.42,
+        3.6,
+        3.78,
+        3.99,
+        4.29,
+        5
+      ]
+    },
+    {
+      "level": 9,
+      "bonusPercentByCoins": [
+        0,
+        0.94,
+        1.31,
+        1.6,
+        1.84,
+        2.04,
+        2.22,
+        2.4,
+        2.56,
+        2.71,
+        2.87,
+        3.01,
+        3.14,
+        3.28,
+        3.44,
+        3.57,
+        3.75,
+        3.91,
+        4.1,
+        4.37,
+        5
+      ]
+    },
+    {
+      "level": 10,
+      "bonusPercentByCoins": [
+        0,
+        1.02,
+        1.42,
+        1.73,
+        1.99,
+        2.2,
+        2.39,
+        2.58,
+        2.74,
+        2.89,
+        3.05,
+        3.19,
+        3.32,
+        3.46,
+        3.6,
+        3.73,
+        3.89,
+        4.04,
+        4.21,
+        4.44,
+        5
+      ]
+    },
+    {
+      "level": 11,
+      "bonusPercentByCoins": [
+        0,
+        1.09,
+        1.53,
+        1.85,
+        2.14,
+        2.36,
+        2.56,
+        2.75,
+        2.92,
+        3.07,
+        3.24,
+        3.37,
+        3.5,
+        3.63,
+        3.77,
+        3.88,
+        4.04,
+        4.17,
+        4.31,
+        4.52,
+        5
+      ]
+    },
+    {
+      "level": 12,
+      "bonusPercentByCoins": [
+        0,
+        1.17,
+        1.64,
+        1.98,
+        2.28,
+        2.51,
+        2.72,
+        2.92,
+        3.1,
+        3.25,
+        3.42,
+        3.56,
+        3.68,
+        3.8,
+        3.94,
+        4.04,
+        4.18,
+        4.3,
+        4.42,
+        4.59,
+        5
+      ]
+    },
+    {
+      "level": 13,
+      "bonusPercentByCoins": [
+        0,
+        1.24,
+        1.75,
+        2.11,
+        2.43,
+        2.67,
+        2.89,
+        3.09,
+        3.28,
+        3.42,
+        3.6,
+        3.74,
+        3.86,
+        3.98,
+        4.1,
+        4.19,
+        4.32,
+        4.43,
+        4.53,
+        4.67,
+        5
+      ]
+    },
+    {
+      "level": 14,
+      "bonusPercentByCoins": [
+        0,
+        1.32,
+        1.85,
+        2.23,
+        2.58,
+        2.82,
+        3.06,
+        3.27,
+        3.46,
+        3.6,
+        3.79,
+        3.92,
+        4.04,
+        4.15,
+        4.27,
+        4.35,
+        4.47,
+        4.55,
+        4.63,
+        4.75,
+        5
+      ]
+    },
+    {
+      "level": 15,
+      "bonusPercentByCoins": [
+        0,
+        1.39,
+        1.96,
+        2.36,
+        2.73,
+        2.98,
+        3.23,
+        3.44,
+        3.64,
+        3.78,
+        3.97,
+        4.1,
+        4.21,
+        4.33,
+        4.44,
+        4.5,
+        4.61,
+        4.68,
+        4.74,
+        4.82,
+        5
+      ]
+    }
+  ],
+  "acceleration": [
+    {
+      "level": 0,
+      "recoveryTime": {
+        "natural": 2.7,
+        "chargeJump": 2.35
+      }
+    },
+    {
+      "level": 1,
+      "recoveryTime": {
+        "natural": 2.573,
+        "chargeJump": 2.259
+      }
+    },
+    {
+      "level": 2,
+      "recoveryTime": {
+        "natural": 2.446,
+        "chargeJump": 2.17
+      }
+    },
+    {
+      "level": 3,
+      "recoveryTime": {
+        "natural": 2.32,
+        "chargeJump": 2.081
+      }
+    },
+    {
+      "level": 4,
+      "recoveryTime": {
+        "natural": 2.195,
+        "chargeJump": 1.993
+      }
+    },
+    {
+      "level": 5,
+      "recoveryTime": {
+        "natural": 2.071,
+        "chargeJump": 1.906
+      }
+    },
+    {
+      "level": 6,
+      "recoveryTime": {
+        "natural": 1.948,
+        "chargeJump": 1.821
+      }
+    },
+    {
+      "level": 7,
+      "recoveryTime": {
+        "natural": 1.826,
+        "chargeJump": 1.737
+      }
+    },
+    {
+      "level": 8,
+      "recoveryTime": {
+        "natural": 1.705,
+        "chargeJump": 1.654
+      }
+    },
+    {
+      "level": 9,
+      "recoveryTime": {
+        "natural": 1.585,
+        "chargeJump": 1.574
+      }
+    },
+    {
+      "level": 10,
+      "recoveryTime": {
+        "natural": 1.467,
+        "chargeJump": 1.467
+      }
+    },
+    {
+      "level": 11,
+      "recoveryTime": {
+        "natural": 1.35,
+        "chargeJump": null
+      }
+    },
+    {
+      "level": 12,
+      "recoveryTime": {
+        "natural": 1.235,
+        "chargeJump": null
+      }
+    },
+    {
+      "level": 13,
+      "recoveryTime": {
+        "natural": 1.123,
+        "chargeJump": null
+      }
+    },
+    {
+      "level": 14,
+      "recoveryTime": {
+        "natural": 1.014,
+        "chargeJump": null
+      }
+    },
+    {
+      "level": 15,
+      "recoveryTime": {
+        "natural": 0.91,
+        "chargeJump": null
+      }
+    },
+    {
+      "level": 16,
+      "recoveryTime": {
+        "natural": 0.817,
+        "chargeJump": null
+      }
+    }
+  ],
+  "miniTurbo": [
+    {
+      "level": 0,
+      "frames": {
+        "miniTurbo": 27,
+        "superMiniTurbo": 82,
+        "ultraMiniTurbo": 136,
+        "chargeJump": 27,
+        "superChargeJump": 59,
+        "ultraChargeJump": 91
+      }
+    },
+    {
+      "level": 1,
+      "frames": {
+        "miniTurbo": 27,
+        "superMiniTurbo": 83,
+        "ultraMiniTurbo": 139,
+        "chargeJump": 27,
+        "superChargeJump": 60,
+        "ultraChargeJump": 93
+      }
+    },
+    {
+      "level": 2,
+      "frames": {
+        "miniTurbo": 28,
+        "superMiniTurbo": 85,
+        "ultraMiniTurbo": 142,
+        "chargeJump": 28,
+        "superChargeJump": 61,
+        "ultraChargeJump": 94
+      }
+    },
+    {
+      "level": 3,
+      "frames": {
+        "miniTurbo": 28,
+        "superMiniTurbo": 86,
+        "ultraMiniTurbo": 144,
+        "chargeJump": 28,
+        "superChargeJump": 62,
+        "ultraChargeJump": 96
+      }
+    },
+    {
+      "level": 4,
+      "frames": {
+        "miniTurbo": 29,
+        "superMiniTurbo": 88,
+        "ultraMiniTurbo": 148,
+        "chargeJump": 29,
+        "superChargeJump": 63,
+        "ultraChargeJump": 98
+      }
+    },
+    {
+      "level": 5,
+      "frames": {
+        "miniTurbo": 30,
+        "superMiniTurbo": 90,
+        "ultraMiniTurbo": 150,
+        "chargeJump": 30,
+        "superChargeJump": 65,
+        "ultraChargeJump": 100
+      }
+    },
+    {
+      "level": 6,
+      "frames": {
+        "miniTurbo": 30,
+        "superMiniTurbo": 91,
+        "ultraMiniTurbo": 152,
+        "chargeJump": 30,
+        "superChargeJump": 66,
+        "ultraChargeJump": 101
+      }
+    },
+    {
+      "level": 7,
+      "frames": {
+        "miniTurbo": 31,
+        "superMiniTurbo": 93,
+        "ultraMiniTurbo": 155,
+        "chargeJump": 31,
+        "superChargeJump": 67,
+        "ultraChargeJump": 103
+      }
+    },
+    {
+      "level": 8,
+      "frames": {
+        "miniTurbo": 31,
+        "superMiniTurbo": 94,
+        "ultraMiniTurbo": 157,
+        "chargeJump": 31,
+        "superChargeJump": 68,
+        "ultraChargeJump": 105
+      }
+    },
+    {
+      "level": 9,
+      "frames": {
+        "miniTurbo": 32,
+        "superMiniTurbo": 96,
+        "ultraMiniTurbo": 160,
+        "chargeJump": 32,
+        "superChargeJump": 69,
+        "ultraChargeJump": 107
+      }
+    },
+    {
+      "level": 10,
+      "frames": {
+        "miniTurbo": 32,
+        "superMiniTurbo": 97,
+        "ultraMiniTurbo": 163,
+        "chargeJump": 32,
+        "superChargeJump": 70,
+        "ultraChargeJump": 108
+      }
+    },
+    {
+      "level": 11,
+      "frames": {
+        "miniTurbo": 33,
+        "superMiniTurbo": 99,
+        "ultraMiniTurbo": 165,
+        "chargeJump": 33,
+        "superChargeJump": 71,
+        "ultraChargeJump": 110
+      }
+    },
+    {
+      "level": 12,
+      "frames": {
+        "miniTurbo": 33,
+        "superMiniTurbo": 101,
+        "ultraMiniTurbo": 168,
+        "chargeJump": 33,
+        "superChargeJump": 72,
+        "ultraChargeJump": 112
+      }
+    },
+    {
+      "level": 13,
+      "frames": {
+        "miniTurbo": 34,
+        "superMiniTurbo": 102,
+        "ultraMiniTurbo": 171,
+        "chargeJump": 34,
+        "superChargeJump": 74,
+        "ultraChargeJump": 114
+      }
+    }
+  ],
+  "handling": {
+    "road": [
+      {
+        "level": 0,
+        "angularVelocity": 1.226,
+        "periodSeconds": 5.125
+      },
+      {
+        "level": 1,
+        "angularVelocity": 1.249,
+        "periodSeconds": 5.033
+      },
+      {
+        "level": 2,
+        "angularVelocity": 1.271,
+        "periodSeconds": 4.943
+      },
+      {
+        "level": 3,
+        "angularVelocity": 1.294,
+        "periodSeconds": 4.858
+      },
+      {
+        "level": 4,
+        "angularVelocity": 1.316,
+        "periodSeconds": 4.774
+      },
+      {
+        "level": 5,
+        "angularVelocity": 1.339,
+        "periodSeconds": 4.694
+      },
+      {
+        "level": 6,
+        "angularVelocity": 1.361,
+        "periodSeconds": 4.617
+      },
+      {
+        "level": 7,
+        "angularVelocity": 1.384,
+        "periodSeconds": 4.542
+      },
+      {
+        "level": 8,
+        "angularVelocity": 1.406,
+        "periodSeconds": 4.469
+      },
+      {
+        "level": 9,
+        "angularVelocity": 1.429,
+        "periodSeconds": 4.398
+      },
+      {
+        "level": 10,
+        "angularVelocity": 1.451,
+        "periodSeconds": 4.33
+      },
+      {
+        "level": 11,
+        "angularVelocity": 1.474,
+        "periodSeconds": 4.264
+      },
+      {
+        "level": 12,
+        "angularVelocity": 1.496,
+        "periodSeconds": 4.2
+      },
+      {
+        "level": 13,
+        "angularVelocity": 1.519,
+        "periodSeconds": 4.138
+      },
+      {
+        "level": 14,
+        "angularVelocity": 1.541,
+        "periodSeconds": 4.077
+      },
+      {
+        "level": 15,
+        "angularVelocity": 1.564,
+        "periodSeconds": 4.019
+      },
+      {
+        "level": 16,
+        "angularVelocity": 1.586,
+        "periodSeconds": 3.962
+      },
+      {
+        "level": 17,
+        "angularVelocity": 1.609,
+        "periodSeconds": 3.906
+      },
+      {
+        "level": 18,
+        "angularVelocity": 1.631,
+        "periodSeconds": 3.852
+      }
+    ],
+    "rough": [
+      {
+        "level": 0,
+        "angularVelocity": 1.272,
+        "periodSeconds": 4.94
+      },
+      {
+        "level": 1,
+        "angularVelocity": 1.295,
+        "periodSeconds": 4.854
+      },
+      {
+        "level": 2,
+        "angularVelocity": 1.317,
+        "periodSeconds": 4.771
+      },
+      {
+        "level": 3,
+        "angularVelocity": 1.34,
+        "periodSeconds": 4.691
+      },
+      {
+        "level": 4,
+        "angularVelocity": 1.362,
+        "periodSeconds": 4.613
+      },
+      {
+        "level": 5,
+        "angularVelocity": 1.385,
+        "periodSeconds": 4.538
+      },
+      {
+        "level": 6,
+        "angularVelocity": 1.407,
+        "periodSeconds": 4.466
+      },
+      {
+        "level": 7,
+        "angularVelocity": 1.43,
+        "periodSeconds": 4.395
+      },
+      {
+        "level": 8,
+        "angularVelocity": 1.452,
+        "periodSeconds": 4.327
+      },
+      {
+        "level": 9,
+        "angularVelocity": 1.475,
+        "periodSeconds": 4.261
+      },
+      {
+        "level": 10,
+        "angularVelocity": 1.497,
+        "periodSeconds": 4.197
+      },
+      {
+        "level": 11,
+        "angularVelocity": 1.52,
+        "periodSeconds": 4.135
+      },
+      {
+        "level": 12,
+        "angularVelocity": 1.542,
+        "periodSeconds": 4.075
+      },
+      {
+        "level": 13,
+        "angularVelocity": 1.565,
+        "periodSeconds": 4.016
+      },
+      {
+        "level": 14,
+        "angularVelocity": 1.587,
+        "periodSeconds": 3.959
+      },
+      {
+        "level": 15,
+        "angularVelocity": 1.61,
+        "periodSeconds": 3.904
+      },
+      {
+        "level": 16,
+        "angularVelocity": 1.632,
+        "periodSeconds": 3.85
+      },
+      {
+        "level": 17,
+        "angularVelocity": 1.655,
+        "periodSeconds": 3.798
+      },
+      {
+        "level": 18,
+        "angularVelocity": 1.677,
+        "periodSeconds": 3.747
+      }
+    ],
+    "water": [
+      {
+        "level": 0,
+        "angularVelocity": 1.385,
+        "periodSeconds": 4.537
+      },
+      {
+        "level": 1,
+        "angularVelocity": 1.409,
+        "periodSeconds": 4.461
+      },
+      {
+        "level": 2,
+        "angularVelocity": 1.432,
+        "periodSeconds": 4.388
+      },
+      {
+        "level": 3,
+        "angularVelocity": 1.456,
+        "periodSeconds": 4.317
+      },
+      {
+        "level": 4,
+        "angularVelocity": 1.479,
+        "periodSeconds": 4.248
+      },
+      {
+        "level": 5,
+        "angularVelocity": 1.503,
+        "periodSeconds": 4.182
+      },
+      {
+        "level": 6,
+        "angularVelocity": 1.526,
+        "periodSeconds": 4.117
+      },
+      {
+        "level": 7,
+        "angularVelocity": 1.55,
+        "periodSeconds": 4.055
+      },
+      {
+        "level": 8,
+        "angularVelocity": 1.573,
+        "periodSeconds": 3.994
+      },
+      {
+        "level": 9,
+        "angularVelocity": 1.597,
+        "periodSeconds": 3.936
+      },
+      {
+        "level": 10,
+        "angularVelocity": 1.62,
+        "periodSeconds": 3.879
+      },
+      {
+        "level": 11,
+        "angularVelocity": 1.644,
+        "periodSeconds": 3.823
+      },
+      {
+        "level": 12,
+        "angularVelocity": 1.667,
+        "periodSeconds": 3.769
+      },
+      {
+        "level": 13,
+        "angularVelocity": 1.691,
+        "periodSeconds": 3.717
+      },
+      {
+        "level": 14,
+        "angularVelocity": 1.714,
+        "periodSeconds": 3.666
+      },
+      {
+        "level": 15,
+        "angularVelocity": 1.738,
+        "periodSeconds": 3.616
+      },
+      {
+        "level": 16,
+        "angularVelocity": 1.761,
+        "periodSeconds": 3.568
+      },
+      {
+        "level": 17,
+        "angularVelocity": 1.785,
+        "periodSeconds": 3.521
+      },
+      {
+        "level": 18,
+        "angularVelocity": 1.808,
+        "periodSeconds": 3.475
+      }
+    ]
+  }
+}

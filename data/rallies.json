@@ -1,0 +1,197 @@
+{
+  "dataVersion": "2026-09-24",
+  "rallies": [
+    {
+      "id": "golden-rally",
+      "name": "Golden Rally",
+      "surfaceCoverage": {
+        "road": 36,
+        "rough": 44,
+        "water": 1,
+        "gliding": 1,
+        "neutral": 18
+      },
+      "terrainCoverage": {
+        "road": 44.44,
+        "rough": 54.32,
+        "water": 1.24
+      }
+    },
+    {
+      "id": "ice-rally",
+      "name": "Ice Rally",
+      "surfaceCoverage": {
+        "road": 53,
+        "rough": 27,
+        "water": 6,
+        "gliding": 3,
+        "neutral": 11
+      },
+      "terrainCoverage": {
+        "road": 61.63,
+        "rough": 31.39,
+        "water": 6.98
+      }
+    },
+    {
+      "id": "moon-rally",
+      "name": "Moon Rally",
+      "surfaceCoverage": {
+        "road": 50,
+        "rough": 21,
+        "water": 16,
+        "gliding": 1,
+        "neutral": 12
+      },
+      "terrainCoverage": {
+        "road": 57.47,
+        "rough": 24.14,
+        "water": 18.39
+      }
+    },
+    {
+      "id": "spiny-rally",
+      "name": "Spiny Rally",
+      "surfaceCoverage": {
+        "road": 32,
+        "rough": 30,
+        "water": 21,
+        "gliding": 7,
+        "neutral": 10
+      },
+      "terrainCoverage": {
+        "road": 38.55,
+        "rough": 36.15,
+        "water": 25.3
+      }
+    },
+    {
+      "id": "cherry-rally",
+      "name": "Cherry Rally",
+      "surfaceCoverage": {
+        "road": 43,
+        "rough": 34,
+        "water": 8,
+        "gliding": 6,
+        "neutral": 9
+      },
+      "terrainCoverage": {
+        "road": 50.59,
+        "rough": 40,
+        "water": 9.41
+      }
+    },
+    {
+      "id": "acorn-rally",
+      "name": "Acorn Rally",
+      "surfaceCoverage": {
+        "road": 59,
+        "rough": 20,
+        "water": 6,
+        "gliding": 2,
+        "neutral": 13
+      },
+      "terrainCoverage": {
+        "road": 69.41,
+        "rough": 23.53,
+        "water": 7.06
+      }
+    },
+    {
+      "id": "cloud-rally",
+      "name": "Cloud Rally",
+      "surfaceCoverage": {
+        "road": 44,
+        "rough": 33,
+        "water": 2,
+        "gliding": 4,
+        "neutral": 17
+      },
+      "terrainCoverage": {
+        "road": 55.7,
+        "rough": 41.77,
+        "water": 2.53
+      }
+    },
+    {
+      "id": "heart-rally",
+      "name": "Heart Rally",
+      "surfaceCoverage": {
+        "road": 62,
+        "rough": 20,
+        "water": 2,
+        "gliding": 6,
+        "neutral": 10
+      },
+      "terrainCoverage": {
+        "road": 73.81,
+        "rough": 23.81,
+        "water": 2.38
+      }
+    },
+    {
+      "id": "drill-rally",
+      "name": "Drill Rally",
+      "surfaceCoverage": {
+        "road": 54,
+        "rough": 25,
+        "water": 8,
+        "gliding": 1,
+        "neutral": 12
+      },
+      "terrainCoverage": {
+        "road": 62.07,
+        "rough": 28.74,
+        "water": 9.19
+      }
+    },
+    {
+      "id": "boomerang-rally",
+      "name": "Boomerang Rally",
+      "surfaceCoverage": {
+        "road": 47,
+        "rough": 27,
+        "water": 4,
+        "gliding": 6,
+        "neutral": 16
+      },
+      "terrainCoverage": {
+        "road": 60.26,
+        "rough": 34.61,
+        "water": 5.13
+      }
+    },
+    {
+      "id": "propeller-rally",
+      "name": "Propeller Rally",
+      "surfaceCoverage": {
+        "road": 52,
+        "rough": 27,
+        "water": 2,
+        "gliding": 5,
+        "neutral": 14
+      },
+      "terrainCoverage": {
+        "road": 64.2,
+        "rough": 33.33,
+        "water": 2.47
+      }
+    },
+    {
+      "id": "turnip-rally",
+      "name": "Turnip Rally",
+      "surfaceCoverage": {
+        "road": 43,
+        "rough": 38,
+        "water": 3,
+        "gliding": 3,
+        "neutral": 13
+      },
+      "terrainCoverage": {
+        "road": 51.19,
+        "rough": 45.24,
+        "water": 3.57
+      }
+    }
+  ]
+}

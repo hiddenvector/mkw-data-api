@@ -8,6 +8,8 @@ import healthRouter from './routes/health';
 import charactersRouter from './routes/characters';
 import vehiclesRouter from './routes/vehicles';
 import tracksRouter from './routes/tracks';
+import ralliesRouter from './routes/rallies';
+import mechanicsRouter from './routes/mechanics';
 import { createDocsRoutes } from './routes/docs';
 
 // ============================================================================
@@ -117,6 +119,8 @@ export function createApp() {
   app.route('/', charactersRouter);
   app.route('/', vehiclesRouter);
   app.route('/', tracksRouter);
+  app.route('/', ralliesRouter);
+  app.route('/', mechanicsRouter);
   app.route('/', createDocsRoutes(app));
 
   // ============================================================================

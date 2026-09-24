@@ -1,0 +1,32 @@
+,,,,,,,
+,Mini-Turbo,,,,,,
+,,,,,,,
+,,,,,,,
+,"The Mini-Turbo statistic determines the duration of the boosts from Mini-Turbos, Charge Jumps, Rail Jumps and Wall Jumps.
+These boosts have three tiers that are highlighted with different colours when charging: Normal (blue), Super (orange) and Ultra (rainbow). The tier you get depends on how much time the vehicle has been charging the boost. Higher tier boosts last longer.
+
+Charge Jumps, Rail Jumps and Wall Jumps share the same duration for the same tier, while the duration of Mini-Turbos is indipendent for the second and third tier.",,,,,,
+,,,,,,,
+,"🏅 The competitive and speedrunning communities often use the following abbrevations: MT (Mini-Turbo), CJ (Charge Jump), RJ (Rail Jump), WJ (Wall Jump), S- (Super), U- (Ultra).",,,,,,
+,,,,,,,
+,,,,,,,
+,Mini-Turbo,,,,,,
+,Lv.,Mini-Turbo,Super Mini-Turbo,Ultra Mini-Turbo,Charge Jump,"Super
+Charge Jump","Ultra
+Charge Jump"
+,0,27,82,136,27,59,91
+,1,27,83,139,27,60,93
+,2,28,85,142,28,61,94
+,3,28,86,144,28,62,96
+,4,29,88,148,29,63,98
+,5,30,90,150,30,65,100
+,6,30,91,152,30,66,101
+,7,31,93,155,31,67,103
+,8,31,94,157,31,68,105
+,9,32,96,160,32,69,107
+,10,32,97,163,32,70,108
+,11,33,99,165,33,71,110
+,12,33,101,168,33,72,112
+,13,34,102,171,34,74,114
+,,,,,,,
+,NOTE: Rail Jumps and Wall Jumps have the same duration as Charge Jumps.,,,,,,

@@ -38,17 +38,33 @@ const baseTrack = {
   terrainCoverage: { road: 50, rough: 30, water: 20 },
 };
 
+const emptyMechanics = (dataVersion: string) => ({
+  dataVersion,
+  speed: { road: [], rough: [], water: [], gliding: [] },
+  coinCurve: [],
+  acceleration: [],
+  miniTurbo: [],
+  handling: { road: [], rough: [], water: [] },
+});
+
 const loadData = async (options: {
   moduleVersion: string;
   characters: CharactersResponse;
   vehicles: VehiclesResponse;
   tracks: TracksResponse;
+  mechanics?: unknown;
 }) => {
   vi.resetModules();
   vi.doMock('./data-version', () => ({ DATA_VERSION: options.moduleVersion }));
   vi.doMock('../data/characters.json', () => ({ default: options.characters }));
   vi.doMock('../data/vehicles.json', () => ({ default: options.vehicles }));
   vi.doMock('../data/tracks.json', () => ({ default: options.tracks }));
+  vi.doMock('../data/rallies.json', () => ({
+    default: { dataVersion: options.moduleVersion, rallies: [] },
+  }));
+  vi.doMock('../data/mechanics.json', () => ({
+    default: options.mechanics ?? emptyMechanics(options.moduleVersion),
+  }));
   return import('./data');
 };
 
@@ -65,7 +81,7 @@ describe('data loading', () => {
     expect(data.dataVersion).toBe('test-version');
     expect(data.characters).toHaveLength(1);
     expect(data.etags.characters).toMatch(/^"\d+\.\d+\.\d+-[0-9a-z]+"$/);
-    expect(new Set(Object.values(data.etags)).size).toBe(3);
+    expect(new Set(Object.values(data.etags)).size).toBe(5);
   });
 
   it('changes the ETag when data changes without a dataVersion change', async () => {
@@ -83,6 +99,15 @@ describe('data validation', () => {
     const payloads = validPayloads('test-version');
     payloads.characters.characters = [baseCharacter, baseCharacter];
     await expect(loadData(payloads)).rejects.toThrow(/Duplicate IDs in characters: test-character/);
+  });
+
+  it('throws when mechanics levels are not indexed by position', async () => {
+    const version = 'test-version';
+    const mechanics = emptyMechanics(version);
+    mechanics.speed.road = [{ level: 1, units: 100, bonusPercent: 0 }] as never[];
+    await expect(loadData({ ...validPayloads(version), mechanics })).rejects.toThrow(
+      /mechanics\.speed\.road\[0\]: level 1 is not at index 0/,
+    );
   });
 
   it('throws on invalid cup IDs', async () => {

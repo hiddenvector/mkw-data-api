@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-09-24
+
+### Added
+
+- `GET /rallies` and `GET /rallies/{id}`: surface coverage for the 12 released Knockout Tour rallies.
+- `GET /mechanics`: tables converting combo stat levels into in-game values (speed units, coin-curve bonus by coin count, acceleration recovery time, mini-turbo and charge-jump frames, handling turn rate), indexed by level.
+- `rallies` count in `/health` `dataLoaded`.
+- `npm run fetch-data` also downloads the Speed & Coins, Acceleration, Mini-Turbo and Handling tabs.
+- Tests checking that every character + vehicle combination falls inside each mechanics table, and that the tables reproduce the Statpedia Combo Builder.
+
 ## [1.2.0] - 2026-09-24
 
 Data re-imported from the Statpedia (sheet last updated 2026-09-13), which reflects game updates 1.6.0 and 1.7.0.
