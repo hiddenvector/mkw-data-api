@@ -4,10 +4,13 @@
     {
       "id": "baby-peach",
       "name": "Baby Peach",
+      "size": "Small",
+      "class": "Fly",
       "speed": {
         "road": 0,
         "rough": 0,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 6,
@@ -17,15 +20,19 @@
       "acceleration": 7,
       "miniTurbo": 4,
       "weight": 0,
-      "coinCurve": 9
+      "coinCurve": 9,
+      "invincibility": 0
     },
     {
       "id": "baby-daisy",
       "name": "Baby Daisy",
+      "size": "Small",
+      "class": "Fly",
       "speed": {
         "road": 0,
         "rough": 0,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 6,
@@ -35,15 +42,19 @@
       "acceleration": 7,
       "miniTurbo": 4,
       "weight": 0,
-      "coinCurve": 9
+      "coinCurve": 9,
+      "invincibility": 0
     },
     {
       "id": "swoop",
       "name": "Swoop",
+      "size": "Small",
+      "class": "Fly",
       "speed": {
         "road": 0,
         "rough": 0,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 6,
@@ -53,15 +64,19 @@
       "acceleration": 7,
       "miniTurbo": 4,
       "weight": 0,
-      "coinCurve": 9
+      "coinCurve": 9,
+      "invincibility": 0
     },
     {
       "id": "para-biddybud",
       "name": "Para-Biddybud",
+      "size": "Small",
+      "class": "Fly",
       "speed": {
         "road": 0,
         "rough": 0,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 6,
@@ -71,15 +86,19 @@
       "acceleration": 7,
       "miniTurbo": 4,
       "weight": 0,
-      "coinCurve": 9
+      "coinCurve": 9,
+      "invincibility": 0
     },
     {
       "id": "baby-mario",
       "name": "Baby Mario",
+      "size": "Small",
+      "class": "Feather",
       "speed": {
         "road": 1,
         "rough": 0,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 7,
@@ -89,15 +108,19 @@
       "acceleration": 6,
       "miniTurbo": 3,
       "weight": 1,
-      "coinCurve": 8
+      "coinCurve": 8,
+      "invincibility": 1
     },
     {
       "id": "goomba",
       "name": "Goomba",
+      "size": "Small",
+      "class": "Feather",
       "speed": {
         "road": 1,
         "rough": 0,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 7,
@@ -107,15 +130,19 @@
       "acceleration": 6,
       "miniTurbo": 3,
       "weight": 1,
-      "coinCurve": 8
+      "coinCurve": 8,
+      "invincibility": 1
     },
     {
       "id": "spike",
       "name": "Spike",
+      "size": "Small",
+      "class": "Feather",
       "speed": {
         "road": 1,
         "rough": 0,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 7,
@@ -125,15 +152,19 @@
       "acceleration": 6,
       "miniTurbo": 3,
       "weight": 1,
-      "coinCurve": 8
+      "coinCurve": 8,
+      "invincibility": 1
     },
     {
       "id": "baby-luigi",
       "name": "Baby Luigi",
+      "size": "Small",
+      "class": "Feather",
       "speed": {
         "road": 0,
         "rough": 1,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 5,
@@ -143,15 +174,19 @@
       "acceleration": 6,
       "miniTurbo": 3,
       "weight": 1,
-      "coinCurve": 8
+      "coinCurve": 8,
+      "invincibility": 2
     },
     {
       "id": "dry-bones",
       "name": "Dry Bones",
+      "size": "Small",
+      "class": "Feather",
       "speed": {
         "road": 0,
         "rough": 1,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 5,
@@ -161,15 +196,19 @@
       "acceleration": 6,
       "miniTurbo": 3,
       "weight": 1,
-      "coinCurve": 8
+      "coinCurve": 8,
+      "invincibility": 2
     },
     {
       "id": "peepa",
       "name": "Peepa",
+      "size": "Small",
+      "class": "Feather",
       "speed": {
         "road": 0,
         "rough": 1,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 5,
@@ -179,15 +218,19 @@
       "acceleration": 6,
       "miniTurbo": 3,
       "weight": 1,
-      "coinCurve": 8
+      "coinCurve": 8,
+      "invincibility": 2
     },
     {
       "id": "baby-rosalina",
       "name": "Baby Rosalina",
+      "size": "Small",
+      "class": "Feather",
       "speed": {
         "road": 0,
         "rough": 0,
-        "water": 1
+        "water": 1,
+        "gliding": 1
       },
       "handling": {
         "road": 5,
@@ -197,15 +240,19 @@
       "acceleration": 6,
       "miniTurbo": 3,
       "weight": 1,
-      "coinCurve": 8
+      "coinCurve": 8,
+      "invincibility": 2
     },
     {
       "id": "sidestepper",
       "name": "Sidestepper",
+      "size": "Small",
+      "class": "Feather",
       "speed": {
         "road": 0,
         "rough": 0,
-        "water": 1
+        "water": 1,
+        "gliding": 1
       },
       "handling": {
         "road": 5,
@@ -215,15 +262,19 @@
       "acceleration": 6,
       "miniTurbo": 3,
       "weight": 1,
-      "coinCurve": 8
+      "coinCurve": 8,
+      "invincibility": 2
     },
     {
       "id": "fish-bone",
       "name": "Fish Bone",
+      "size": "Small",
+      "class": "Feather",
       "speed": {
         "road": 0,
         "rough": 0,
-        "water": 1
+        "water": 1,
+        "gliding": 1
       },
       "handling": {
         "road": 5,
@@ -233,15 +284,19 @@
       "acceleration": 6,
       "miniTurbo": 3,
       "weight": 1,
-      "coinCurve": 8
+      "coinCurve": 8,
+      "invincibility": 2
     },
     {
       "id": "toadette",
       "name": "Toadette",
+      "size": "Small",
+      "class": "Light",
       "speed": {
         "road": 2,
         "rough": 1,
-        "water": 1
+        "water": 1,
+        "gliding": 0
       },
       "handling": {
         "road": 6,
@@ -251,15 +306,19 @@
       "acceleration": 5,
       "miniTurbo": 3,
       "weight": 2,
-      "coinCurve": 7
+      "coinCurve": 7,
+      "invincibility": 3
     },
     {
       "id": "nabbit",
       "name": "Nabbit",
+      "size": "Small",
+      "class": "Light",
       "speed": {
         "road": 2,
         "rough": 1,
-        "water": 1
+        "water": 1,
+        "gliding": 0
       },
       "handling": {
         "road": 6,
@@ -269,15 +328,19 @@
       "acceleration": 5,
       "miniTurbo": 3,
       "weight": 2,
-      "coinCurve": 7
+      "coinCurve": 7,
+      "invincibility": 3
     },
     {
       "id": "toad",
       "name": "Toad",
+      "size": "Small",
+      "class": "Light",
       "speed": {
         "road": 1,
         "rough": 2,
-        "water": 1
+        "water": 1,
+        "gliding": 0
       },
       "handling": {
         "road": 4,
@@ -287,15 +350,19 @@
       "acceleration": 5,
       "miniTurbo": 3,
       "weight": 2,
-      "coinCurve": 7
+      "coinCurve": 7,
+      "invincibility": 4
     },
     {
       "id": "shy-guy",
       "name": "Shy Guy",
+      "size": "Small",
+      "class": "Light",
       "speed": {
         "road": 1,
         "rough": 2,
-        "water": 1
+        "water": 1,
+        "gliding": 0
       },
       "handling": {
         "road": 4,
@@ -305,15 +372,19 @@
       "acceleration": 5,
       "miniTurbo": 3,
       "weight": 2,
-      "coinCurve": 7
+      "coinCurve": 7,
+      "invincibility": 4
     },
     {
       "id": "stingby",
       "name": "Stingby",
+      "size": "Small",
+      "class": "Light",
       "speed": {
         "road": 1,
         "rough": 2,
-        "water": 1
+        "water": 1,
+        "gliding": 0
       },
       "handling": {
         "road": 4,
@@ -323,15 +394,19 @@
       "acceleration": 5,
       "miniTurbo": 3,
       "weight": 2,
-      "coinCurve": 7
+      "coinCurve": 7,
+      "invincibility": 4
     },
     {
       "id": "koopa-troopa",
       "name": "Koopa Troopa",
+      "size": "Small",
+      "class": "Light",
       "speed": {
         "road": 1,
         "rough": 1,
-        "water": 2
+        "water": 2,
+        "gliding": 1
       },
       "handling": {
         "road": 4,
@@ -341,15 +416,19 @@
       "acceleration": 5,
       "miniTurbo": 3,
       "weight": 2,
-      "coinCurve": 7
+      "coinCurve": 7,
+      "invincibility": 4
     },
     {
       "id": "lakitu",
       "name": "Lakitu",
+      "size": "Small",
+      "class": "Light",
       "speed": {
         "road": 1,
         "rough": 1,
-        "water": 2
+        "water": 2,
+        "gliding": 1
       },
       "handling": {
         "road": 4,
@@ -359,15 +438,19 @@
       "acceleration": 5,
       "miniTurbo": 3,
       "weight": 2,
-      "coinCurve": 7
+      "coinCurve": 7,
+      "invincibility": 4
     },
     {
       "id": "cheep-cheep",
       "name": "Cheep Cheep",
+      "size": "Small",
+      "class": "Light",
       "speed": {
         "road": 1,
         "rough": 1,
-        "water": 2
+        "water": 2,
+        "gliding": 1
       },
       "handling": {
         "road": 4,
@@ -377,15 +460,19 @@
       "acceleration": 5,
       "miniTurbo": 3,
       "weight": 2,
-      "coinCurve": 7
+      "coinCurve": 7,
+      "invincibility": 4
     },
     {
       "id": "peach",
       "name": "Peach",
+      "size": "Medium",
+      "class": "Welter",
       "speed": {
         "road": 3,
         "rough": 2,
-        "water": 2
+        "water": 2,
+        "gliding": 0
       },
       "handling": {
         "road": 5,
@@ -395,15 +482,19 @@
       "acceleration": 4,
       "miniTurbo": 2,
       "weight": 3,
-      "coinCurve": 5
+      "coinCurve": 5,
+      "invincibility": 5
     },
     {
       "id": "daisy",
       "name": "Daisy",
+      "size": "Medium",
+      "class": "Welter",
       "speed": {
         "road": 3,
         "rough": 2,
-        "water": 2
+        "water": 2,
+        "gliding": 0
       },
       "handling": {
         "road": 5,
@@ -413,15 +504,19 @@
       "acceleration": 4,
       "miniTurbo": 2,
       "weight": 3,
-      "coinCurve": 5
+      "coinCurve": 5,
+      "invincibility": 5
     },
     {
       "id": "coin-coffer",
       "name": "Coin Coffer",
+      "size": "Medium",
+      "class": "Welter",
       "speed": {
         "road": 3,
         "rough": 2,
-        "water": 2
+        "water": 2,
+        "gliding": 0
       },
       "handling": {
         "road": 5,
@@ -431,15 +526,19 @@
       "acceleration": 4,
       "miniTurbo": 2,
       "weight": 3,
-      "coinCurve": 5
+      "coinCurve": 5,
+      "invincibility": 5
     },
     {
       "id": "yoshi",
       "name": "Yoshi",
+      "size": "Medium",
+      "class": "Welter",
       "speed": {
         "road": 2,
         "rough": 3,
-        "water": 2
+        "water": 2,
+        "gliding": 0
       },
       "handling": {
         "road": 3,
@@ -449,15 +548,19 @@
       "acceleration": 4,
       "miniTurbo": 2,
       "weight": 3,
-      "coinCurve": 5
+      "coinCurve": 5,
+      "invincibility": 6
     },
     {
       "id": "monty-mole",
       "name": "Monty Mole",
+      "size": "Medium",
+      "class": "Welter",
       "speed": {
         "road": 2,
         "rough": 3,
-        "water": 2
+        "water": 2,
+        "gliding": 0
       },
       "handling": {
         "road": 3,
@@ -467,15 +570,19 @@
       "acceleration": 4,
       "miniTurbo": 2,
       "weight": 3,
-      "coinCurve": 5
+      "coinCurve": 5,
+      "invincibility": 6
     },
     {
       "id": "bowser-jr",
       "name": "Bowser Jr.",
+      "size": "Medium",
+      "class": "Welter",
       "speed": {
         "road": 2,
         "rough": 2,
-        "water": 3
+        "water": 3,
+        "gliding": 1
       },
       "handling": {
         "road": 3,
@@ -485,15 +592,19 @@
       "acceleration": 4,
       "miniTurbo": 2,
       "weight": 3,
-      "coinCurve": 5
+      "coinCurve": 5,
+      "invincibility": 6
     },
     {
       "id": "dolphin",
       "name": "Dolphin",
+      "size": "Medium",
+      "class": "Welter",
       "speed": {
         "road": 2,
         "rough": 2,
-        "water": 3
+        "water": 3,
+        "gliding": 1
       },
       "handling": {
         "road": 3,
@@ -503,15 +614,19 @@
       "acceleration": 4,
       "miniTurbo": 2,
       "weight": 3,
-      "coinCurve": 5
+      "coinCurve": 5,
+      "invincibility": 6
     },
     {
       "id": "mario",
       "name": "Mario",
+      "size": "Medium",
+      "class": "Middle",
       "speed": {
         "road": 4,
         "rough": 3,
-        "water": 3
+        "water": 3,
+        "gliding": 0
       },
       "handling": {
         "road": 4,
@@ -521,15 +636,19 @@
       "acceleration": 3,
       "miniTurbo": 1,
       "weight": 4,
-      "coinCurve": 4
+      "coinCurve": 4,
+      "invincibility": 7
     },
     {
       "id": "rocky-wrench",
       "name": "Rocky Wrench",
+      "size": "Medium",
+      "class": "Middle",
       "speed": {
         "road": 4,
         "rough": 3,
-        "water": 3
+        "water": 3,
+        "gliding": 0
       },
       "handling": {
         "road": 4,
@@ -539,15 +658,19 @@
       "acceleration": 3,
       "miniTurbo": 1,
       "weight": 4,
-      "coinCurve": 4
+      "coinCurve": 4,
+      "invincibility": 7
     },
     {
       "id": "luigi",
       "name": "Luigi",
+      "size": "Medium",
+      "class": "Middle",
       "speed": {
         "road": 3,
         "rough": 4,
-        "water": 3
+        "water": 3,
+        "gliding": 0
       },
       "handling": {
         "road": 2,
@@ -557,15 +680,19 @@
       "acceleration": 3,
       "miniTurbo": 1,
       "weight": 4,
-      "coinCurve": 4
+      "coinCurve": 4,
+      "invincibility": 8
     },
     {
       "id": "hammer-bro",
       "name": "Hammer Bro",
+      "size": "Medium",
+      "class": "Middle",
       "speed": {
         "road": 3,
         "rough": 4,
-        "water": 3
+        "water": 3,
+        "gliding": 0
       },
       "handling": {
         "road": 2,
@@ -575,15 +702,19 @@
       "acceleration": 3,
       "miniTurbo": 1,
       "weight": 4,
-      "coinCurve": 4
+      "coinCurve": 4,
+      "invincibility": 8
     },
     {
       "id": "pokey",
       "name": "Pokey",
+      "size": "Medium",
+      "class": "Middle",
       "speed": {
         "road": 3,
         "rough": 4,
-        "water": 3
+        "water": 3,
+        "gliding": 0
       },
       "handling": {
         "road": 2,
@@ -593,15 +724,19 @@
       "acceleration": 3,
       "miniTurbo": 1,
       "weight": 4,
-      "coinCurve": 4
+      "coinCurve": 4,
+      "invincibility": 8
     },
     {
       "id": "birdo",
       "name": "Birdo",
+      "size": "Medium",
+      "class": "Middle",
       "speed": {
         "road": 3,
         "rough": 3,
-        "water": 4
+        "water": 4,
+        "gliding": 1
       },
       "handling": {
         "road": 2,
@@ -611,15 +746,19 @@
       "acceleration": 3,
       "miniTurbo": 1,
       "weight": 4,
-      "coinCurve": 4
+      "coinCurve": 4,
+      "invincibility": 8
     },
     {
       "id": "penguin",
       "name": "Penguin",
+      "size": "Medium",
+      "class": "Middle",
       "speed": {
         "road": 3,
         "rough": 3,
-        "water": 4
+        "water": 4,
+        "gliding": 1
       },
       "handling": {
         "road": 2,
@@ -629,15 +768,19 @@
       "acceleration": 3,
       "miniTurbo": 1,
       "weight": 4,
-      "coinCurve": 4
+      "coinCurve": 4,
+      "invincibility": 8
     },
     {
       "id": "pauline",
       "name": "Pauline",
+      "size": "Large",
+      "class": "Cruiser",
       "speed": {
         "road": 5,
         "rough": 4,
-        "water": 4
+        "water": 4,
+        "gliding": 1
       },
       "handling": {
         "road": 3,
@@ -647,15 +790,19 @@
       "acceleration": 2,
       "miniTurbo": 0,
       "weight": 5,
-      "coinCurve": 2
+      "coinCurve": 2,
+      "invincibility": 9
     },
     {
       "id": "snowman",
       "name": "Snowman",
+      "size": "Large",
+      "class": "Cruiser",
       "speed": {
         "road": 5,
         "rough": 4,
-        "water": 4
+        "water": 4,
+        "gliding": 1
       },
       "handling": {
         "road": 3,
@@ -665,15 +812,19 @@
       "acceleration": 2,
       "miniTurbo": 0,
       "weight": 5,
-      "coinCurve": 2
+      "coinCurve": 2,
+      "invincibility": 9
     },
     {
       "id": "piranha-plant",
       "name": "Piranha Plant",
+      "size": "Large",
+      "class": "Cruiser",
       "speed": {
         "road": 5,
         "rough": 4,
-        "water": 4
+        "water": 4,
+        "gliding": 1
       },
       "handling": {
         "road": 3,
@@ -683,15 +834,19 @@
       "acceleration": 2,
       "miniTurbo": 0,
       "weight": 5,
-      "coinCurve": 2
+      "coinCurve": 2,
+      "invincibility": 9
     },
     {
       "id": "king-boo",
       "name": "King Boo",
+      "size": "Large",
+      "class": "Cruiser",
       "speed": {
         "road": 4,
         "rough": 5,
-        "water": 4
+        "water": 4,
+        "gliding": 1
       },
       "handling": {
         "road": 1,
@@ -701,15 +856,19 @@
       "acceleration": 2,
       "miniTurbo": 0,
       "weight": 5,
-      "coinCurve": 2
+      "coinCurve": 2,
+      "invincibility": 10
     },
     {
       "id": "conkdor",
       "name": "Conkdor",
+      "size": "Large",
+      "class": "Cruiser",
       "speed": {
         "road": 4,
         "rough": 5,
-        "water": 4
+        "water": 4,
+        "gliding": 1
       },
       "handling": {
         "road": 1,
@@ -719,15 +878,19 @@
       "acceleration": 2,
       "miniTurbo": 0,
       "weight": 5,
-      "coinCurve": 2
+      "coinCurve": 2,
+      "invincibility": 10
     },
     {
       "id": "rosalina",
       "name": "Rosalina",
+      "size": "Large",
+      "class": "Cruiser",
       "speed": {
         "road": 4,
         "rough": 4,
-        "water": 5
+        "water": 5,
+        "gliding": 2
       },
       "handling": {
         "road": 1,
@@ -737,15 +900,19 @@
       "acceleration": 2,
       "miniTurbo": 0,
       "weight": 5,
-      "coinCurve": 2
+      "coinCurve": 2,
+      "invincibility": 10
     },
     {
       "id": "cataquack",
       "name": "Cataquack",
+      "size": "Large",
+      "class": "Cruiser",
       "speed": {
         "road": 4,
         "rough": 4,
-        "water": 5
+        "water": 5,
+        "gliding": 2
       },
       "handling": {
         "road": 1,
@@ -755,15 +922,19 @@
       "acceleration": 2,
       "miniTurbo": 0,
       "weight": 5,
-      "coinCurve": 2
+      "coinCurve": 2,
+      "invincibility": 10
     },
     {
       "id": "wario",
       "name": "Wario",
+      "size": "Large",
+      "class": "Heavy",
       "speed": {
         "road": 6,
         "rough": 5,
-        "water": 5
+        "water": 5,
+        "gliding": 1
       },
       "handling": {
         "road": 2,
@@ -773,15 +944,19 @@
       "acceleration": 1,
       "miniTurbo": 0,
       "weight": 6,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 11
     },
     {
       "id": "wiggler",
       "name": "Wiggler",
+      "size": "Large",
+      "class": "Heavy",
       "speed": {
         "road": 6,
         "rough": 5,
-        "water": 5
+        "water": 5,
+        "gliding": 1
       },
       "handling": {
         "road": 2,
@@ -791,15 +966,19 @@
       "acceleration": 1,
       "miniTurbo": 0,
       "weight": 6,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 11
     },
     {
       "id": "donkey-kong",
       "name": "Donkey Kong",
+      "size": "Large",
+      "class": "Heavy",
       "speed": {
         "road": 5,
         "rough": 6,
-        "water": 5
+        "water": 5,
+        "gliding": 1
       },
       "handling": {
         "road": 0,
@@ -809,15 +988,19 @@
       "acceleration": 1,
       "miniTurbo": 0,
       "weight": 6,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 12
     },
     {
       "id": "chargin-chuck",
       "name": "Chargin' Chuck",
+      "size": "Large",
+      "class": "Heavy",
       "speed": {
         "road": 5,
         "rough": 6,
-        "water": 5
+        "water": 5,
+        "gliding": 1
       },
       "handling": {
         "road": 0,
@@ -827,15 +1010,19 @@
       "acceleration": 1,
       "miniTurbo": 0,
       "weight": 6,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 12
     },
     {
       "id": "cow",
       "name": "Cow",
+      "size": "Large",
+      "class": "Heavy",
       "speed": {
         "road": 5,
         "rough": 6,
-        "water": 5
+        "water": 5,
+        "gliding": 1
       },
       "handling": {
         "road": 0,
@@ -845,15 +1032,19 @@
       "acceleration": 1,
       "miniTurbo": 0,
       "weight": 6,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 12
     },
     {
       "id": "waluigi",
       "name": "Waluigi",
+      "size": "Large",
+      "class": "Heavy",
       "speed": {
         "road": 5,
         "rough": 5,
-        "water": 6
+        "water": 6,
+        "gliding": 2
       },
       "handling": {
         "road": 0,
@@ -863,15 +1054,19 @@
       "acceleration": 1,
       "miniTurbo": 0,
       "weight": 6,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 12
     },
     {
       "id": "pianta",
       "name": "Pianta",
+      "size": "Large",
+      "class": "Heavy",
       "speed": {
         "road": 5,
         "rough": 5,
-        "water": 6
+        "water": 6,
+        "gliding": 2
       },
       "handling": {
         "road": 0,
@@ -881,15 +1076,19 @@
       "acceleration": 1,
       "miniTurbo": 0,
       "weight": 6,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 12
     },
     {
       "id": "bowser",
       "name": "Bowser",
+      "size": "Large",
+      "class": "Super Heavy",
       "speed": {
         "road": 6,
         "rough": 6,
-        "water": 6
+        "water": 6,
+        "gliding": 2
       },
       "handling": {
         "road": 0,
@@ -899,7 +1098,8 @@
       "acceleration": 0,
       "miniTurbo": 0,
       "weight": 7,
-      "coinCurve": 0
+      "coinCurve": 0,
+      "invincibility": 13
     }
   ]
 }

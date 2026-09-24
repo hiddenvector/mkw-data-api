@@ -133,10 +133,10 @@ describe('Vehicles endpoints', () => {
   });
 
   it('GET /vehicles?tag filter only returns matching vehicles', async () => {
-    const res = await request('/vehicles?tag=st-a-0');
+    const res = await request('/vehicles?tag=st-a-2');
     const vehicles = asRecord(await res.json()).vehicles as JsonRecord[];
     expect(vehicles.length).toBeGreaterThan(0);
-    expect(vehicles.every((v) => v.tag === 'st-a-0')).toBe(true);
+    expect(vehicles.every((v) => v.tag === 'st-a-2')).toBe(true);
   });
 
   it('GET /vehicles?tag returns vehicles by tag', async () => {

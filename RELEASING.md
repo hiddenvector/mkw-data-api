@@ -6,9 +6,10 @@ Release checklist for production tags. Pushing a `vX.Y.Z` tag deploys automatica
 ## Release checklist
 
 1. Update data (if needed)
-   - Replace the CSVs in `scripts/csv/` with fresh Statpedia exports.
-   - Run `npm run generate-data`. It fails loudly on malformed rows, unmapped tracks
-     (add them to `CUP_MAPPING`), or schema violations.
+   - Run `npm run fetch-data` to download the Statpedia tabs into `scripts/csv/`.
+   - Run `npm run generate-data`. It fails loudly if the sheet's column layout changed,
+     and on malformed rows, unmapped tracks (add them to `CUP_MAPPING`), or schema violations.
+   - Review the diff in `data/*.json`, especially renamed IDs or tags, which clients may rely on.
    - `dataVersion` is bumped to today only if the generated output changed.
      Set `DATA_VERSION=YYYY-MM-DD` to force a specific value.
 

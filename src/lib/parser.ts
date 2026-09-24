@@ -3,7 +3,13 @@ import type { SurfaceCoverage, TerrainCoverage } from '../schemas';
 export type CsvRow = string[];
 
 export const COL = {
-  // Shared name columns
+  // Characters: frame size and weight class; vehicles: vehicle class and tag
+  SIZE: 1,
+  CLASS: 2,
+  VEHICLE_CLASS: 1,
+  TAG: 2,
+
+  // Shared name columns (on the row after each stat row)
   NAME_1: 3,
   NAME_2: 4,
   NAME_3: 5,
@@ -13,32 +19,87 @@ export const COL = {
   SPEED_ROAD: 7,
   SPEED_ROUGH: 8,
   SPEED_WATER: 9,
-  ACCELERATION: 10,
-  MINI_TURBO: 11,
-  WEIGHT: 12,
-  COIN_CURVE: 13,
-  HANDLING_ROAD: 14,
-  HANDLING_ROUGH: 15,
-  HANDLING_WATER: 16,
+  SPEED_GLIDING: 10,
+  ACCELERATION: 11,
+  MINI_TURBO: 12,
+  WEIGHT: 13,
+  COIN_CURVE: 14,
+  HANDLING_ROAD: 15,
+  HANDLING_ROUGH: 16,
+  HANDLING_WATER: 17,
+  INVINCIBILITY: 18,
 
-  // Vehicle-specific columns
-  CLASS: 1,
-  TAG: 2,
-
-  // Track columns
-  TRACK_NAME: 1,
-  TRACK_TIME: 2,
-  COVERAGE_ROAD: 3,
-  COVERAGE_ROUGH: 4,
-  COVERAGE_WATER: 5,
-  COVERAGE_NEUTRAL: 6,
-  COVERAGE_OFFROAD: 7,
-  ADJ_COVERAGE_ROAD: 8,
-  ADJ_COVERAGE_ROUGH: 9,
-  ADJ_COVERAGE_WATER: 10,
-  ADJ_COVERAGE_NEUTRAL: 11,
-  ADJ_COVERAGE_OFFROAD: 12,
+  // Surface coverage columns
+  SECTION: 1,
+  TRACK_NAME: 2,
+  TRACK_TIME: 4,
+  COVERAGE_ROAD: 5,
+  COVERAGE_ROUGH: 6,
+  COVERAGE_WATER: 7,
+  COVERAGE_GLIDING: 8,
+  COVERAGE_NEUTRAL: 9,
 } as const;
+
+/**
+ * Header labels the parsers rely on, by column. Checked before parsing so that a
+ * reshuffled Statpedia layout fails loudly instead of silently mis-mapping stats.
+ */
+export const EXPECTED_HEADERS = {
+  /** Second header row of the Characters and Vehicles tabs */
+  stats: {
+    [COL.SPEED_ROAD]: 'On-Road',
+    [COL.SPEED_ROUGH]: 'Off-Road',
+    [COL.SPEED_WATER]: 'Water',
+    [COL.SPEED_GLIDING]: 'Gliding',
+    [COL.HANDLING_ROAD]: 'On-Road Handling',
+    [COL.HANDLING_ROUGH]: 'Off-Road Handling',
+    [COL.HANDLING_WATER]: 'Water Handling',
+  },
+  /** First header row of the Characters and Vehicles tabs */
+  statGroups: {
+    [COL.SPEED_ROAD]: 'Speed',
+    [COL.ACCELERATION]: 'Acceleration',
+    [COL.MINI_TURBO]: 'Mini-Turbo',
+    [COL.WEIGHT]: 'Weight',
+    [COL.COIN_CURVE]: 'Coin Curve',
+    [COL.HANDLING_ROAD]: 'Handling',
+    [COL.INVINCIBILITY]: 'Invincibility',
+  },
+  /** Section header row of the Surface Coverage tab */
+  coverage: {
+    [COL.TRACK_TIME]: 'Time (s)',
+    [COL.COVERAGE_ROAD]: 'On-Road',
+    [COL.COVERAGE_ROUGH]: 'Off-Road',
+    [COL.COVERAGE_WATER]: 'Water',
+    [COL.COVERAGE_GLIDING]: 'Gliding',
+    [COL.COVERAGE_NEUTRAL]: 'Neutral',
+  },
+} as const;
+
+/** Collapses whitespace (including the line breaks some Statpedia cells contain). */
+export const cleanCell = (value: string | undefined): string =>
+  (value ?? '').replace(/\s+/g, ' ').trim();
+
+/**
+ * True if the row has the expected label in every listed column.
+ */
+export function matchesHeader(row: CsvRow, expected: Record<number, string>): boolean {
+  return Object.entries(expected).every(([col, label]) => cleanCell(row[Number(col)]) === label);
+}
+
+/**
+ * Throws unless some row in the sheet matches the expected header labels.
+ */
+export function assertHeader(rows: CsvRow[], expected: Record<number, string>, sheet: string) {
+  if (!rows.some((row) => matchesHeader(row, expected))) {
+    const wanted = Object.entries(expected)
+      .map(([col, label]) => `col ${Number(col) + 1}="${label}"`)
+      .join(', ');
+    throw new Error(
+      `${sheet}: header row not found (expected ${wanted}). The Statpedia layout changed; update COL in src/lib/parser.ts.`,
+    );
+  }
+}
 
 /**
  * Convert a name to a URL-safe ID (slug)
@@ -89,15 +150,17 @@ export function parsePercent(value: string | undefined, label = 'percentage'): n
 }
 
 /**
- * Parse surface coverage from a CSV row
+ * Parse surface coverage from a CSV row. `offRoad` is kept for /v1 compatibility and is
+ * always 0: the Statpedia now counts heavy off-road as neutral.
  */
 export function parseSurfaceCoverage(row: CsvRow): SurfaceCoverage {
   return {
     road: parsePercent(row[COL.COVERAGE_ROAD], 'road coverage'),
-    rough: parsePercent(row[COL.COVERAGE_ROUGH], 'rough coverage'),
+    rough: parsePercent(row[COL.COVERAGE_ROUGH], 'off-road coverage'),
     water: parsePercent(row[COL.COVERAGE_WATER], 'water coverage'),
+    gliding: parsePercent(row[COL.COVERAGE_GLIDING], 'gliding coverage'),
     neutral: parsePercent(row[COL.COVERAGE_NEUTRAL], 'neutral coverage'),
-    offRoad: parsePercent(row[COL.COVERAGE_OFFROAD], 'off-road coverage'),
+    offRoad: 0,
   };
 }
 
@@ -105,17 +168,15 @@ export function parseSurfaceCoverage(row: CsvRow): SurfaceCoverage {
 const TOTAL_HUNDREDTHS = 10_000;
 
 /**
- * Parse adjusted terrain coverage (road/rough/water only), normalized to 100%.
+ * Road/rough/water coverage rescaled to 100%, excluding gliding and neutral.
  *
  * Uses largest-remainder rounding in hundredths of a percent so the three values
  * always sum to exactly 100 (plain rounding can produce 99.99 or 100.01).
  */
-export function parseTerrainCoverage(row: CsvRow): TerrainCoverage {
-  const values = [
-    parsePercent(row[COL.ADJ_COVERAGE_ROAD], 'adjusted road coverage'),
-    parsePercent(row[COL.ADJ_COVERAGE_ROUGH], 'adjusted rough coverage'),
-    parsePercent(row[COL.ADJ_COVERAGE_WATER], 'adjusted water coverage'),
-  ];
+export function computeTerrainCoverage(
+  surface: Pick<SurfaceCoverage, 'road' | 'rough' | 'water'>,
+): TerrainCoverage {
+  const values = [surface.road, surface.rough, surface.water];
   const total = values.reduce((a, b) => a + b, 0);
 
   if (total === 0) {

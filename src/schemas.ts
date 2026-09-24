@@ -9,6 +9,14 @@
 
 import { z } from '@hono/zod-openapi';
 
+// Examples in the OpenAPI spec are taken from the real data so they can't go stale.
+import charactersData from '../data/characters.json';
+import vehiclesData from '../data/vehicles.json';
+import tracksData from '../data/tracks.json';
+
+const exampleOf = <T extends { id: string }>(items: T[], id: string) =>
+  items.find((item) => item.id === id);
+
 // ============================================================================
 // Validation Constants
 // ============================================================================
@@ -72,7 +80,7 @@ const tagSchema = z
 export const TagQuerySchema = z.object({
   tag: tagSchema.optional().openapi({
     param: { name: 'tag', in: 'query' },
-    example: 'on-l-0',
+    example: 'on-l-2',
   }),
 });
 
@@ -119,7 +127,7 @@ export const EtagResponseHeadersSchema = z.object({
 // ============================================================================
 
 /**
- * Speed and handling stats for different surface types.
+ * Stats for the three surface types (used directly for handling).
  */
 export const TerrainStatsSchema = z
   .object({
@@ -128,7 +136,7 @@ export const TerrainStatsSchema = z
     }),
     rough: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
       description:
-        'Performance on coarse terrain (dirt, gravel, sand, snow, ice). Higher is better.',
+        'Performance on off-road terrain (dirt, gravel, sand, snow, ice), called "Off-Road" in the Statpedia. Higher is better.',
     }),
     water: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
       description: 'Performance on liquid surfaces (water, lava, chocolate). Higher is better.',
@@ -137,11 +145,23 @@ export const TerrainStatsSchema = z
   .openapi('TerrainStats');
 
 /**
+ * Speed stats: the three surface types plus gliding.
+ */
+export const SpeedStatsSchema = TerrainStatsSchema.extend({
+  gliding: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
+    description:
+      'Speed while gliding (not cannon gliders, which set everyone to the same speed). Higher is better.',
+  }),
+}).openapi('SpeedStats');
+
+/**
  * Core racing stats shared by characters and vehicles.
  */
 export const BaseStatsSchema = z.object({
-  speed: TerrainStatsSchema.openapi({ description: 'Speed stats by surface type' }),
-  handling: TerrainStatsSchema.openapi({ description: 'Handling stats by surface type' }),
+  speed: SpeedStatsSchema.openapi({ description: 'Speed stats by surface type, plus gliding' }),
+  handling: TerrainStatsSchema.openapi({
+    description: 'Handling stats by surface type (handling while gliding is the same for everyone)',
+  }),
   acceleration: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
     description: 'How quickly top speed is reached. Higher is better.',
   }),
@@ -155,6 +175,10 @@ export const BaseStatsSchema = z.object({
   coinCurve: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
     description: 'How strongly coins boost speed (higher = more benefit from early coins).',
   }),
+  invincibility: z.number().int().min(STAT_MIN).max(STAT_MAX).openapi({
+    description:
+      'Invincibility time after being hit by an item or hazard. Higher lasts longer (4 frames per level for a combo).',
+  }),
 });
 
 /**
@@ -164,17 +188,12 @@ export const BaseStatsSchema = z.object({
 export const CharacterSchema = BaseStatsSchema.extend({
   id: z.string().openapi({ description: 'Unique identifier (slug format)' }),
   name: z.string().openapi({ description: 'Character display name' }),
+  size: z.string().openapi({ description: 'Frame size: Small, Medium, or Large' }),
+  class: z.string().openapi({
+    description: 'Weight class as named in the Statpedia (e.g. "Fly", "Cruiser", "Super Heavy")',
+  }),
 }).openapi('Character', {
-  example: {
-    id: 'dry-bones',
-    name: 'Dry Bones',
-    speed: { road: 0, rough: 1, water: 0 },
-    handling: { road: 5, rough: 7, water: 5 },
-    acceleration: 6,
-    miniTurbo: 3,
-    weight: 1,
-    coinCurve: 8,
-  },
+  example: exampleOf(charactersData.characters, 'dry-bones'),
 });
 
 /**
@@ -185,18 +204,11 @@ export const VehicleSchema = BaseStatsSchema.extend({
   id: z.string().openapi({ description: 'Unique identifier (slug format)' }),
   name: z.string().openapi({ description: 'Vehicle display name' }),
   tag: z.string().openapi({ description: 'Tag grouping vehicles with identical stats' }),
+  class: z.string().openapi({
+    description: 'Vehicle class as named in the Statpedia (e.g. "Light On-Roader", "Water Hybrid")',
+  }),
 }).openapi('Vehicle', {
-  example: {
-    id: 'mach-rocket',
-    name: 'Mach Rocket',
-    tag: 'on-l-0',
-    speed: { road: 6, rough: 1, water: 1 },
-    handling: { road: 11, rough: 7, water: 7 },
-    acceleration: 7,
-    miniTurbo: 7,
-    weight: 0,
-    coinCurve: 6,
-  },
+  example: exampleOf(vehiclesData.vehicles, 'mach-rocket'),
 });
 
 /**
@@ -208,22 +220,28 @@ export const SurfaceCoverageSchema = z
       description: 'Percentage of track on paved surfaces.',
     }),
     rough: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track on rough terrain.',
+      description: 'Percentage of track on off-road terrain (dirt, gravel, sand, snow, ice).',
     }),
     water: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
       description: 'Percentage of track on water.',
     }),
+    gliding: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
+      description: 'Percentage of track spent gliding (not cannon gliders).',
+    }),
     neutral: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track on rails/walls/air (same speed for all).',
+      description:
+        'Percentage of track where speed is the same for everyone: heavy off-road, rails, walls, cannon gliders.',
     }),
     offRoad: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track on off-road penalty zones.',
+      deprecated: true,
+      description:
+        'Deprecated: always 0. The Statpedia now counts heavy off-road (penalty zones) as neutral.',
     }),
   })
   .openapi('SurfaceCoverage');
 
 /**
- * Adjusted terrain coverage (road/rough/water only), normalized to 100%.
+ * Road/rough/water coverage only, rescaled to sum to 100 (excludes gliding and neutral).
  */
 export const TerrainCoverageSchema = z
   .object({
@@ -252,21 +270,15 @@ export const TrackSchema = z
       .string()
       .openapi({ description: 'Slug of the cup this track belongs to (use with ?cup=)' }),
     surfaceCoverage: SurfaceCoverageSchema.openapi({
-      description: 'Raw surface breakdown including neutral/off-road.',
+      description: 'Full surface breakdown (sums to ~100), including gliding and neutral.',
     }),
     terrainCoverage: TerrainCoverageSchema.openapi({
-      description: 'Adjusted road/rough/water mix normalized to 100% for combo calculations.',
+      description:
+        'Road/rough/water mix rescaled to exactly 100, for weighting per-surface stats. Add gliding from surfaceCoverage for speed if needed.',
     }),
   })
   .openapi('Track', {
-    example: {
-      id: 'mario-bros-circuit',
-      name: 'Mario Bros. Circuit',
-      cup: 'Mushroom Cup',
-      cupId: 'mushroom-cup',
-      surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
-      terrainCoverage: { road: 76, rough: 24, water: 0 },
-    },
+    example: exampleOf(tracksData.tracks, 'mario-bros-circuit'),
   });
 
 // ============================================================================
@@ -283,7 +295,7 @@ const DataVersionSchema = z.string().openapi({
 
 /**
  * Response containing all characters.
- * Example shows first 3 characters (full response contains 50).
+ * Example shows the first 3 characters.
  */
 export const CharactersResponseSchema = z
   .object({
@@ -292,45 +304,14 @@ export const CharactersResponseSchema = z
   })
   .openapi('CharactersResponse', {
     example: {
-      dataVersion: '2026-01-23',
-      characters: [
-        {
-          id: 'baby-peach',
-          name: 'Baby Peach',
-          speed: { road: 0, rough: 0, water: 0 },
-          handling: { road: 6, rough: 6, water: 6 },
-          acceleration: 7,
-          miniTurbo: 4,
-          weight: 0,
-          coinCurve: 9,
-        },
-        {
-          id: 'baby-daisy',
-          name: 'Baby Daisy',
-          speed: { road: 0, rough: 0, water: 0 },
-          handling: { road: 6, rough: 6, water: 6 },
-          acceleration: 7,
-          miniTurbo: 4,
-          weight: 0,
-          coinCurve: 9,
-        },
-        {
-          id: 'dry-bones',
-          name: 'Dry Bones',
-          speed: { road: 0, rough: 1, water: 0 },
-          handling: { road: 5, rough: 7, water: 5 },
-          acceleration: 6,
-          miniTurbo: 3,
-          weight: 1,
-          coinCurve: 8,
-        },
-      ],
+      dataVersion: charactersData.dataVersion,
+      characters: charactersData.characters.slice(0, 3),
     },
   });
 
 /**
  * Response containing all vehicles.
- * Example shows first 3 vehicles (full response contains 40).
+ * Example shows the first 3 vehicles.
  */
 export const VehiclesResponseSchema = z
   .object({
@@ -339,48 +320,14 @@ export const VehiclesResponseSchema = z
   })
   .openapi('VehiclesResponse', {
     example: {
-      dataVersion: '2026-01-23',
-      vehicles: [
-        {
-          id: 'standard-bike',
-          name: 'Standard Bike',
-          tag: 'st-a-0',
-          speed: { road: 1, rough: 1, water: 1 },
-          handling: { road: 8, rough: 8, water: 8 },
-          acceleration: 9,
-          miniTurbo: 9,
-          weight: 0,
-          coinCurve: 6,
-        },
-        {
-          id: 'tune-thumper',
-          name: 'Tune Thumper',
-          tag: 'st-a-0',
-          speed: { road: 1, rough: 1, water: 1 },
-          handling: { road: 8, rough: 8, water: 8 },
-          acceleration: 9,
-          miniTurbo: 9,
-          weight: 0,
-          coinCurve: 6,
-        },
-        {
-          id: 'mach-rocket',
-          name: 'Mach Rocket',
-          tag: 'on-l-0',
-          speed: { road: 6, rough: 1, water: 1 },
-          handling: { road: 11, rough: 7, water: 7 },
-          acceleration: 7,
-          miniTurbo: 7,
-          weight: 0,
-          coinCurve: 6,
-        },
-      ],
+      dataVersion: vehiclesData.dataVersion,
+      vehicles: vehiclesData.vehicles.slice(0, 3),
     },
   });
 
 /**
  * Response containing all tracks.
- * Example shows first 3 tracks (full response contains 30).
+ * Example shows the first 3 tracks.
  */
 export const TracksResponseSchema = z
   .object({
@@ -389,33 +336,8 @@ export const TracksResponseSchema = z
   })
   .openapi('TracksResponse', {
     example: {
-      dataVersion: '2026-01-23',
-      tracks: [
-        {
-          id: 'mario-bros-circuit',
-          name: 'Mario Bros. Circuit',
-          cup: 'Mushroom Cup',
-          cupId: 'mushroom-cup',
-          surfaceCoverage: { road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 },
-          terrainCoverage: { road: 76, rough: 24, water: 0 },
-        },
-        {
-          id: 'crown-city',
-          name: 'Crown City',
-          cup: 'Mushroom Cup',
-          cupId: 'mushroom-cup',
-          surfaceCoverage: { road: 78, rough: 0, water: 0, neutral: 20, offRoad: 2 },
-          terrainCoverage: { road: 100, rough: 0, water: 0 },
-        },
-        {
-          id: 'whistlestop-summit',
-          name: 'Whistlestop Summit',
-          cup: 'Mushroom Cup',
-          cupId: 'mushroom-cup',
-          surfaceCoverage: { road: 35, rough: 0, water: 0, neutral: 62, offRoad: 3 },
-          terrainCoverage: { road: 100, rough: 0, water: 0 },
-        },
-      ],
+      dataVersion: tracksData.dataVersion,
+      tracks: tracksData.tracks.slice(0, 3),
     },
   });
 
@@ -460,6 +382,7 @@ export const HealthResponseSchema = z
 // ============================================================================
 
 export type TerrainStats = z.infer<typeof TerrainStatsSchema>;
+export type SpeedStats = z.infer<typeof SpeedStatsSchema>;
 export type BaseStats = z.infer<typeof BaseStatsSchema>;
 export type Character = z.infer<typeof CharacterSchema>;
 export type Vehicle = z.infer<typeof VehicleSchema>;
