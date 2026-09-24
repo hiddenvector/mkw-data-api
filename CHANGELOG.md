@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-24
+
 ### Added
 
 - `cupId` on tracks (e.g. `mushroom-cup`); `?cup=` matches it directly.
