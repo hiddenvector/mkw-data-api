@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Post-deploy smoke test (`npm run smoke`), run against production after every deploy and against a local Worker in CI.
+
 ## [1.1.0] - 2026-09-24
 
 ### Added

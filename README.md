@@ -142,6 +142,9 @@ npm run check
 
 # Regenerate data/*.json from scripts/csv/*.csv (idempotent; bumps dataVersion only on change)
 npm run generate-data
+
+# Smoke test a running Worker (defaults to production)
+SMOKE_BASE_URL=http://localhost:8787/mkw/api/v1 npm run smoke
 ```
 
 Deploys happen automatically when a `vX.Y.Z` tag on `main` is pushed; see `RELEASING.md`.

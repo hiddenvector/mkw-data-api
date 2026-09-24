@@ -53,3 +53,13 @@ jobs:
 
       - name: Verify Worker builds
         run: npx wrangler deploy --dry-run --outdir dist
+
+      # Runs the post-deploy smoke test against a local Worker, so the script
+      # can't drift out of sync with the API between releases.
+      - name: Smoke test local Worker
+        run: |
+          npx wrangler dev --port 8787 > wrangler-dev.log 2>&1 &
+          SMOKE_BASE_URL=http://localhost:8787/mkw/api/v1 SMOKE_WAIT_SECONDS=60 SMOKE_DELAY_MS=0 npm run smoke \
+            || { cat wrangler-dev.log; exit 1; }
+        env:
+          WRANGLER_SEND_METRICS: 'false'
