@@ -4,24 +4,29 @@ import type { CharactersResponse, TracksResponse, VehiclesResponse } from './sch
 const baseCharacter = {
   id: 'test-character',
   name: 'Test Character',
-  speed: { road: 0, rough: 0, water: 0 },
+  size: 'Small',
+  class: 'Fly',
+  speed: { road: 0, rough: 0, water: 0, gliding: 0 },
   handling: { road: 0, rough: 0, water: 0 },
   acceleration: 0,
   miniTurbo: 0,
   weight: 0,
   coinCurve: 0,
+  invincibility: 0,
 };
 
 const baseVehicle = {
   id: 'test-vehicle',
   name: 'Test Vehicle',
   tag: 'test-tag',
-  speed: { road: 0, rough: 0, water: 0 },
+  class: 'Test Class',
+  speed: { road: 0, rough: 0, water: 0, gliding: 0 },
   handling: { road: 0, rough: 0, water: 0 },
   acceleration: 0,
   miniTurbo: 0,
   weight: 0,
   coinCurve: 0,
+  invincibility: 0,
 };
 
 const baseTrack = {
@@ -29,7 +34,7 @@ const baseTrack = {
   name: 'Test Track',
   cup: 'Test Cup',
   cupId: 'test-cup',
-  surfaceCoverage: { road: 20, rough: 20, water: 20, neutral: 20, offRoad: 20 },
+  surfaceCoverage: { road: 20, rough: 20, water: 20, gliding: 20, neutral: 20, offRoad: 0 },
   terrainCoverage: { road: 50, rough: 30, water: 20 },
 };
 

@@ -1,9 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import {
+  assertHeader,
+  cleanCell,
+  COL,
+  computeTerrainCoverage,
+  EXPECTED_HEADERS,
+  matchesHeader,
   normalizeDisplayName,
   parsePercent,
   parseSurfaceCoverage,
-  parseTerrainCoverage,
   toId,
 } from './parser';
 import { assertValidIds } from './validate';
@@ -35,32 +40,33 @@ describe('parse-statpedia helpers', () => {
     );
   });
 
-  it('parses surface coverage', () => {
-    const row = [''] as string[];
-    row[3] = '47%';
-    row[4] = '15%';
-    row[5] = '0%';
-    row[6] = '34%';
-    row[7] = '4%';
-    const coverage = parseSurfaceCoverage(row);
-    expect(coverage).toEqual({ road: 47, rough: 15, water: 0, neutral: 34, offRoad: 4 });
+  it('parses surface coverage, with deprecated offRoad always 0', () => {
+    const row: string[] = [];
+    row[COL.COVERAGE_ROAD] = '47%';
+    row[COL.COVERAGE_ROUGH] = '15%';
+    row[COL.COVERAGE_WATER] = '0%';
+    row[COL.COVERAGE_GLIDING] = '6%';
+    row[COL.COVERAGE_NEUTRAL] = '32%';
+    expect(parseSurfaceCoverage(row)).toEqual({
+      road: 47,
+      rough: 15,
+      water: 0,
+      gliding: 6,
+      neutral: 32,
+      offRoad: 0,
+    });
   });
 
-  it('normalizes terrain coverage to 100', () => {
-    const row = [''] as string[];
-    row[8] = '76%';
-    row[9] = '24%';
-    row[10] = '0%';
-    const coverage = parseTerrainCoverage(row);
-    expect(coverage).toEqual({ road: 76, rough: 24, water: 0 });
+  it('rescales road/rough/water to 100, ignoring gliding and neutral', () => {
+    expect(computeTerrainCoverage({ road: 47, rough: 15, water: 0 })).toEqual({
+      road: 75.81,
+      rough: 24.19,
+      water: 0,
+    });
   });
 
   it('rounds terrain coverage so it sums to exactly 100', () => {
-    const row = [''] as string[];
-    row[8] = '1%';
-    row[9] = '1%';
-    row[10] = '1%';
-    const coverage = parseTerrainCoverage(row);
+    const coverage = computeTerrainCoverage({ road: 1, rough: 1, water: 1 });
     expect(coverage).toEqual({ road: 33.34, rough: 33.33, water: 33.33 });
     const hundredths = [coverage.road, coverage.rough, coverage.water].map((v) =>
       Math.round(v * 100),
@@ -69,12 +75,42 @@ describe('parse-statpedia helpers', () => {
   });
 
   it('handles zero terrain coverage safely', () => {
-    const row = [''] as string[];
-    row[8] = '0%';
-    row[9] = '0%';
-    row[10] = '0%';
-    const coverage = parseTerrainCoverage(row);
-    expect(coverage).toEqual({ road: 0, rough: 0, water: 0 });
+    expect(computeTerrainCoverage({ road: 0, rough: 0, water: 0 })).toEqual({
+      road: 0,
+      rough: 0,
+      water: 0,
+    });
+  });
+
+  it('collapses whitespace in cells', () => {
+    expect(cleanCell(' Off-Road\nHybrid ')).toBe('Off-Road Hybrid');
+    expect(cleanCell(undefined)).toBe('');
+  });
+});
+
+describe('header checks', () => {
+  const headerRow = (labels: Record<number, string>) => {
+    const row: string[] = [];
+    for (const [col, label] of Object.entries(labels)) row[Number(col)] = label;
+    return row;
+  };
+
+  it('matches rows with the expected labels, ignoring line breaks', () => {
+    const row = headerRow(EXPECTED_HEADERS.stats);
+    row[COL.HANDLING_ROAD] = 'On-Road\nHandling';
+    expect(matchesHeader(row, EXPECTED_HEADERS.stats)).toBe(true);
+  });
+
+  it('passes when some row matches', () => {
+    const rows = [[], headerRow(EXPECTED_HEADERS.coverage)];
+    expect(() => assertHeader(rows, EXPECTED_HEADERS.coverage, 'Sheet')).not.toThrow();
+  });
+
+  it('fails loudly when columns have moved', () => {
+    const shifted = [['', ...headerRow(EXPECTED_HEADERS.stats)]];
+    expect(() => assertHeader(shifted, EXPECTED_HEADERS.stats, 'Characters')).toThrow(
+      /Characters: header row not found .*col 8="On-Road".*layout changed/,
+    );
   });
 });
 

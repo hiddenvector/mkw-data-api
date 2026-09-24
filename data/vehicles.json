@@ -4,11 +4,13 @@
     {
       "id": "standard-bike",
       "name": "Standard Bike",
-      "tag": "st-a-0",
+      "tag": "st-a-2",
+      "class": "Charger",
       "speed": {
         "road": 1,
         "rough": 1,
-        "water": 1
+        "water": 1,
+        "gliding": 0
       },
       "handling": {
         "road": 8,
@@ -18,16 +20,19 @@
       "acceleration": 9,
       "miniTurbo": 9,
       "weight": 0,
-      "coinCurve": 6
+      "coinCurve": 6,
+      "invincibility": 0
     },
     {
       "id": "tune-thumper",
       "name": "Tune Thumper",
-      "tag": "st-a-0",
+      "tag": "st-a-2",
+      "class": "Charger",
       "speed": {
         "road": 1,
         "rough": 1,
-        "water": 1
+        "water": 1,
+        "gliding": 0
       },
       "handling": {
         "road": 8,
@@ -37,16 +42,19 @@
       "acceleration": 9,
       "miniTurbo": 9,
       "weight": 0,
-      "coinCurve": 6
+      "coinCurve": 6,
+      "invincibility": 0
     },
     {
       "id": "cute-scoot",
       "name": "Cute Scoot",
-      "tag": "st-a-0",
+      "tag": "st-a-2",
+      "class": "Charger",
       "speed": {
         "road": 1,
         "rough": 1,
-        "water": 1
+        "water": 1,
+        "gliding": 0
       },
       "handling": {
         "road": 8,
@@ -56,16 +64,19 @@
       "acceleration": 9,
       "miniTurbo": 9,
       "weight": 0,
-      "coinCurve": 6
+      "coinCurve": 6,
+      "invincibility": 0
     },
     {
       "id": "pipe-frame",
       "name": "Pipe Frame",
-      "tag": "st-a-1",
+      "tag": "st-a-4",
+      "class": "Charger",
       "speed": {
         "road": 2,
         "rough": 2,
-        "water": 2
+        "water": 2,
+        "gliding": 0
       },
       "handling": {
         "road": 7,
@@ -75,16 +86,19 @@
       "acceleration": 8,
       "miniTurbo": 8,
       "weight": 1,
-      "coinCurve": 5
+      "coinCurve": 5,
+      "invincibility": 1
     },
     {
       "id": "loco-moto",
       "name": "Loco Moto",
-      "tag": "st-b-0",
+      "tag": "st-b-2",
+      "class": "All-Rounder",
       "speed": {
         "road": 4,
         "rough": 4,
-        "water": 4
+        "water": 4,
+        "gliding": 0
       },
       "handling": {
         "road": 7,
@@ -94,16 +108,19 @@
       "acceleration": 6,
       "miniTurbo": 6,
       "weight": 1,
-      "coinCurve": 5
+      "coinCurve": 5,
+      "invincibility": 2
     },
     {
       "id": "standard-kart",
       "name": "Standard Kart",
-      "tag": "st-b-1",
+      "tag": "st-b-4",
+      "class": "All-Rounder",
       "speed": {
         "road": 5,
         "rough": 5,
-        "water": 5
+        "water": 5,
+        "gliding": 0
       },
       "handling": {
         "road": 6,
@@ -113,16 +130,19 @@
       "acceleration": 5,
       "miniTurbo": 5,
       "weight": 2,
-      "coinCurve": 4
+      "coinCurve": 4,
+      "invincibility": 3
     },
     {
       "id": "plushbuggy",
       "name": "Plushbuggy",
-      "tag": "st-b-1",
+      "tag": "st-b-4",
+      "class": "All-Rounder",
       "speed": {
         "road": 5,
         "rough": 5,
-        "water": 5
+        "water": 5,
+        "gliding": 0
       },
       "handling": {
         "road": 6,
@@ -132,16 +152,19 @@
       "acceleration": 5,
       "miniTurbo": 5,
       "weight": 2,
-      "coinCurve": 4
+      "coinCurve": 4,
+      "invincibility": 3
     },
     {
       "id": "blastronaut-iii",
       "name": "Blastronaut III",
-      "tag": "st-b-x",
+      "tag": "st-b-3",
+      "class": "All-Rounder",
       "speed": {
         "road": 5,
         "rough": 5,
-        "water": 5
+        "water": 5,
+        "gliding": 0
       },
       "handling": {
         "road": 4,
@@ -151,16 +174,19 @@
       "acceleration": 6,
       "miniTurbo": 6,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 3
     },
     {
       "id": "w-twin-chopper",
       "name": "W-Twin Chopper",
-      "tag": "st-c-0",
+      "tag": "st-c-2",
+      "class": "Speedster",
       "speed": {
         "road": 7,
         "rough": 7,
-        "water": 7
+        "water": 7,
+        "gliding": 0
       },
       "handling": {
         "road": 6,
@@ -170,16 +196,19 @@
       "acceleration": 3,
       "miniTurbo": 3,
       "weight": 2,
-      "coinCurve": 4
+      "coinCurve": 4,
+      "invincibility": 4
     },
     {
       "id": "reel-racer",
       "name": "Reel Racer",
-      "tag": "st-c-1",
+      "tag": "st-c-4",
+      "class": "Speedster",
       "speed": {
         "road": 8,
         "rough": 8,
-        "water": 8
+        "water": 8,
+        "gliding": 0
       },
       "handling": {
         "road": 5,
@@ -189,16 +218,19 @@
       "acceleration": 2,
       "miniTurbo": 2,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 5
     },
     {
       "id": "junkyard-hog",
       "name": "Junkyard Hog",
-      "tag": "st-c-x",
+      "tag": "st-c-3",
+      "class": "Speedster",
       "speed": {
         "road": 8,
         "rough": 8,
-        "water": 8
+        "water": 8,
+        "gliding": 0
       },
       "handling": {
         "road": 3,
@@ -208,16 +240,19 @@
       "acceleration": 3,
       "miniTurbo": 3,
       "weight": 4,
-      "coinCurve": 2
+      "coinCurve": 2,
+      "invincibility": 5
     },
     {
       "id": "dread-sled",
       "name": "Dread Sled",
       "tag": "hb-of",
+      "class": "Off-Road Hybrid",
       "speed": {
         "road": 3,
         "rough": 9,
-        "water": 5
+        "water": 5,
+        "gliding": 0
       },
       "handling": {
         "road": 4,
@@ -227,16 +262,19 @@
       "acceleration": 3,
       "miniTurbo": 3,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 5
     },
     {
       "id": "stellar-sled",
       "name": "Stellar Sled",
       "tag": "hb-wt",
+      "class": "Water Hybrid",
       "speed": {
         "road": 6,
         "rough": 8,
-        "water": 11
+        "water": 11,
+        "gliding": 1
       },
       "handling": {
         "road": 2,
@@ -246,16 +284,19 @@
       "acceleration": 0,
       "miniTurbo": 0,
       "weight": 5,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 8
     },
     {
       "id": "mach-rocket",
       "name": "Mach Rocket",
-      "tag": "on-l-0",
+      "tag": "on-l-2",
+      "class": "Light On-Roader",
       "speed": {
         "road": 6,
         "rough": 1,
-        "water": 1
+        "water": 1,
+        "gliding": 0
       },
       "handling": {
         "road": 11,
@@ -265,16 +306,19 @@
       "acceleration": 7,
       "miniTurbo": 7,
       "weight": 0,
-      "coinCurve": 6
+      "coinCurve": 6,
+      "invincibility": 0
     },
     {
       "id": "rob-hog",
       "name": "R.O.B. H.O.G.",
-      "tag": "on-l-0",
+      "tag": "on-l-2",
+      "class": "Light On-Roader",
       "speed": {
         "road": 6,
         "rough": 1,
-        "water": 1
+        "water": 1,
+        "gliding": 0
       },
       "handling": {
         "road": 11,
@@ -284,16 +328,19 @@
       "acceleration": 7,
       "miniTurbo": 7,
       "weight": 0,
-      "coinCurve": 6
+      "coinCurve": 6,
+      "invincibility": 0
     },
     {
       "id": "baby-blooper",
       "name": "Baby Blooper",
-      "tag": "on-l-1",
+      "tag": "on-l-4",
+      "class": "Light On-Roader",
       "speed": {
         "road": 7,
         "rough": 2,
-        "water": 2
+        "water": 2,
+        "gliding": 0
       },
       "handling": {
         "road": 10,
@@ -303,16 +350,19 @@
       "acceleration": 6,
       "miniTurbo": 6,
       "weight": 1,
-      "coinCurve": 5
+      "coinCurve": 5,
+      "invincibility": 1
     },
     {
       "id": "roadster-royale",
       "name": "Roadster Royale",
-      "tag": "on-m",
+      "tag": "on-m-4",
+      "class": "Medium On-Roader",
       "speed": {
         "road": 8,
         "rough": 4,
-        "water": 4
+        "water": 4,
+        "gliding": 0
       },
       "handling": {
         "road": 9,
@@ -322,16 +372,19 @@
       "acceleration": 4,
       "miniTurbo": 4,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 4
     },
     {
       "id": "b-dasher",
       "name": "B-Dasher",
-      "tag": "on-m",
+      "tag": "on-m-4",
+      "class": "Medium On-Roader",
       "speed": {
         "road": 8,
         "rough": 4,
-        "water": 4
+        "water": 4,
+        "gliding": 0
       },
       "handling": {
         "road": 9,
@@ -341,16 +394,19 @@
       "acceleration": 4,
       "miniTurbo": 4,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 4
     },
     {
       "id": "hot-rod",
       "name": "Hot Rod",
-      "tag": "on-m",
+      "tag": "on-m-4",
+      "class": "Medium On-Roader",
       "speed": {
         "road": 8,
         "rough": 4,
-        "water": 4
+        "water": 4,
+        "gliding": 0
       },
       "handling": {
         "road": 9,
@@ -360,16 +416,19 @@
       "acceleration": 4,
       "miniTurbo": 4,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 4
     },
     {
       "id": "bumble-v",
       "name": "Bumble V",
-      "tag": "on-m",
+      "tag": "on-m-4",
+      "class": "Medium On-Roader",
       "speed": {
         "road": 8,
         "rough": 4,
-        "water": 4
+        "water": 4,
+        "gliding": 0
       },
       "handling": {
         "road": 9,
@@ -379,16 +438,19 @@
       "acceleration": 4,
       "miniTurbo": 4,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 4
     },
     {
       "id": "billdozer",
       "name": "Billdozer",
-      "tag": "on-h-1",
+      "tag": "on-h-4",
+      "class": "Heavy On-Roader",
       "speed": {
         "road": 9,
         "rough": 6,
-        "water": 6
+        "water": 6,
+        "gliding": 0
       },
       "handling": {
         "road": 8,
@@ -398,16 +460,19 @@
       "acceleration": 2,
       "miniTurbo": 2,
       "weight": 5,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 7
     },
     {
       "id": "big-horn",
       "name": "Big Horn",
-      "tag": "on-h-1",
+      "tag": "on-h-4",
+      "class": "Heavy On-Roader",
       "speed": {
         "road": 9,
         "rough": 6,
-        "water": 6
+        "water": 6,
+        "gliding": 0
       },
       "handling": {
         "road": 8,
@@ -417,16 +482,19 @@
       "acceleration": 2,
       "miniTurbo": 2,
       "weight": 5,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 7
     },
     {
       "id": "rallygator",
       "name": "Rallygator",
-      "tag": "on-h-x",
+      "tag": "on-h-3",
+      "class": "Heavy On-Roader",
       "speed": {
         "road": 9,
         "rough": 6,
-        "water": 6
+        "water": 6,
+        "gliding": 0
       },
       "handling": {
         "road": 6,
@@ -436,16 +504,19 @@
       "acceleration": 3,
       "miniTurbo": 3,
       "weight": 6,
-      "coinCurve": 0
+      "coinCurve": 0,
+      "invincibility": 7
     },
     {
       "id": "rally-bike",
       "name": "Rally Bike",
-      "tag": "of-l-0",
+      "tag": "of-l-2",
+      "class": "Light Off-Roader",
       "speed": {
         "road": 0,
         "rough": 5,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 7,
@@ -455,16 +526,19 @@
       "acceleration": 8,
       "miniTurbo": 8,
       "weight": 0,
-      "coinCurve": 6
+      "coinCurve": 6,
+      "invincibility": 1
     },
     {
       "id": "hyper-pipe",
       "name": "Hyper Pipe",
-      "tag": "of-l-0",
+      "tag": "of-l-2",
+      "class": "Light Off-Roader",
       "speed": {
         "road": 0,
         "rough": 5,
-        "water": 0
+        "water": 0,
+        "gliding": 0
       },
       "handling": {
         "road": 7,
@@ -474,16 +548,19 @@
       "acceleration": 8,
       "miniTurbo": 8,
       "weight": 0,
-      "coinCurve": 6
+      "coinCurve": 6,
+      "invincibility": 1
     },
     {
       "id": "biddybuggy",
       "name": "Biddybuggy",
-      "tag": "of-l-1",
+      "tag": "of-l-4",
+      "class": "Light Off-Roader",
       "speed": {
         "road": 1,
         "rough": 6,
-        "water": 1
+        "water": 1,
+        "gliding": 0
       },
       "handling": {
         "road": 6,
@@ -493,16 +570,19 @@
       "acceleration": 7,
       "miniTurbo": 7,
       "weight": 1,
-      "coinCurve": 5
+      "coinCurve": 5,
+      "invincibility": 2
     },
     {
       "id": "rally-kart",
       "name": "Rally Kart",
-      "tag": "of-m",
+      "tag": "of-m-4",
+      "class": "Medium Off-Roader",
       "speed": {
         "road": 4,
         "rough": 8,
-        "water": 4
+        "water": 4,
+        "gliding": 0
       },
       "handling": {
         "road": 4,
@@ -512,16 +592,19 @@
       "acceleration": 4,
       "miniTurbo": 4,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 5
     },
     {
       "id": "zoom-buggy",
       "name": "Zoom Buggy",
-      "tag": "of-m",
+      "tag": "of-m-4",
+      "class": "Medium Off-Roader",
       "speed": {
         "road": 4,
         "rough": 8,
-        "water": 4
+        "water": 4,
+        "gliding": 0
       },
       "handling": {
         "road": 4,
@@ -531,16 +614,19 @@
       "acceleration": 4,
       "miniTurbo": 4,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 5
     },
     {
       "id": "bowser-bruiser",
       "name": "Bowser Bruiser",
-      "tag": "of-h",
+      "tag": "of-h-4",
+      "class": "Heavy Off-Roader",
       "speed": {
         "road": 7,
         "rough": 10,
-        "water": 7
+        "water": 7,
+        "gliding": 0
       },
       "handling": {
         "road": 2,
@@ -550,16 +636,19 @@
       "acceleration": 1,
       "miniTurbo": 1,
       "weight": 5,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 8
     },
     {
       "id": "lil-dumpy",
       "name": "Li'l Dumpy",
-      "tag": "of-h",
+      "tag": "of-h-4",
+      "class": "Heavy Off-Roader",
       "speed": {
         "road": 7,
         "rough": 10,
-        "water": 7
+        "water": 7,
+        "gliding": 0
       },
       "handling": {
         "road": 2,
@@ -569,16 +658,19 @@
       "acceleration": 1,
       "miniTurbo": 1,
       "weight": 5,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 8
     },
     {
       "id": "chargin-truck",
       "name": "Chargin' Truck",
-      "tag": "of-h",
+      "tag": "of-h-4",
+      "class": "Heavy Off-Roader",
       "speed": {
         "road": 7,
         "rough": 10,
-        "water": 7
+        "water": 7,
+        "gliding": 0
       },
       "handling": {
         "road": 2,
@@ -588,16 +680,19 @@
       "acceleration": 1,
       "miniTurbo": 1,
       "weight": 5,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 8
     },
     {
       "id": "tiny-titan",
       "name": "Tiny Titan",
-      "tag": "of-h",
+      "tag": "of-h-4",
+      "class": "Heavy Off-Roader",
       "speed": {
         "road": 7,
         "rough": 10,
-        "water": 7
+        "water": 7,
+        "gliding": 0
       },
       "handling": {
         "road": 2,
@@ -607,16 +702,19 @@
       "acceleration": 1,
       "miniTurbo": 1,
       "weight": 5,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 8
     },
     {
       "id": "dolphin-dasher",
       "name": "Dolphin Dasher",
-      "tag": "wt-l",
+      "tag": "wt-l-2",
+      "class": "Light Surfer",
       "speed": {
         "road": 0,
         "rough": 0,
-        "water": 5
+        "water": 5,
+        "gliding": 1
       },
       "handling": {
         "road": 7,
@@ -626,16 +724,19 @@
       "acceleration": 8,
       "miniTurbo": 8,
       "weight": 0,
-      "coinCurve": 6
+      "coinCurve": 6,
+      "invincibility": 1
     },
     {
       "id": "fin-twin",
       "name": "Fin Twin",
-      "tag": "wt-l",
+      "tag": "wt-l-2",
+      "class": "Light Surfer",
       "speed": {
         "road": 0,
         "rough": 0,
-        "water": 5
+        "water": 5,
+        "gliding": 1
       },
       "handling": {
         "road": 7,
@@ -645,16 +746,19 @@
       "acceleration": 8,
       "miniTurbo": 8,
       "weight": 0,
-      "coinCurve": 6
+      "coinCurve": 6,
+      "invincibility": 1
     },
     {
       "id": "cloud-9",
       "name": "Cloud 9",
-      "tag": "wt-m-1",
+      "tag": "wt-m-4",
+      "class": "Medium Surfer",
       "speed": {
         "road": 4,
         "rough": 4,
-        "water": 8
+        "water": 8,
+        "gliding": 1
       },
       "handling": {
         "road": 4,
@@ -664,16 +768,19 @@
       "acceleration": 4,
       "miniTurbo": 4,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 5
     },
     {
       "id": "ribbit-revster",
       "name": "Ribbit Revster",
-      "tag": "wt-m-1",
+      "tag": "wt-m-4",
+      "class": "Medium Surfer",
       "speed": {
         "road": 4,
         "rough": 4,
-        "water": 8
+        "water": 8,
+        "gliding": 1
       },
       "handling": {
         "road": 4,
@@ -683,16 +790,19 @@
       "acceleration": 4,
       "miniTurbo": 4,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 5
     },
     {
       "id": "carpet-flyer",
       "name": "Carpet Flyer",
-      "tag": "wt-m-1",
+      "tag": "wt-m-4",
+      "class": "Medium Surfer",
       "speed": {
         "road": 4,
         "rough": 4,
-        "water": 8
+        "water": 8,
+        "gliding": 1
       },
       "handling": {
         "road": 4,
@@ -702,16 +812,19 @@
       "acceleration": 4,
       "miniTurbo": 4,
       "weight": 3,
-      "coinCurve": 3
+      "coinCurve": 3,
+      "invincibility": 5
     },
     {
       "id": "funky-dorrie",
       "name": "Funky Dorrie",
-      "tag": "wt-m-x",
+      "tag": "wt-m-3",
+      "class": "Medium Surfer",
       "speed": {
         "road": 4,
         "rough": 4,
-        "water": 8
+        "water": 8,
+        "gliding": 1
       },
       "handling": {
         "road": 2,
@@ -721,16 +834,19 @@
       "acceleration": 5,
       "miniTurbo": 5,
       "weight": 4,
-      "coinCurve": 2
+      "coinCurve": 2,
+      "invincibility": 5
     },
     {
       "id": "mecha-trike",
       "name": "Mecha Trike",
-      "tag": "wt-h-1",
+      "tag": "wt-h-4",
+      "class": "Heavy Surfer",
       "speed": {
         "road": 7,
         "rough": 7,
-        "water": 10
+        "water": 10,
+        "gliding": 1
       },
       "handling": {
         "road": 2,
@@ -740,16 +856,19 @@
       "acceleration": 1,
       "miniTurbo": 1,
       "weight": 5,
-      "coinCurve": 1
+      "coinCurve": 1,
+      "invincibility": 8
     },
     {
       "id": "lobster-roller",
       "name": "Lobster Roller",
-      "tag": "wt-h-x",
+      "tag": "wt-h-3",
+      "class": "Heavy Surfer",
       "speed": {
         "road": 7,
         "rough": 7,
-        "water": 10
+        "water": 10,
+        "gliding": 1
       },
       "handling": {
         "road": 0,
@@ -759,7 +878,8 @@
       "acceleration": 2,
       "miniTurbo": 2,
       "weight": 6,
-      "coinCurve": 0
+      "coinCurve": 0,
+      "invincibility": 8
     }
   ]
 }

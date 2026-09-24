@@ -10,12 +10,13 @@
         "road": 47,
         "rough": 15,
         "water": 0,
-        "neutral": 34,
-        "offRoad": 4
+        "gliding": 6,
+        "neutral": 32,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 76,
-        "rough": 24,
+        "road": 75.81,
+        "rough": 24.19,
         "water": 0
       }
     },
@@ -25,11 +26,12 @@
       "cup": "Mushroom Cup",
       "cupId": "mushroom-cup",
       "surfaceCoverage": {
-        "road": 78,
+        "road": 75,
         "rough": 0,
         "water": 0,
-        "neutral": 20,
-        "offRoad": 2
+        "gliding": 2,
+        "neutral": 23,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 100,
@@ -46,8 +48,9 @@
         "road": 35,
         "rough": 0,
         "water": 0,
-        "neutral": 62,
-        "offRoad": 3
+        "gliding": 0,
+        "neutral": 65,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 100,
@@ -61,11 +64,12 @@
       "cup": "Mushroom Cup",
       "cupId": "mushroom-cup",
       "surfaceCoverage": {
-        "road": 79,
+        "road": 77,
         "rough": 0,
         "water": 0,
-        "neutral": 17,
-        "offRoad": 4
+        "gliding": 3,
+        "neutral": 20,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 100,
@@ -82,13 +86,14 @@
         "road": 71,
         "rough": 13,
         "water": 2,
-        "neutral": 4,
-        "offRoad": 10
+        "gliding": 1,
+        "neutral": 13,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 83,
-        "rough": 15,
-        "water": 2
+        "road": 82.56,
+        "rough": 15.12,
+        "water": 2.32
       }
     },
     {
@@ -97,11 +102,12 @@
       "cup": "Flower Cup",
       "cupId": "flower-cup",
       "surfaceCoverage": {
-        "road": 62,
+        "road": 58,
         "rough": 0,
         "water": 0,
-        "neutral": 36,
-        "offRoad": 2
+        "gliding": 9,
+        "neutral": 33,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 100,
@@ -118,8 +124,9 @@
         "road": 36,
         "rough": 24,
         "water": 0,
-        "neutral": 38,
-        "offRoad": 2
+        "gliding": 0,
+        "neutral": 40,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 60,
@@ -136,8 +143,9 @@
         "road": 62,
         "rough": 0,
         "water": 0,
-        "neutral": 34,
-        "offRoad": 2
+        "gliding": 2,
+        "neutral": 36,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 100,
@@ -151,15 +159,16 @@
       "cup": "Star Cup",
       "cupId": "star-cup",
       "surfaceCoverage": {
-        "road": 43,
+        "road": 45,
         "rough": 26,
         "water": 0,
-        "neutral": 20,
-        "offRoad": 11
+        "gliding": 0,
+        "neutral": 29,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 62,
-        "rough": 38,
+        "road": 63.38,
+        "rough": 36.62,
         "water": 0
       }
     },
@@ -169,16 +178,17 @@
       "cup": "Star Cup",
       "cupId": "star-cup",
       "surfaceCoverage": {
-        "road": 13,
-        "rough": 43,
-        "water": 13,
-        "neutral": 27,
-        "offRoad": 4
+        "road": 10,
+        "rough": 42,
+        "water": 15,
+        "gliding": 27,
+        "neutral": 6,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 19,
-        "rough": 62,
-        "water": 19
+        "road": 14.92,
+        "rough": 62.69,
+        "water": 22.39
       }
     },
     {
@@ -187,11 +197,12 @@
       "cup": "Star Cup",
       "cupId": "star-cup",
       "surfaceCoverage": {
-        "road": 73,
+        "road": 72,
         "rough": 0,
         "water": 0,
-        "neutral": 24,
-        "offRoad": 3
+        "gliding": 3,
+        "neutral": 25,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 100,
@@ -205,11 +216,12 @@
       "cup": "Star Cup",
       "cupId": "star-cup",
       "surfaceCoverage": {
-        "road": 46,
+        "road": 48,
         "rough": 0,
-        "water": 26,
-        "neutral": 24,
-        "offRoad": 4
+        "water": 27,
+        "gliding": 0,
+        "neutral": 25,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 64,
@@ -226,13 +238,14 @@
         "road": 0,
         "rough": 81,
         "water": 13,
-        "neutral": 0,
-        "offRoad": 6
+        "gliding": 0,
+        "neutral": 6,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 0,
-        "rough": 86,
-        "water": 14
+        "rough": 86.17,
+        "water": 13.83
       }
     },
     {
@@ -241,16 +254,17 @@
       "cup": "Shell Cup",
       "cupId": "shell-cup",
       "surfaceCoverage": {
-        "road": 28,
-        "rough": 24,
-        "water": 22,
-        "neutral": 22,
-        "offRoad": 4
+        "road": 27,
+        "rough": 27,
+        "water": 25,
+        "gliding": 0,
+        "neutral": 21,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 37.63,
-        "rough": 32.67,
-        "water": 29.7
+        "road": 34.18,
+        "rough": 34.18,
+        "water": 31.64
       }
     },
     {
@@ -262,8 +276,9 @@
         "road": 92,
         "rough": 0,
         "water": 0,
-        "neutral": 6,
-        "offRoad": 2
+        "gliding": 0,
+        "neutral": 8,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 100,
@@ -280,13 +295,14 @@
         "road": 51,
         "rough": 14,
         "water": 23,
-        "neutral": 10,
-        "offRoad": 2
+        "gliding": 9,
+        "neutral": 3,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 58,
-        "rough": 16,
-        "water": 26
+        "road": 57.95,
+        "rough": 15.91,
+        "water": 26.14
       }
     },
     {
@@ -295,16 +311,17 @@
       "cup": "Banana Cup",
       "cupId": "banana-cup",
       "surfaceCoverage": {
-        "road": 42,
+        "road": 49,
         "rough": 0,
-        "water": 42,
-        "neutral": 15,
-        "offRoad": 1
+        "water": 17,
+        "gliding": 10,
+        "neutral": 24,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 50,
+        "road": 74.24,
         "rough": 0,
-        "water": 50
+        "water": 25.76
       }
     },
     {
@@ -313,15 +330,16 @@
       "cup": "Banana Cup",
       "cupId": "banana-cup",
       "surfaceCoverage": {
-        "road": 24,
-        "rough": 56,
+        "road": 26,
+        "rough": 50,
         "water": 0,
-        "neutral": 16,
-        "offRoad": 4
+        "gliding": 0,
+        "neutral": 24,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 30,
-        "rough": 70,
+        "road": 34.21,
+        "rough": 65.79,
         "water": 0
       }
     },
@@ -331,11 +349,12 @@
       "cup": "Banana Cup",
       "cupId": "banana-cup",
       "surfaceCoverage": {
-        "road": 66,
+        "road": 63,
         "rough": 0,
         "water": 0,
-        "neutral": 27,
-        "offRoad": 7
+        "gliding": 13,
+        "neutral": 24,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 100,
@@ -349,16 +368,17 @@
       "cup": "Leaf Cup",
       "cupId": "leaf-cup",
       "surfaceCoverage": {
-        "road": 51,
+        "road": 48,
         "rough": 0,
-        "water": 40,
-        "neutral": 0,
-        "offRoad": 9
+        "water": 36,
+        "gliding": 0,
+        "neutral": 16,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 56,
+        "road": 57.14,
         "rough": 0,
-        "water": 44
+        "water": 42.86
       }
     },
     {
@@ -367,16 +387,17 @@
       "cup": "Leaf Cup",
       "cupId": "leaf-cup",
       "surfaceCoverage": {
-        "road": 64,
+        "road": 66,
         "rough": 19,
-        "water": 14,
-        "neutral": 1,
-        "offRoad": 2
+        "water": 12,
+        "gliding": 0,
+        "neutral": 3,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 66,
-        "rough": 20,
-        "water": 14
+        "road": 68.04,
+        "rough": 19.59,
+        "water": 12.37
       }
     },
     {
@@ -388,8 +409,9 @@
         "road": 80,
         "rough": 0,
         "water": 0,
-        "neutral": 17,
-        "offRoad": 3
+        "gliding": 10,
+        "neutral": 10,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 100,
@@ -403,16 +425,17 @@
       "cup": "Leaf Cup",
       "cupId": "leaf-cup",
       "surfaceCoverage": {
-        "road": 75,
+        "road": 72,
         "rough": 0,
         "water": 2,
-        "neutral": 23,
+        "gliding": 10,
+        "neutral": 16,
         "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 97,
+        "road": 97.3,
         "rough": 0,
-        "water": 3
+        "water": 2.7
       }
     },
     {
@@ -424,12 +447,13 @@
         "road": 5,
         "rough": 88,
         "water": 0,
-        "neutral": 0,
-        "offRoad": 7
+        "gliding": 0,
+        "neutral": 7,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 5,
-        "rough": 95,
+        "road": 5.38,
+        "rough": 94.62,
         "water": 0
       }
     },
@@ -442,6 +466,7 @@
         "road": 39,
         "rough": 51,
         "water": 10,
+        "gliding": 0,
         "neutral": 0,
         "offRoad": 0
       },
@@ -460,12 +485,13 @@
         "road": 69,
         "rough": 12,
         "water": 0,
-        "neutral": 12,
-        "offRoad": 7
+        "gliding": 0,
+        "neutral": 19,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 85,
-        "rough": 15,
+        "road": 85.19,
+        "rough": 14.81,
         "water": 0
       }
     },
@@ -475,16 +501,17 @@
       "cup": "Lightning Cup",
       "cupId": "lightning-cup",
       "surfaceCoverage": {
-        "road": 66,
+        "road": 65,
         "rough": 0,
         "water": 5,
-        "neutral": 29,
+        "gliding": 16,
+        "neutral": 14,
         "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 93,
+        "road": 92.86,
         "rough": 0,
-        "water": 7
+        "water": 7.14
       }
     },
     {
@@ -496,12 +523,13 @@
         "road": 28,
         "rough": 20,
         "water": 0,
-        "neutral": 50,
-        "offRoad": 2
+        "gliding": 13,
+        "neutral": 39,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 58,
-        "rough": 42,
+        "road": 58.33,
+        "rough": 41.67,
         "water": 0
       }
     },
@@ -511,11 +539,12 @@
       "cup": "Special Cup",
       "cupId": "special-cup",
       "surfaceCoverage": {
-        "road": 90,
+        "road": 89,
         "rough": 0,
         "water": 0,
-        "neutral": 0,
-        "offRoad": 10
+        "gliding": 0,
+        "neutral": 11,
+        "offRoad": 0
       },
       "terrainCoverage": {
         "road": 100,
@@ -531,14 +560,15 @@
       "surfaceCoverage": {
         "road": 71,
         "rough": 0,
-        "water": 7,
-        "neutral": 18,
-        "offRoad": 4
+        "water": 5,
+        "gliding": 20,
+        "neutral": 4,
+        "offRoad": 0
       },
       "terrainCoverage": {
-        "road": 91,
+        "road": 93.42,
         "rough": 0,
-        "water": 9
+        "water": 6.58
       }
     }
   ]

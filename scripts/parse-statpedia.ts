@@ -23,11 +23,15 @@ import {
 } from '../src/schemas';
 import { assertValidIds } from '../src/lib/validate';
 import {
+  assertHeader,
+  cleanCell,
   COL,
+  computeTerrainCoverage,
   type CsvRow,
+  EXPECTED_HEADERS,
+  matchesHeader,
   normalizeDisplayName,
   parseSurfaceCoverage,
-  parseTerrainCoverage,
   toId,
 } from '../src/lib/parser';
 
@@ -96,6 +100,9 @@ const CUP_MAPPING: Record<string, string> = {
 // Utility Functions
 // ============================================================================
 
+const readCsv = (csvPath: string): CsvRow[] =>
+  parse(fs.readFileSync(csvPath, 'utf-8'), { relax_column_count: true });
+
 /**
  * Safely parse an integer from a CSV cell with detailed error context
  * @throws {Error} If value is not a valid integer
@@ -120,23 +127,10 @@ function safeParseInt(
 }
 
 /**
- * Check if a CSV row contains stat data (non-empty numeric value at startCol)
+ * Check if a CSV row contains stat data (an integer at startCol)
  */
 function hasStats(row: CsvRow, startCol: number): boolean {
-  return (
-    row &&
-    row[startCol] !== undefined &&
-    row[startCol] !== '' &&
-    !isNaN(parseInt(row[startCol], 10))
-  );
-}
-
-/**
- * Check if a string is a header row identifier
- */
-function isHeaderRow(value: string | undefined, headerText: string): boolean {
-  if (!value) return false;
-  return value.trim().toLowerCase() === headerText.toLowerCase();
+  return /^\d+$/.test((row[startCol] ?? '').trim());
 }
 
 /**
@@ -144,8 +138,8 @@ function isHeaderRow(value: string | undefined, headerText: string): boolean {
  */
 function extractNames(row: CsvRow): string[] {
   return [row[COL.NAME_1], row[COL.NAME_2], row[COL.NAME_3], row[COL.NAME_4]]
-    .filter((name): name is string => Boolean(name && name.trim()))
-    .map((name) => name.trim());
+    .map(cleanCell)
+    .filter(Boolean);
 }
 
 // ============================================================================
@@ -156,24 +150,76 @@ function extractNames(row: CsvRow): string[] {
  * Parse BaseStats from a CSV row (shared by characters and vehicles)
  */
 function parseStats(row: CsvRow, rowIndex: number): BaseStats {
-  const ctx = (col: number) => ({ row: rowIndex, col, rowData: row });
+  const int = (col: number) => safeParseInt(row[col], { row: rowIndex, col, rowData: row });
 
   return {
     speed: {
-      road: safeParseInt(row[COL.SPEED_ROAD], ctx(COL.SPEED_ROAD)),
-      rough: safeParseInt(row[COL.SPEED_ROUGH], ctx(COL.SPEED_ROUGH)),
-      water: safeParseInt(row[COL.SPEED_WATER], ctx(COL.SPEED_WATER)),
+      road: int(COL.SPEED_ROAD),
+      rough: int(COL.SPEED_ROUGH),
+      water: int(COL.SPEED_WATER),
+      gliding: int(COL.SPEED_GLIDING),
     },
     handling: {
-      road: safeParseInt(row[COL.HANDLING_ROAD], ctx(COL.HANDLING_ROAD)),
-      rough: safeParseInt(row[COL.HANDLING_ROUGH], ctx(COL.HANDLING_ROUGH)),
-      water: safeParseInt(row[COL.HANDLING_WATER], ctx(COL.HANDLING_WATER)),
+      road: int(COL.HANDLING_ROAD),
+      rough: int(COL.HANDLING_ROUGH),
+      water: int(COL.HANDLING_WATER),
     },
-    acceleration: safeParseInt(row[COL.ACCELERATION], ctx(COL.ACCELERATION)),
-    miniTurbo: safeParseInt(row[COL.MINI_TURBO], ctx(COL.MINI_TURBO)),
-    weight: safeParseInt(row[COL.WEIGHT], ctx(COL.WEIGHT)),
-    coinCurve: safeParseInt(row[COL.COIN_CURVE], ctx(COL.COIN_CURVE)),
+    acceleration: int(COL.ACCELERATION),
+    miniTurbo: int(COL.MINI_TURBO),
+    weight: int(COL.WEIGHT),
+    coinCurve: int(COL.COIN_CURVE),
+    invincibility: int(COL.INVINCIBILITY),
   };
+}
+
+type StatLine = {
+  /** Label cells for the line; blank cells inherit the previous line's value */
+  labels: Record<number, string>;
+  stats: BaseStats;
+  names: string[];
+  /** The stat row itself, for per-line cells that must not be inherited */
+  row: CsvRow;
+  rowIndex: number;
+};
+
+/**
+ * Parse a Characters/Vehicles style sheet.
+ *
+ * Structure:
+ * - Two header rows (stat groups, then per-surface labels), checked before parsing
+ * - Row N: label columns (size/class or class/tag), stats in columns 7-18
+ * - Row N+1: names in columns 3-6 (several names can share one stat line)
+ * - Label cells are only filled when they change, so blanks carry forward
+ */
+function parseStatSheet(csvPath: string, sheet: string, labelCols: number[]): StatLine[] {
+  const rows = readCsv(csvPath);
+  assertHeader(rows, EXPECTED_HEADERS.statGroups, sheet);
+  assertHeader(rows, EXPECTED_HEADERS.stats, sheet);
+
+  const lines: StatLine[] = [];
+  const current: Record<number, string> = {};
+
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    if (!hasStats(row, COL.SPEED_ROAD)) continue;
+
+    for (const col of labelCols) {
+      const value = cleanCell(row[col]);
+      if (value) current[col] = value;
+      if (!current[col]) {
+        throw new Error(`${sheet} row ${i + 1}: no value in column ${col + 1} to inherit`);
+      }
+    }
+
+    const names = extractNames(rows[i + 1] ?? []);
+    if (names.length === 0) {
+      throw new Error(`${sheet} row ${i + 1}: stat row has no names on the following row`);
+    }
+
+    lines.push({ labels: { ...current }, stats: parseStats(row, i), names, row, rowIndex: i });
+  }
+
+  return lines;
 }
 
 // ============================================================================
@@ -204,178 +250,101 @@ function validateTrack(track: Track): void {
 // CSV Parsers
 // ============================================================================
 
-/**
- * Parse Characters CSV
- *
- * Structure:
- * - Row N: Stats in columns 7-16
- * - Row N+1: Character names in columns 3-6
- * - Multiple characters can share the same stat line
- */
 function parseCharacters(csvPath: string): Character[] {
-  const csv = fs.readFileSync(csvPath, 'utf-8');
-  const rows = parse(csv, { relax_column_count: true });
-
-  const characters: Character[] = [];
-
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
-
-    // Skip empty rows
-    if (!row || row.every((cell: string) => !cell)) continue;
-
-    // Look for stat rows
-    if (hasStats(row, COL.SPEED_ROAD)) {
-      const stats = parseStats(row, i);
-
-      // Get character names from next row
-      const nextRow = rows[i + 1];
-      if (!nextRow) {
-        throw new Error(`Row ${i + 1}: stat row has no following name row`);
-      }
-
-      const names = extractNames(nextRow);
-      if (names.length === 0) {
-        throw new Error(`Row ${i + 1}: no character names found`);
-      }
-
-      // Create one character per name with shared stats
-      for (const name of names) {
+  return parseStatSheet(csvPath, 'Characters', [COL.SIZE, COL.CLASS]).flatMap(
+    ({ labels, stats, names }) =>
+      names.map((name) => {
         const displayName = normalizeDisplayName(name);
-        const character: Character = {
+        return {
           id: toId(displayName),
           name: displayName,
+          size: labels[COL.SIZE],
+          class: labels[COL.CLASS],
           ...stats,
         };
-
-        characters.push(character);
-      }
-    }
-  }
-
-  return characters;
+      }),
+  );
 }
 
-/**
- * Parse Vehicles CSV
- *
- * Structure:
- * - Row N: Class, Tag, empty name columns, Stats (columns 7-16)
- * - Row N+1: Vehicle names in columns 3-6
- * - Multiple vehicles can share the same stat line
- */
 function parseVehicles(csvPath: string): Vehicle[] {
-  const csv = fs.readFileSync(csvPath, 'utf-8');
-  const rows = parse(csv, { relax_column_count: true });
-
-  const vehicles: Vehicle[] = [];
-
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
-
-    // Skip empty rows
-    if (!row || row.every((cell: string) => !cell)) continue;
-
-    // Skip header row
-    if (isHeaderRow(row[COL.CLASS], 'class')) continue;
-
-    // Look for stat rows
-    if (hasStats(row, COL.SPEED_ROAD)) {
-      const stats = parseStats(row, i);
-      const tag = (row[COL.TAG] || '').trim().toLowerCase();
+  return parseStatSheet(csvPath, 'Vehicles', [COL.VEHICLE_CLASS]).flatMap(
+    ({ labels, stats, names, row, rowIndex }) => {
+      // Tags identify a stat line, so unlike classes they are never inherited
+      const tag = cleanCell(row[COL.TAG]).toLowerCase();
       if (!tag) {
-        throw new Error(`Row ${i + 1}: vehicle stat row has no tag`);
+        throw new Error(`Vehicles row ${rowIndex + 1}: stat row has no tag`);
       }
-
-      // Get vehicle names from next row
-      const nextRow = rows[i + 1];
-      if (!nextRow) {
-        throw new Error(`Row ${i + 1}: stat row has no following name row`);
-      }
-
-      const names = extractNames(nextRow);
-      if (names.length === 0) {
-        throw new Error(`Row ${i + 1}: no vehicle names found`);
-      }
-
-      // Create one vehicle per name with shared stats
-      for (const name of names) {
-        const vehicle: Vehicle = {
-          id: toId(name),
-          name,
-          tag,
-          ...stats,
-        };
-
-        vehicles.push(vehicle);
-      }
-    }
-  }
-
-  return vehicles;
+      return names.map((name) => ({
+        id: toId(name),
+        name,
+        tag,
+        class: labels[COL.VEHICLE_CLASS],
+        ...stats,
+      }));
+    },
+  );
 }
+/** Section headings in the Surface Coverage tab (column 1) and whether we import them */
+const COVERAGE_SECTIONS: Record<string, boolean> = {
+  'Main Track': true,
+  // SNES legacy tracks: no cup data yet, so not imported
+  'Legacy Track': false,
+  // Knockout Tour rallies: not exposed yet
+  Rally: false,
+};
+
+/** Column-1 labels that end a section */
+const SECTION_END = new Set(['Average', 'Weighted Average', 'Total']);
 
 /**
- * Parse Tracks from Surface Coverage CSV
+ * Parse Tracks from the Surface Coverage CSV
  *
  * Structure:
- * - Regular Tracks section contains track data
- * - Track name in column 1
- * - Surface coverage percentages in columns 3-7
+ * - Sections start with a heading row ("Main Track", "Legacy Track", "Rally" in column 1)
+ *   that is also the column header row, and end with "Average" summary rows
+ * - Track name in column 2, coverage percentages in columns 5-9
  */
 function parseTracks(csvPath: string): Track[] {
-  const csv = fs.readFileSync(csvPath, 'utf-8');
-  const rows = parse(csv, { relax_column_count: true });
+  const rows = readCsv(csvPath);
+  assertHeader(
+    rows,
+    { [COL.SECTION]: 'Main Track', ...EXPECTED_HEADERS.coverage },
+    'Surface Coverage',
+  );
 
   const tracks: Track[] = [];
-  let inRegularTracks = false;
+  let section: string | null = null;
 
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
-
-    // Start parsing after "Regular Tracks" header
-    if (row[COL.TRACK_NAME] === 'Regular Tracks') {
-      inRegularTracks = true;
+  for (const row of rows) {
+    const heading = cleanCell(row[COL.SECTION]);
+    if (heading in COVERAGE_SECTIONS) {
+      if (!matchesHeader(row, EXPECTED_HEADERS.coverage)) {
+        throw new Error(`Surface Coverage: unexpected column headers in '${heading}' section`);
+      }
+      section = heading;
+      continue;
+    }
+    if (SECTION_END.has(heading)) {
+      section = null;
       continue;
     }
 
-    // Stop at "Knock-Out Tour" section
-    if (row[COL.TRACK_NAME] === 'Knock-Out Tour') {
-      break;
-    }
+    const trackName = cleanCell(row[COL.TRACK_NAME]);
+    if (!section || !COVERAGE_SECTIONS[section] || !trackName) continue;
 
-    if (
-      inRegularTracks &&
-      row[COL.TRACK_NAME] &&
-      row[COL.TRACK_NAME] !== 'Track' &&
-      row[COL.TRACK_NAME] !== 'Name'
-    ) {
-      const trackName = row[COL.TRACK_NAME].trim();
+    const cup = CUP_MAPPING[trackName] ?? '';
+    const surfaceCoverage = parseSurfaceCoverage(row);
+    const track: Track = {
+      id: toId(trackName),
+      name: trackName,
+      cup,
+      cupId: toId(cup),
+      surfaceCoverage,
+      terrainCoverage: computeTerrainCoverage(surfaceCoverage),
+    };
 
-      // Skip summary rows and explanatory text
-      if (
-        !trackName ||
-        trackName.toLowerCase().includes('average') ||
-        trackName.startsWith('ℹ️') ||
-        trackName.startsWith('The following') ||
-        trackName.toLowerCase().includes('surface coverage')
-      ) {
-        continue;
-      }
-
-      const cup = CUP_MAPPING[trackName] ?? '';
-      const track: Track = {
-        id: toId(trackName),
-        name: trackName,
-        cup,
-        cupId: toId(cup),
-        surfaceCoverage: parseSurfaceCoverage(row),
-        terrainCoverage: parseTerrainCoverage(row),
-      };
-
-      validateTrack(track);
-      tracks.push(track);
-    }
+    validateTrack(track);
+    tracks.push(track);
   }
 
   return tracks;

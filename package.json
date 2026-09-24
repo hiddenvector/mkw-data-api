@@ -1,6 +1,6 @@
 {
   "name": "mkw-data-api",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "description": "Community-maintained REST API for Mario Kart World character stats, vehicle data, and track information.",
   "type": "module",
@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
+    "fetch-data": "tsx scripts/fetch-statpedia.ts",
     "generate-data": "tsx scripts/parse-statpedia.ts",
     "smoke": "tsx scripts/smoke.ts",
     "format": "prettier --write .",

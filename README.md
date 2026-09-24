@@ -21,7 +21,7 @@ curl https://hiddenvector.studio/mkw/api/v1/characters/dry-bones
 curl https://hiddenvector.studio/mkw/api/v1/vehicles
 
 # Get vehicles by stat tag
-curl "https://hiddenvector.studio/mkw/api/v1/vehicles?tag=st-a-0"
+curl "https://hiddenvector.studio/mkw/api/v1/vehicles?tag=st-a-2"
 
 # Get all tracks
 curl https://hiddenvector.studio/mkw/api/v1/tracks
@@ -53,9 +53,11 @@ curl "https://hiddenvector.studio/mkw/api/v1/tracks?cup=mushroom-cup"
 
 ## Understanding the Data
 
-- **Stats scale:** 0–11 in current data (higher is better).
-- **surfaceCoverage:** Raw surface mix including neutral/off-road.
-- **terrainCoverage:** Adjusted road/rough/water mix normalized to 100% for scoring.
+- **Stats scale:** 0–13 in current data (higher is better). Speed has four types (`road`, `rough`, `water`, `gliding`); handling has three, because handling while gliding is the same for everyone.
+- **Hidden stats:** `miniTurbo`, `coinCurve` and `invincibility` aren't shown in the game's selection screen.
+- **Classes:** characters have a frame `size` (Small/Medium/Large) and weight `class` (Fly … Super Heavy); vehicles have a `class` (e.g. Light On-Roader). Names are as used in the Statpedia.
+- **surfaceCoverage:** full surface mix: `road`, `rough` (called Off-Road in the Statpedia), `water`, `gliding`, and `neutral` (heavy off-road, rails, walls, cannon gliders: same speed for everyone). `offRoad` is deprecated and always `0`.
+- **terrainCoverage:** road/rough/water only, rescaled to 100%, for weighting per-surface stats.
 - **Vehicle tags:** Same `tag` means identical stats; use `/vehicles?tag={tag}`.
 - **Cups:** each track has a display `cup` (`"Mushroom Cup"`) and a slug `cupId` (`"mushroom-cup"`); filter with `/tracks?cup={cupId}`.
 
@@ -70,17 +72,20 @@ score = (speed.road * terrainCoverage.road)
 Worked example (Mario Bros. Circuit + Wario):
 
 ```text
-terrainCoverage: { road: 76, rough: 24, water: 0 }
-Wario speed:     { road: 6,  rough: 5,  water: 5 }
+terrainCoverage: { road: 75.81, rough: 24.19, water: 0 }
+Wario speed:     { road: 6,     rough: 5,     water: 5 }
 
-score = 6*76 + 5*24 + 5*0 = 576
+score = 6*75.81 + 5*24.19 + 5*0 = 575.81
 normalizedScore = 5.76
 ```
+
+To include gliding in a speed score, weight `speed.gliding` by `surfaceCoverage.gliding` alongside the terrain terms.
 
 ## Data Contract
 
 - **dataVersion:** the date the data last changed. Informational; use the `ETag` for cache validation.
-- **terrainCoverage:** derived from adjusted coverage columns, normalized so the three values sum to exactly 100 (2 decimal places).
+- **terrainCoverage:** computed from `surfaceCoverage` road/rough/water, rescaled so the three values sum to exactly 100 (2 decimal places).
+- **Vehicle tags:** follow the Statpedia's naming, which can change between data versions (e.g. `st-a-0` became `st-a-2` in 1.2.0). Fetch `/vehicles` to discover current tags rather than hard-coding them.
 - **Name normalization:** a small set of names are normalized to US variants during parsing.
 - **Filters:** `?tag=` and `?cup=` return an empty list when there are no matches.
 - **Stability:** field meanings are stable within `/v1`; breaking changes go to `/v2`.
@@ -127,9 +132,14 @@ const data = await res.json();
 
 ## Data Source
 
-Stats are sourced from the [Mario Kart World Statpedia](https://docs.google.com/spreadsheets/d/1EQd2XYGlB3EFFNE-35hFLaBzJo4cipU9DZT4MRSjBlc/edit) maintained by the community.
+Stats are sourced from the [Mario Kart World Statpedia](https://docs.google.com/spreadsheets/d/1EQd2XYGlB3EFFNE-35hFLaBzJo4cipU9DZT4MRSjBlc/edit), created and maintained by **ItsManu001**, with major contributions from Chrop, Munskin and PartyMain, and testing and analysis by K1ngGr33n, HeWe015, Tuan, TotoShampoin, Katie, Bayzer, Jahordon, AprilShade, Naptec, kenbrisco97, Bento and theta_k. See the sheet's Credits tab for details.
 
-Updates follow the Statpedia sheet; there is no fixed schedule.
+Updates follow the Statpedia sheet; there is no fixed schedule. To import the latest version:
+
+```bash
+npm run fetch-data     # download the Characters, Vehicles and Surface Coverage tabs into scripts/csv/
+npm run generate-data  # parse, validate, and write data/*.json (fails loudly if the sheet layout changed)
+```
 
 ## Development
 

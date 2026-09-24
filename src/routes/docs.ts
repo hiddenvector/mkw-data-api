@@ -7,19 +7,21 @@ import { isNotModified, makeEtag } from '../utils';
 const API_DESCRIPTION = `
 Community-maintained data API for Mario Kart World stats, vehicles, and tracks.
 
-**Data Source:** [Mario Kart World Statpedia](https://docs.google.com/spreadsheets/d/1EQd2XYGlB3EFFNE-35hFLaBzJo4cipU9DZT4MRSjBlc/edit)
+**Data Source:** [Mario Kart World Statpedia](https://docs.google.com/spreadsheets/d/1EQd2XYGlB3EFFNE-35hFLaBzJo4cipU9DZT4MRSjBlc/edit) by ItsManu001 and contributors (Chrop, Munskin, PartyMain, K1ngGr33n, HeWe015, Tuan, TotoShampoin, Katie, Bayzer, Jahordon, AprilShade, Naptec, kenbrisco97, Bento, theta_k).
 
 **Features:** terrain stats, track coverage, vehicle tag groupings, ETag caching.
 
 **How to use the stats:**
-- Stats are 0–11 in current data; higher is better.
-- Use \`surfaceCoverage\` for raw surface breakdowns.
-- Use \`terrainCoverage\` for combo calculations (normalized road/rough/water mix, excludes neutral/off-road).
+- Stats are 0–13 in current data; higher is better. Speed includes \`gliding\`; handling has no gliding type.
+- Use \`surfaceCoverage\` for the full surface breakdown (road, rough, water, gliding, neutral).
+- Use \`terrainCoverage\` for weighting per-surface stats (road/rough/water rescaled to 100, excludes gliding and neutral).
 - IDs are slugs; fetch list endpoints to discover valid IDs.
 
 **Data contract:**
 - \`dataVersion\` is the date of the last data import; use \`ETag\` for cache validation.
-- \`terrainCoverage\` is derived from the adjusted coverage columns and sums to exactly 100 (2 decimal places).
+- \`terrainCoverage\` is computed from \`surfaceCoverage\` and sums to exactly 100 (2 decimal places).
+- \`surfaceCoverage.offRoad\` is deprecated and always 0: heavy off-road now counts as \`neutral\`.
+- Vehicle tags follow the Statpedia's naming and can change between data versions; discover them from \`/vehicles\`.
 - A small set of character names are normalized to US variants during parsing.
 - \`?tag=\` and \`?cup=\` filters return an empty list when there are no matches; \`?cup=\` takes a track's \`cupId\`.
 
