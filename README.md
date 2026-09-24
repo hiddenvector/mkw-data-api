@@ -57,6 +57,7 @@ curl "https://hiddenvector.studio/mkw/api/v1/tracks?cup=mushroom-cup"
 - **surfaceCoverage:** Raw surface mix including neutral/off-road.
 - **terrainCoverage:** Adjusted road/rough/water mix normalized to 100% for scoring.
 - **Vehicle tags:** Same `tag` means identical stats; use `/vehicles?tag={tag}`.
+- **Cups:** each track has a display `cup` (`"Mushroom Cup"`) and a slug `cupId` (`"mushroom-cup"`); filter with `/tracks?cup={cupId}`.
 
 Example scoring formula:
 
@@ -78,30 +79,36 @@ normalizedScore = 5.76
 
 ## Data Contract
 
-- **dataVersion:** changes when Statpedia changes; refresh cached results when it updates.
-- **terrainCoverage:** derived from adjusted coverage columns, normalized to 100%.
+- **dataVersion:** the date the data last changed. Informational; use the `ETag` for cache validation.
+- **terrainCoverage:** derived from adjusted coverage columns, normalized so the three values sum to exactly 100 (2 decimal places).
 - **Name normalization:** a small set of names are normalized to US variants during parsing.
 - **Filters:** `?tag=` and `?cup=` return an empty list when there are no matches.
 - **Stability:** field meanings are stable within `/v1`; breaking changes go to `/v2`.
 
 ## Caching
 
-Collection endpoints (`/characters`, `/vehicles`, `/tracks`) return an `ETag` based on `dataVersion`.
+All data endpoints (collections, filtered lists, and single items) return an `ETag`.
+It is derived from the response data and the service version, so it changes whenever either does.
 Use `If-None-Match` to get `304 Not Modified` when nothing changed.
+
+- Data responses: `Cache-Control: public, max-age=3600, must-revalidate`.
+- `/openapi.json` and `/docs`: `public, max-age=86400`.
+- `/health` and all error responses: `no-store`.
 
 ```bash
 # First request - get the ETag
 curl -I https://hiddenvector.studio/mkw/api/v1/characters
-# ETag: "2026-01-25"
+# ETag: "1.1.0-4k2j9x0q1z8"
 
 # Subsequent request - use If-None-Match
-curl -I -H 'If-None-Match: "2026-01-25"' https://hiddenvector.studio/mkw/api/v1/characters
+curl -I -H 'If-None-Match: "1.1.0-4k2j9x0q1z8"' https://hiddenvector.studio/mkw/api/v1/characters
 # HTTP/2 304
 ```
 
 ## Common Pitfalls
 
 - **304 responses:** `If-None-Match` may return `304` with an empty body—use cached data.
+- **ETags are opaque:** don't parse them; the format may change.
 - **429 rate limits:** Cloudflare may return `429`; retry with backoff.
 
 ```ts
@@ -121,6 +128,8 @@ Updates follow the Statpedia sheet; there is no fixed schedule.
 
 This project runs on [Cloudflare Workers](https://developers.cloudflare.com/workers/) using [Wrangler](https://developers.cloudflare.com/workers/wrangler/).
 
+Requires Node.js 24 (see `.nvmrc`).
+
 ```bash
 # Install dependencies
 npm install
@@ -128,21 +137,20 @@ npm install
 # Run locally (starts wrangler dev server at http://localhost:8787)
 npm run dev
 
-# Run tests
-npm test
+# Run everything CI runs (format, typecheck, lint, tests)
+npm run check
 
-# Type check
-npm run typecheck
-
-# Deploy to Cloudflare Workers
-npm run deploy
+# Regenerate data/*.json from scripts/csv/*.csv (idempotent; bumps dataVersion only on change)
+npm run generate-data
 ```
+
+Deploys happen automatically when a `vX.Y.Z` tag on `main` is pushed; see `RELEASING.md`.
 
 Local API will be available at `http://localhost:8787/mkw/api/v1`.
 
 ## Versioning & Releases
 
-- Service version = `package.json`; data version = Statpedia import date.
+- Service version = `package.json`; data version = date the generated data last changed.
 - `/v1` is stable; breaking changes go to `/v2`.
 - Semver: PATCH (fixes/data), MINOR (additive), MAJOR (breaking).
 - Tag releases `vX.Y.Z` and publish notes from `CHANGELOG.md`.

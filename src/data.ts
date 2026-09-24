@@ -1,66 +1,76 @@
+import type { z } from '@hono/zod-openapi';
 import { CharactersResponseSchema, VehiclesResponseSchema, TracksResponseSchema } from './schemas';
+import { API_CONFIG } from './config';
 import { DATA_VERSION } from './data-version';
+import { assertValidIds } from './lib/validate';
+import { makeEtag } from './utils';
 
 import charactersData from '../data/characters.json';
 import vehiclesData from '../data/vehicles.json';
 import tracksData from '../data/tracks.json';
 
-const ID_PATTERN = /^[a-z][a-z0-9]*(-[a-z0-9]+)*$/;
-
-function formatZodIssues(issues: unknown) {
-  return JSON.stringify(issues, null, 2);
-}
-
-function assertDataVersion(label: string, dataVersion: string) {
-  if (dataVersion !== DATA_VERSION) {
+/**
+ * Validates a generated data file against its response schema and the pinned DATA_VERSION.
+ * Runs once at Worker startup; any failure prevents the Worker from serving bad data.
+ */
+function load<S extends z.ZodType<{ dataVersion: string }>>(
+  label: string,
+  schema: S,
+  payload: unknown,
+): z.infer<S> {
+  const parsed = schema.safeParse(payload);
+  if (!parsed.success) {
+    throw new Error(`Invalid ${label} data:\n${JSON.stringify(parsed.error.issues, null, 2)}`);
+  }
+  if (parsed.data.dataVersion !== DATA_VERSION) {
     throw new Error(
-      `Data version mismatch for ${label}: json=${dataVersion} expected=${DATA_VERSION}`,
+      `Data version mismatch for ${label}: json=${parsed.data.dataVersion} expected=${DATA_VERSION}`,
     );
   }
+  return parsed.data;
 }
 
-function assertIds(label: string, ids: string[]) {
-  const invalid = ids.filter((id) => !ID_PATTERN.test(id));
-  if (invalid.length > 0) {
-    throw new Error(`Invalid IDs in ${label}: ${invalid.join(', ')}`);
-  }
-}
-
-const charactersParsed = CharactersResponseSchema.safeParse(charactersData);
-if (!charactersParsed.success) {
-  throw new Error(`Invalid characters data:\n${formatZodIssues(charactersParsed.error.issues)}`);
-}
-assertDataVersion('characters', charactersParsed.data.dataVersion);
-assertIds(
+const charactersPayload = load('characters', CharactersResponseSchema, charactersData);
+assertValidIds(
   'characters',
-  charactersParsed.data.characters.map((c) => c.id),
+  charactersPayload.characters.map((c) => c.id),
 );
 
-const vehiclesParsed = VehiclesResponseSchema.safeParse(vehiclesData);
-if (!vehiclesParsed.success) {
-  throw new Error(`Invalid vehicles data:\n${formatZodIssues(vehiclesParsed.error.issues)}`);
-}
-assertDataVersion('vehicles', vehiclesParsed.data.dataVersion);
-assertIds(
+const vehiclesPayload = load('vehicles', VehiclesResponseSchema, vehiclesData);
+assertValidIds(
   'vehicles',
-  vehiclesParsed.data.vehicles.map((v) => v.id),
+  vehiclesPayload.vehicles.map((v) => v.id),
 );
-assertIds(
+assertValidIds(
   'vehicle tags',
-  vehiclesParsed.data.vehicles.map((v) => v.tag),
+  vehiclesPayload.vehicles.map((v) => v.tag),
+  { unique: false },
 );
 
-const tracksParsed = TracksResponseSchema.safeParse(tracksData);
-if (!tracksParsed.success) {
-  throw new Error(`Invalid tracks data:\n${formatZodIssues(tracksParsed.error.issues)}`);
-}
-assertDataVersion('tracks', tracksParsed.data.dataVersion);
-assertIds(
+const tracksPayload = load('tracks', TracksResponseSchema, tracksData);
+assertValidIds(
   'tracks',
-  tracksParsed.data.tracks.map((t) => t.id),
+  tracksPayload.tracks.map((t) => t.id),
+);
+assertValidIds(
+  'cup IDs',
+  tracksPayload.tracks.map((t) => t.cupId),
+  { unique: false },
 );
 
 export const dataVersion = DATA_VERSION;
-export const characters = charactersParsed.data.characters;
-export const vehicles = vehiclesParsed.data.vehicles;
-export const tracks = tracksParsed.data.tracks;
+export const characters = charactersPayload.characters;
+export const vehicles = vehiclesPayload.vehicles;
+export const tracks = tracksPayload.tracks;
+
+/**
+ * ETags per collection: a hash of the full response body, prefixed with the service version
+ * so representation changes in a code release also invalidate cached responses.
+ * Item and filtered endpoints reuse their collection's ETag (any change to the collection
+ * changes it, so a 304 is never stale).
+ */
+export const etags = {
+  characters: makeEtag(API_CONFIG.serviceVersion, charactersPayload),
+  vehicles: makeEtag(API_CONFIG.serviceVersion, vehiclesPayload),
+  tracks: makeEtag(API_CONFIG.serviceVersion, tracksPayload),
+} as const;

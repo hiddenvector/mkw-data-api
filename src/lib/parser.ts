@@ -1,4 +1,4 @@
-import type { SurfaceCoverage } from '../schemas';
+import type { SurfaceCoverage, TerrainCoverage } from '../schemas';
 
 export type CsvRow = string[];
 
@@ -73,13 +73,19 @@ export function normalizeDisplayName(name: string): string {
 }
 
 /**
- * Safely parse a percentage string to a number
+ * Parse a percentage cell. Empty or non-numeric cells are an error: silently
+ * treating missing data as 0% would ship wrong coverage numbers.
  * @example parsePercent("47%") → 47
  * @example parsePercent("47,5%") → 47.5 (handles European decimals)
+ * @throws {Error} If the cell is empty or not a number
  */
-export function parsePercent(value: string | undefined): number {
-  if (!value) return 0;
-  return parseFloat(value.replace(/%/g, '').replace(/,/g, '.'));
+export function parsePercent(value: string | undefined, label = 'percentage'): number {
+  const cleaned = (value ?? '').replace(/%/g, '').replace(/,/g, '.').trim();
+  const n = cleaned === '' ? NaN : Number(cleaned);
+  if (!Number.isFinite(n)) {
+    throw new Error(`Invalid ${label} in CSV: '${value ?? ''}'`);
+  }
+  return n;
 }
 
 /**
@@ -87,33 +93,49 @@ export function parsePercent(value: string | undefined): number {
  */
 export function parseSurfaceCoverage(row: CsvRow): SurfaceCoverage {
   return {
-    road: parsePercent(row[COL.COVERAGE_ROAD]),
-    rough: parsePercent(row[COL.COVERAGE_ROUGH]),
-    water: parsePercent(row[COL.COVERAGE_WATER]),
-    neutral: parsePercent(row[COL.COVERAGE_NEUTRAL]),
-    offRoad: parsePercent(row[COL.COVERAGE_OFFROAD]),
+    road: parsePercent(row[COL.COVERAGE_ROAD], 'road coverage'),
+    rough: parsePercent(row[COL.COVERAGE_ROUGH], 'rough coverage'),
+    water: parsePercent(row[COL.COVERAGE_WATER], 'water coverage'),
+    neutral: parsePercent(row[COL.COVERAGE_NEUTRAL], 'neutral coverage'),
+    offRoad: parsePercent(row[COL.COVERAGE_OFFROAD], 'off-road coverage'),
   };
 }
 
+/** 100% expressed in hundredths of a percent (terrainCoverage has 2 decimal places). */
+const TOTAL_HUNDREDTHS = 10_000;
+
 /**
  * Parse adjusted terrain coverage (road/rough/water only), normalized to 100%.
+ *
+ * Uses largest-remainder rounding in hundredths of a percent so the three values
+ * always sum to exactly 100 (plain rounding can produce 99.99 or 100.01).
  */
-export function parseTerrainCoverage(row: CsvRow) {
-  const road = parsePercent(row[COL.ADJ_COVERAGE_ROAD]);
-  const rough = parsePercent(row[COL.ADJ_COVERAGE_ROUGH]);
-  const water = parsePercent(row[COL.ADJ_COVERAGE_WATER]);
-  const total = road + rough + water;
+export function parseTerrainCoverage(row: CsvRow): TerrainCoverage {
+  const values = [
+    parsePercent(row[COL.ADJ_COVERAGE_ROAD], 'adjusted road coverage'),
+    parsePercent(row[COL.ADJ_COVERAGE_ROUGH], 'adjusted rough coverage'),
+    parsePercent(row[COL.ADJ_COVERAGE_WATER], 'adjusted water coverage'),
+  ];
+  const total = values.reduce((a, b) => a + b, 0);
 
   if (total === 0) {
     return { road: 0, rough: 0, water: 0 };
   }
 
-  const scale = 100 / total;
-  const round2 = (value: number) => Math.round(value * 100) / 100;
+  const exact = values.map((v) => (v * TOTAL_HUNDREDTHS) / total);
+  const rounded = exact.map(Math.floor);
+  let remainder = TOTAL_HUNDREDTHS - rounded.reduce((a, b) => a + b, 0);
 
-  return {
-    road: round2(road * scale),
-    rough: round2(rough * scale),
-    water: round2(water * scale),
-  };
+  // Hand out the leftover hundredths to the values that lost the most to flooring
+  const byFraction = exact
+    .map((v, i) => ({ i, fraction: v - rounded[i] }))
+    .sort((a, b) => b.fraction - a.fraction);
+  for (const { i } of byFraction) {
+    if (remainder <= 0) break;
+    rounded[i] += 1;
+    remainder -= 1;
+  }
+
+  const [road, rough, water] = rounded.map((h) => h / 100);
+  return { road, rough, water };
 }

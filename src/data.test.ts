@@ -1,44 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-
-type CharactersPayload = {
-  dataVersion: string;
-  characters: Array<{
-    id: string;
-    name: string;
-    speed: { road: number; rough: number; water: number };
-    handling: { road: number; rough: number; water: number };
-    acceleration: number;
-    miniTurbo: number;
-    weight: number;
-    coinCurve: number;
-  }>;
-};
-
-type VehiclesPayload = {
-  dataVersion: string;
-  vehicles: Array<{
-    id: string;
-    name: string;
-    tag: string;
-    speed: { road: number; rough: number; water: number };
-    handling: { road: number; rough: number; water: number };
-    acceleration: number;
-    miniTurbo: number;
-    weight: number;
-    coinCurve: number;
-  }>;
-};
-
-type TracksPayload = {
-  dataVersion: string;
-  tracks: Array<{
-    id: string;
-    name: string;
-    cup: string;
-    surfaceCoverage: { road: number; rough: number; water: number; neutral: number; offRoad: number };
-    terrainCoverage: { road: number; rough: number; water: number };
-  }>;
-};
+import type { CharactersResponse, TracksResponse, VehiclesResponse } from './schemas';
 
 const baseCharacter = {
   id: 'test-character',
@@ -67,15 +28,16 @@ const baseTrack = {
   id: 'test-track',
   name: 'Test Track',
   cup: 'Test Cup',
+  cupId: 'test-cup',
   surfaceCoverage: { road: 20, rough: 20, water: 20, neutral: 20, offRoad: 20 },
   terrainCoverage: { road: 50, rough: 30, water: 20 },
 };
 
 const loadData = async (options: {
   moduleVersion: string;
-  characters: CharactersPayload;
-  vehicles: VehiclesPayload;
-  tracks: TracksPayload;
+  characters: CharactersResponse;
+  vehicles: VehiclesResponse;
+  tracks: TracksResponse;
 }) => {
   vi.resetModules();
   vi.doMock('./data-version', () => ({ DATA_VERSION: options.moduleVersion }));
@@ -85,7 +47,45 @@ const loadData = async (options: {
   return import('./data');
 };
 
+const validPayloads = (version: string) => ({
+  moduleVersion: version,
+  characters: { dataVersion: version, characters: [baseCharacter] },
+  vehicles: { dataVersion: version, vehicles: [baseVehicle] },
+  tracks: { dataVersion: version, tracks: [baseTrack] },
+});
+
+describe('data loading', () => {
+  it('exports validated data and service-versioned ETags', async () => {
+    const data = await loadData(validPayloads('test-version'));
+    expect(data.dataVersion).toBe('test-version');
+    expect(data.characters).toHaveLength(1);
+    expect(data.etags.characters).toMatch(/^"\d+\.\d+\.\d+-[0-9a-z]+"$/);
+    expect(new Set(Object.values(data.etags)).size).toBe(3);
+  });
+
+  it('changes the ETag when data changes without a dataVersion change', async () => {
+    const before = await loadData(validPayloads('same-day'));
+    const changed = validPayloads('same-day');
+    changed.characters.characters = [{ ...baseCharacter, weight: 5 }];
+    const after = await loadData(changed);
+    expect(after.etags.characters).not.toBe(before.etags.characters);
+    expect(after.etags.vehicles).toBe(before.etags.vehicles);
+  });
+});
+
 describe('data validation', () => {
+  it('throws on duplicate IDs', async () => {
+    const payloads = validPayloads('test-version');
+    payloads.characters.characters = [baseCharacter, baseCharacter];
+    await expect(loadData(payloads)).rejects.toThrow(/Duplicate IDs in characters: test-character/);
+  });
+
+  it('throws on invalid cup IDs', async () => {
+    const payloads = validPayloads('test-version');
+    payloads.tracks.tracks = [{ ...baseTrack, cupId: 'Bad Cup' }];
+    await expect(loadData(payloads)).rejects.toThrow(/Invalid IDs in cup IDs/);
+  });
+
   it('throws when IDs are invalid', async () => {
     await expect(
       loadData({
@@ -138,7 +138,7 @@ describe('data validation', () => {
       loadData({
         moduleVersion: 'test-version',
         characters: { dataVersion: 'test-version', characters: [baseCharacter] },
-        vehicles: { dataVersion: 'test-version', vehicles: [{}] as VehiclesPayload['vehicles'] },
+        vehicles: { dataVersion: 'test-version', vehicles: [{}] as VehiclesResponse['vehicles'] },
         tracks: { dataVersion: 'test-version', tracks: [baseTrack] },
       }),
     ).rejects.toThrow(/Invalid vehicles data/);
@@ -164,7 +164,7 @@ describe('data validation', () => {
         moduleVersion: 'test-version',
         characters: {
           dataVersion: 'test-version',
-          characters: [{}] as CharactersPayload['characters'],
+          characters: [{}] as CharactersResponse['characters'],
         },
         vehicles: { dataVersion: 'test-version', vehicles: [baseVehicle] },
         tracks: { dataVersion: 'test-version', tracks: [baseTrack] },

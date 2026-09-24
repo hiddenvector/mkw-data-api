@@ -1,7 +1,12 @@
 {
   "name": "mkw-data-api",
   "version": "1.0.0",
-  "description": "Community-maintained REST API for character stats, kart data, and track information.",
+  "private": true,
+  "description": "Community-maintained REST API for Mario Kart World character stats, vehicle data, and track information.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
@@ -10,44 +15,41 @@
     "format:check": "prettier --check .",
     "test": "vitest run --coverage",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint src/**/*.ts scripts/**/*.ts",
-    "lint:fix": "eslint src/**/*.ts scripts/**/*.ts --fix"
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.node.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check": "npm run format:check && npm run typecheck && npm run lint && npm test"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hiddenvector/mkw-data-api.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Hidden Vector Studio",
   "license": "MIT",
-  "type": "module",
   "bugs": {
     "url": "https://github.com/hiddenvector/mkw-data-api/issues"
   },
   "homepage": "https://github.com/hiddenvector/mkw-data-api#readme",
   "dependencies": {
-    "@hono/zod-openapi": "^1.2.0",
-    "@scalar/hono-api-reference": "^0.9.35",
-    "hono": "^4.11.4",
-    "zod": "^4.3.6"
+    "@hono/zod-openapi": "^1.6.3",
+    "@scalar/hono-api-reference": "^0.12.4",
+    "hono": "^4.13.9",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260120.0",
-    "@eslint/js": "^9.39.2",
-    "@types/node": "^25.0.9",
-    "@typescript-eslint/eslint-plugin": "^8.53.1",
-    "@typescript-eslint/parser": "^8.53.1",
-    "csv-parse": "^6.1.0",
-    "eslint-config-prettier": "^10.0.0",
-    "eslint": "^9.39.2",
-    "@vitest/coverage-v8": "^4.0.18",
-    "prettier": "^3.5.2",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3",
-    "typescript-eslint": "^8.53.1",
-    "vitest": "^4.0.18",
-    "wrangler": "^4.59.2"
+    "@cloudflare/workers-types": "^5.20260924.1",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.6",
+    "@vitest/coverage-v8": "^5.0.1",
+    "csv-parse": "^7.0.2",
+    "eslint": "^10.11.0",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.70.1",
+    "vitest": "^5.0.1",
+    "wrangler": "^4.137.0"
   }
 }

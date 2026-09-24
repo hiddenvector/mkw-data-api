@@ -1,10 +1,11 @@
 {
-  "dataVersion": "2026-01-25",
+  "dataVersion": "2026-09-24",
   "tracks": [
     {
       "id": "mario-bros-circuit",
       "name": "Mario Bros. Circuit",
       "cup": "Mushroom Cup",
+      "cupId": "mushroom-cup",
       "surfaceCoverage": {
         "road": 47,
         "rough": 15,
@@ -22,6 +23,7 @@
       "id": "crown-city",
       "name": "Crown City",
       "cup": "Mushroom Cup",
+      "cupId": "mushroom-cup",
       "surfaceCoverage": {
         "road": 78,
         "rough": 0,
@@ -39,6 +41,7 @@
       "id": "whistlestop-summit",
       "name": "Whistlestop Summit",
       "cup": "Mushroom Cup",
+      "cupId": "mushroom-cup",
       "surfaceCoverage": {
         "road": 35,
         "rough": 0,
@@ -56,6 +59,7 @@
       "id": "dk-spaceport",
       "name": "DK Spaceport",
       "cup": "Mushroom Cup",
+      "cupId": "mushroom-cup",
       "surfaceCoverage": {
         "road": 79,
         "rough": 0,
@@ -73,6 +77,7 @@
       "id": "desert-hills",
       "name": "Desert Hills",
       "cup": "Flower Cup",
+      "cupId": "flower-cup",
       "surfaceCoverage": {
         "road": 71,
         "rough": 13,
@@ -90,6 +95,7 @@
       "id": "shy-guy-bazaar",
       "name": "Shy Guy Bazaar",
       "cup": "Flower Cup",
+      "cupId": "flower-cup",
       "surfaceCoverage": {
         "road": 62,
         "rough": 0,
@@ -107,6 +113,7 @@
       "id": "wario-stadium",
       "name": "Wario Stadium",
       "cup": "Flower Cup",
+      "cupId": "flower-cup",
       "surfaceCoverage": {
         "road": 36,
         "rough": 24,
@@ -124,6 +131,7 @@
       "id": "airship-fortress",
       "name": "Airship Fortress",
       "cup": "Flower Cup",
+      "cupId": "flower-cup",
       "surfaceCoverage": {
         "road": 62,
         "rough": 0,
@@ -141,6 +149,7 @@
       "id": "dk-pass",
       "name": "DK Pass",
       "cup": "Star Cup",
+      "cupId": "star-cup",
       "surfaceCoverage": {
         "road": 43,
         "rough": 26,
@@ -158,6 +167,7 @@
       "id": "starview-peak",
       "name": "Starview Peak",
       "cup": "Star Cup",
+      "cupId": "star-cup",
       "surfaceCoverage": {
         "road": 13,
         "rough": 43,
@@ -175,6 +185,7 @@
       "id": "sky-high-sundae",
       "name": "Sky-High Sundae",
       "cup": "Star Cup",
+      "cupId": "star-cup",
       "surfaceCoverage": {
         "road": 73,
         "rough": 0,
@@ -192,6 +203,7 @@
       "id": "wario-shipyard",
       "name": "Wario Shipyard",
       "cup": "Star Cup",
+      "cupId": "star-cup",
       "surfaceCoverage": {
         "road": 46,
         "rough": 0,
@@ -209,6 +221,7 @@
       "id": "koopa-troopa-beach",
       "name": "Koopa Troopa Beach",
       "cup": "Shell Cup",
+      "cupId": "shell-cup",
       "surfaceCoverage": {
         "road": 0,
         "rough": 81,
@@ -226,6 +239,7 @@
       "id": "faraway-oasis",
       "name": "Faraway Oasis",
       "cup": "Shell Cup",
+      "cupId": "shell-cup",
       "surfaceCoverage": {
         "road": 28,
         "rough": 24,
@@ -234,7 +248,7 @@
         "offRoad": 4
       },
       "terrainCoverage": {
-        "road": 37.62,
+        "road": 37.63,
         "rough": 32.67,
         "water": 29.7
       }
@@ -243,6 +257,7 @@
       "id": "peach-stadium",
       "name": "Peach Stadium",
       "cup": "Shell Cup",
+      "cupId": "shell-cup",
       "surfaceCoverage": {
         "road": 92,
         "rough": 0,
@@ -260,6 +275,7 @@
       "id": "peach-beach",
       "name": "Peach Beach",
       "cup": "Banana Cup",
+      "cupId": "banana-cup",
       "surfaceCoverage": {
         "road": 51,
         "rough": 14,
@@ -277,6 +293,7 @@
       "id": "salty-salty-speedway",
       "name": "Salty Salty Speedway",
       "cup": "Banana Cup",
+      "cupId": "banana-cup",
       "surfaceCoverage": {
         "road": 42,
         "rough": 0,
@@ -294,6 +311,7 @@
       "id": "dino-dino-jungle",
       "name": "Dino Dino Jungle",
       "cup": "Banana Cup",
+      "cupId": "banana-cup",
       "surfaceCoverage": {
         "road": 24,
         "rough": 56,
@@ -311,6 +329,7 @@
       "id": "great-question-block-ruins",
       "name": "Great ? Block Ruins",
       "cup": "Banana Cup",
+      "cupId": "banana-cup",
       "surfaceCoverage": {
         "road": 66,
         "rough": 0,
@@ -328,6 +347,7 @@
       "id": "cheep-cheep-falls",
       "name": "Cheep Cheep Falls",
       "cup": "Leaf Cup",
+      "cupId": "leaf-cup",
       "surfaceCoverage": {
         "road": 51,
         "rough": 0,
@@ -345,6 +365,7 @@
       "id": "dandelion-depths",
       "name": "Dandelion Depths",
       "cup": "Leaf Cup",
+      "cupId": "leaf-cup",
       "surfaceCoverage": {
         "road": 64,
         "rough": 19,
@@ -362,6 +383,7 @@
       "id": "boo-cinema",
       "name": "Boo Cinema",
       "cup": "Leaf Cup",
+      "cupId": "leaf-cup",
       "surfaceCoverage": {
         "road": 80,
         "rough": 0,
@@ -379,6 +401,7 @@
       "id": "dry-bones-burnout",
       "name": "Dry Bones Burnout",
       "cup": "Leaf Cup",
+      "cupId": "leaf-cup",
       "surfaceCoverage": {
         "road": 75,
         "rough": 0,
@@ -396,6 +419,7 @@
       "id": "moo-moo-meadows",
       "name": "Moo Moo Meadows",
       "cup": "Lightning Cup",
+      "cupId": "lightning-cup",
       "surfaceCoverage": {
         "road": 5,
         "rough": 88,
@@ -413,6 +437,7 @@
       "id": "choco-mountain",
       "name": "Choco Mountain",
       "cup": "Lightning Cup",
+      "cupId": "lightning-cup",
       "surfaceCoverage": {
         "road": 39,
         "rough": 51,
@@ -430,6 +455,7 @@
       "id": "toads-factory",
       "name": "Toad's Factory",
       "cup": "Lightning Cup",
+      "cupId": "lightning-cup",
       "surfaceCoverage": {
         "road": 69,
         "rough": 12,
@@ -447,6 +473,7 @@
       "id": "bowsers-castle",
       "name": "Bowser's Castle",
       "cup": "Lightning Cup",
+      "cupId": "lightning-cup",
       "surfaceCoverage": {
         "road": 66,
         "rough": 0,
@@ -464,6 +491,7 @@
       "id": "acorn-heights",
       "name": "Acorn Heights",
       "cup": "Special Cup",
+      "cupId": "special-cup",
       "surfaceCoverage": {
         "road": 28,
         "rough": 20,
@@ -481,6 +509,7 @@
       "id": "mario-circuit",
       "name": "Mario Circuit",
       "cup": "Special Cup",
+      "cupId": "special-cup",
       "surfaceCoverage": {
         "road": 90,
         "rough": 0,
@@ -498,6 +527,7 @@
       "id": "rainbow-road",
       "name": "Rainbow Road",
       "cup": "Special Cup",
+      "cupId": "special-cup",
       "surfaceCoverage": {
         "road": 71,
         "rough": 0,
