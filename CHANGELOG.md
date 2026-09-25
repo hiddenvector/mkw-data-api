@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Changed
+
+- The smoke test explains non-JSON responses (status, content type, Cloudflare `cf-mitigated` and ray ID, page title), and fails immediately when Cloudflare challenges the request instead of waiting out the version poll.
+
 ## [1.2.0] - 2026-09-24
 
 Data re-imported from the Statpedia (sheet last updated 2026-09-13), which reflects game updates 1.6.0 and 1.7.0.
