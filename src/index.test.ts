@@ -250,6 +250,73 @@ describe('Tracks endpoints', () => {
   });
 });
 
+describe('Rallies endpoints', () => {
+  it('GET /rallies returns released rallies with coverage', async () => {
+    const res = await request('/rallies');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('ETag')).toMatch(ETAG_PATTERN);
+
+    const body = asRecord(await res.json());
+    const rallies = body.rallies as JsonRecord[];
+    expect(rallies.length).toBeGreaterThan(0);
+    expect(rallies.map((r) => r.name)).not.toContain('Not released yet');
+    for (const rally of rallies) {
+      const coverage = asRecord(rally.surfaceCoverage);
+      expect(coverage).not.toHaveProperty('offRoad');
+      const terrain = asRecord(rally.terrainCoverage);
+      const hundredths = ['road', 'rough', 'water'].map((k) =>
+        Math.round((terrain[k] as number) * 100),
+      );
+      expect(hundredths.reduce((a, b) => a + b)).toBe(10_000);
+    }
+  });
+
+  it('GET /rallies/:id returns a rally and supports ETags', async () => {
+    const res = await request('/rallies/golden-rally');
+    expect(res.status).toBe(200);
+    expect(asRecord(await res.json()).name).toBe('Golden Rally');
+
+    const etag = res.headers.get('ETag')!;
+    const revalidated = await request('/rallies/golden-rally', {
+      headers: { 'If-None-Match': etag },
+    });
+    expect(revalidated.status).toBe(304);
+  });
+
+  it('GET /rallies/:id returns 404 and 400 as appropriate', async () => {
+    expect((await request('/rallies/not-a-rally')).status).toBe(404);
+    expect((await request('/rallies/BAD')).status).toBe(400);
+  });
+});
+
+describe('Mechanics endpoint', () => {
+  it('GET /mechanics returns level-indexed tables', async () => {
+    const res = await request('/mechanics');
+    expect(res.status).toBe(200);
+    expect(res.headers.get('ETag')).toMatch(ETAG_PATTERN);
+    expect(res.headers.get('Cache-Control')).toBe('public, max-age=3600, must-revalidate');
+
+    const body = asRecord(await res.json());
+    const speed = asRecord(body.speed);
+    const road = speed.road as JsonRecord[];
+    expect(road[0]).toEqual({ level: 0, units: 100, bonusPercent: 0 });
+    road.forEach((entry, i) => expect(entry.level).toBe(i));
+
+    const coinCurve = body.coinCurve as JsonRecord[];
+    for (const entry of coinCurve) {
+      const byCoins = entry.bonusPercentByCoins as number[];
+      expect(byCoins).toHaveLength(21);
+      expect(byCoins[0]).toBe(0);
+      expect(byCoins[20]).toBe(5);
+    }
+  });
+
+  it('GET /mechanics revalidates to 304', async () => {
+    const etag = (await request('/mechanics')).headers.get('ETag')!;
+    expect((await request('/mechanics', { headers: { 'If-None-Match': etag } })).status).toBe(304);
+  });
+});
+
 describe('Response headers', () => {
   it('includes X-Request-ID header', async () => {
     const res = await request('/health');
@@ -410,7 +477,7 @@ describe('OpenAPI spec', () => {
     const spec = asRecord(await (await request('/openapi.json')).json());
     const paths = asRecord(spec.paths);
     const routes = Object.values(paths).map((item) => asRecord(asRecord(item).get));
-    expect(routes).toHaveLength(7);
+    expect(routes).toHaveLength(10);
     for (const route of routes) {
       const limited = asRecord(asRecord(route.responses)['429']);
       expect(Object.keys(asRecord(limited.content))).toEqual(['text/plain']);
@@ -451,6 +518,9 @@ describe('404 handler', () => {
       `GET ${BASE}/vehicles/{id}`,
       `GET ${BASE}/tracks`,
       `GET ${BASE}/tracks/{id}`,
+      `GET ${BASE}/rallies`,
+      `GET ${BASE}/rallies/{id}`,
+      `GET ${BASE}/mechanics`,
       `GET ${BASE}/openapi.json`,
       `GET ${BASE}/docs`,
     ]);

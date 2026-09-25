@@ -1,13 +1,21 @@
 import type { z } from '@hono/zod-openapi';
-import { CharactersResponseSchema, VehiclesResponseSchema, TracksResponseSchema } from './schemas';
+import {
+  CharactersResponseSchema,
+  MechanicsResponseSchema,
+  RalliesResponseSchema,
+  TracksResponseSchema,
+  VehiclesResponseSchema,
+} from './schemas';
 import { API_CONFIG } from './config';
 import { DATA_VERSION } from './data-version';
-import { assertValidIds } from './lib/validate';
+import { assertLevelsIndexed, assertValidIds } from './lib/validate';
 import { makeEtag } from './utils';
 
 import charactersData from '../data/characters.json';
 import vehiclesData from '../data/vehicles.json';
 import tracksData from '../data/tracks.json';
+import ralliesData from '../data/rallies.json';
+import mechanicsData from '../data/mechanics.json';
 
 /**
  * Validates a generated data file against its response schema and the pinned DATA_VERSION.
@@ -58,10 +66,21 @@ assertValidIds(
   { unique: false },
 );
 
+const ralliesPayload = load('rallies', RalliesResponseSchema, ralliesData);
+assertValidIds(
+  'rallies',
+  ralliesPayload.rallies.map((r) => r.id),
+);
+
+const mechanicsPayload = load('mechanics', MechanicsResponseSchema, mechanicsData);
+assertLevelsIndexed(mechanicsPayload);
+
 export const dataVersion = DATA_VERSION;
 export const characters = charactersPayload.characters;
 export const vehicles = vehiclesPayload.vehicles;
 export const tracks = tracksPayload.tracks;
+export const rallies = ralliesPayload.rallies;
+export const mechanics = mechanicsPayload;
 
 /**
  * ETags per collection: a hash of the full response body, prefixed with the service version
@@ -73,4 +92,6 @@ export const etags = {
   characters: makeEtag(API_CONFIG.serviceVersion, charactersPayload),
   vehicles: makeEtag(API_CONFIG.serviceVersion, vehiclesPayload),
   tracks: makeEtag(API_CONFIG.serviceVersion, tracksPayload),
+  rallies: makeEtag(API_CONFIG.serviceVersion, ralliesPayload),
+  mechanics: makeEtag(API_CONFIG.serviceVersion, mechanicsPayload),
 } as const;

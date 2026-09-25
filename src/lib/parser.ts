@@ -200,3 +200,55 @@ export function computeTerrainCoverage(
   const [road, rough, water] = rounded.map((h) => h / 100);
   return { road, rough, water };
 }
+
+/**
+ * Parse a decimal cell that may use a comma as the decimal separator ("100,312" → 100.312)
+ * and may carry a percent sign. Blank cells return null; anything else non-numeric throws.
+ */
+export function parseDecimal(value: string | undefined, label = 'number'): number | null {
+  const cleaned = (value ?? '').replace(/%/g, '').replace(/,/g, '.').trim();
+  if (cleaned === '') return null;
+  const n = Number(cleaned);
+  if (!Number.isFinite(n)) {
+    throw new Error(`Invalid ${label} in CSV: '${value}'`);
+  }
+  return n;
+}
+
+/** Like parseDecimal, but the cell must not be blank. */
+export function requireDecimal(value: string | undefined, label = 'number'): number {
+  const n = parseDecimal(value, label);
+  if (n === null) throw new Error(`Missing ${label} in CSV`);
+  return n;
+}
+
+/**
+ * Find a per-level table: the row matching `header`, then the consecutive rows after it
+ * whose level column holds 0, 1, 2, … (sub-header rows in between are skipped).
+ * Throws if the header is missing or the levels don't start at 0 and count up by one.
+ */
+export function readLevelTable(
+  rows: CsvRow[],
+  header: Record<number, string>,
+  sheet: string,
+  levelCol = 1,
+): CsvRow[] {
+  assertHeader(rows, header, sheet);
+  const start = rows.findIndex((row) => matchesHeader(row, header));
+
+  const table: CsvRow[] = [];
+  for (const row of rows.slice(start + 1)) {
+    const level = cleanCell(row[levelCol]);
+    if (!/^\d+$/.test(level)) {
+      if (table.length > 0) break; // end of table
+      continue; // sub-header rows before the first level
+    }
+    if (Number(level) !== table.length) {
+      throw new Error(`${sheet}: expected level ${table.length}, found level ${level}`);
+    }
+    table.push(row);
+  }
+
+  if (table.length === 0) throw new Error(`${sheet}: no level rows after the header`);
+  return table;
+}

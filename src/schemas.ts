@@ -13,6 +13,7 @@ import { z } from '@hono/zod-openapi';
 import charactersData from '../data/characters.json';
 import vehiclesData from '../data/vehicles.json';
 import tracksData from '../data/tracks.json';
+import ralliesData from '../data/rallies.json';
 
 const exampleOf = <T extends { id: string }>(items: T[], id: string) =>
   items.find((item) => item.id === id);
@@ -67,6 +68,14 @@ export const TrackIdParamSchema = z.object({
   id: idSchema.openapi({
     param: { name: 'id', in: 'path' },
     example: 'mario-bros-circuit',
+  }),
+});
+
+/** Rally ID path parameter */
+export const RallyIdParamSchema = z.object({
+  id: idSchema.openapi({
+    param: { name: 'id', in: 'path' },
+    example: 'golden-rally',
   }),
 });
 
@@ -211,34 +220,41 @@ export const VehicleSchema = BaseStatsSchema.extend({
   example: exampleOf(vehiclesData.vehicles, 'mach-rocket'),
 });
 
+/** Coverage fields shared by tracks and rallies. */
+const CoverageBaseSchema = z.object({
+  road: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
+    description: 'Percentage of the course on paved surfaces.',
+  }),
+  rough: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
+    description: 'Percentage of the course on off-road terrain (dirt, gravel, sand, snow, ice).',
+  }),
+  water: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
+    description: 'Percentage of the course on water.',
+  }),
+  gliding: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
+    description: 'Percentage of the course spent gliding (not cannon gliders).',
+  }),
+  neutral: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
+    description:
+      'Percentage of the course where speed is the same for everyone: heavy off-road, rails, walls, cannon gliders.',
+  }),
+});
+
 /**
  * Surface coverage percentages for a track.
  */
-export const SurfaceCoverageSchema = z
-  .object({
-    road: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track on paved surfaces.',
-    }),
-    rough: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track on off-road terrain (dirt, gravel, sand, snow, ice).',
-    }),
-    water: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track on water.',
-    }),
-    gliding: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description: 'Percentage of track spent gliding (not cannon gliders).',
-    }),
-    neutral: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      description:
-        'Percentage of track where speed is the same for everyone: heavy off-road, rails, walls, cannon gliders.',
-    }),
-    offRoad: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
-      deprecated: true,
-      description:
-        'Deprecated: always 0. The Statpedia now counts heavy off-road (penalty zones) as neutral.',
-    }),
-  })
-  .openapi('SurfaceCoverage');
+export const SurfaceCoverageSchema = CoverageBaseSchema.extend({
+  offRoad: z.number().min(COVERAGE_MIN).max(COVERAGE_MAX).openapi({
+    deprecated: true,
+    description:
+      'Deprecated: always 0. The Statpedia now counts heavy off-road (penalty zones) as neutral.',
+  }),
+}).openapi('SurfaceCoverage');
+
+/**
+ * Surface coverage percentages for a Knockout Tour rally.
+ */
+export const RallySurfaceCoverageSchema = CoverageBaseSchema.openapi('RallySurfaceCoverage');
 
 /**
  * Road/rough/water coverage only, rescaled to sum to 100 (excludes gliding and neutral).
@@ -342,6 +358,145 @@ export const TracksResponseSchema = z
   });
 
 /**
+ * A Knockout Tour rally with surface coverage data.
+ */
+export const RallySchema = z
+  .object({
+    id: z.string().openapi({ description: 'Unique identifier (slug format)' }),
+    name: z.string().openapi({ description: 'Rally display name' }),
+    surfaceCoverage: RallySurfaceCoverageSchema.openapi({
+      description: 'Full surface breakdown for the whole rally (sums to ~100).',
+    }),
+    terrainCoverage: TerrainCoverageSchema.openapi({
+      description: 'Road/rough/water mix rescaled to exactly 100, for weighting per-surface stats.',
+    }),
+  })
+  .openapi('Rally', { example: exampleOf(ralliesData.rallies, 'golden-rally') });
+
+/**
+ * Response containing all Knockout Tour rallies.
+ */
+export const RalliesResponseSchema = z
+  .object({
+    dataVersion: DataVersionSchema,
+    rallies: z.array(RallySchema),
+  })
+  .openapi('RalliesResponse', {
+    example: { dataVersion: ralliesData.dataVersion, rallies: ralliesData.rallies.slice(0, 2) },
+  });
+
+// ============================================================================
+// Mechanics (stat level → in-game values)
+// ============================================================================
+
+const levelSchema = z.number().int().min(0).openapi({
+  description:
+    'Combo stat level: the character stat plus the vehicle stat. Arrays are indexed by level.',
+});
+
+const SpeedLevelSchema = z
+  .object({
+    level: levelSchema,
+    units: z.number().openapi({
+      description:
+        'Base maximum speed in speed units (100 = level 0 on road). Water values include the 0.9x watercraft debuff.',
+    }),
+    bonusPercent: z.number().openapi({ description: 'Increase over level 0, in percent.' }),
+  })
+  .openapi('SpeedLevel');
+
+const CoinCurveLevelSchema = z
+  .object({
+    level: levelSchema,
+    bonusPercentByCoins: z.array(z.number()).length(21).openapi({
+      description:
+        'Total speed increase in percent by coin count; index = coins held (0–20). 20 coins is always +5%.',
+    }),
+  })
+  .openapi('CoinCurveLevel');
+
+const AccelerationLevelSchema = z
+  .object({
+    level: levelSchema,
+    recoveryTime: z
+      .object({
+        natural: z.number().openapi({ description: 'Seconds, accelerating normally.' }),
+        chargeJump: z.number().nullable().openapi({
+          description:
+            'Seconds, starting with a charge jump. Null where the Statpedia has no value.',
+        }),
+      })
+      .openapi({
+        description:
+          'Estimated time to reach maximum speed (the Statpedia notes these are hard to measure).',
+      }),
+  })
+  .openapi('AccelerationLevel');
+
+const MiniTurboLevelSchema = z
+  .object({
+    level: levelSchema,
+    frames: z
+      .object({
+        miniTurbo: z.number().int(),
+        superMiniTurbo: z.number().int(),
+        ultraMiniTurbo: z.number().int(),
+        chargeJump: z.number().int(),
+        superChargeJump: z.number().int(),
+        ultraChargeJump: z.number().int(),
+      })
+      .openapi({
+        description:
+          'Boost duration in frames (60 per second). Rail and wall jumps last as long as charge jumps of the same tier.',
+      }),
+  })
+  .openapi('MiniTurboLevel');
+
+const HandlingLevelSchema = z
+  .object({
+    level: levelSchema,
+    angularVelocity: z
+      .number()
+      .openapi({ description: 'Maximum turning speed while drifting, in rad/s.' }),
+    periodSeconds: z.number().openapi({
+      description: 'Seconds for a full 360° turn at that speed (2π ÷ angularVelocity).',
+    }),
+  })
+  .openapi('HandlingLevel');
+
+/**
+ * Tables converting stat levels to in-game values, from the Statpedia's stat pages.
+ */
+export const MechanicsResponseSchema = z
+  .object({
+    dataVersion: DataVersionSchema,
+    speed: z
+      .object({
+        road: z.array(SpeedLevelSchema),
+        rough: z.array(SpeedLevelSchema),
+        water: z.array(SpeedLevelSchema),
+        gliding: z.array(SpeedLevelSchema),
+      })
+      .openapi({ description: 'Base maximum speed per level, by surface.' }),
+    coinCurve: z.array(CoinCurveLevelSchema).openapi({
+      description: 'Speed bonus from coins, per Coin Curve level.',
+    }),
+    acceleration: z.array(AccelerationLevelSchema),
+    miniTurbo: z.array(MiniTurboLevelSchema),
+    handling: z
+      .object({
+        road: z.array(HandlingLevelSchema),
+        rough: z.array(HandlingLevelSchema),
+        water: z.array(HandlingLevelSchema),
+      })
+      .openapi({
+        description:
+          'Turning per level, by surface. Water includes the watercraft grip debuff; gliding handling is the same for everyone.',
+      }),
+  })
+  .openapi('MechanicsResponse');
+
+/**
  * Health check response.
  */
 export const HealthResponseSchema = z
@@ -359,6 +514,7 @@ export const HealthResponseSchema = z
         characters: z.number().int().openapi({ description: 'Number of loaded characters' }),
         vehicles: z.number().int().openapi({ description: 'Number of loaded vehicles' }),
         tracks: z.number().int().openapi({ description: 'Number of loaded tracks' }),
+        rallies: z.number().int().openapi({ description: 'Number of loaded rallies' }),
       })
       .openapi({ description: 'Count of loaded data items' }),
   })
@@ -373,6 +529,7 @@ export const HealthResponseSchema = z
         characters: 50,
         vehicles: 40,
         tracks: 30,
+        rallies: 12,
       },
     },
   });
@@ -392,4 +549,7 @@ export type Track = z.infer<typeof TrackSchema>;
 export type CharactersResponse = z.infer<typeof CharactersResponseSchema>;
 export type VehiclesResponse = z.infer<typeof VehiclesResponseSchema>;
 export type TracksResponse = z.infer<typeof TracksResponseSchema>;
+export type Rally = z.infer<typeof RallySchema>;
+export type RalliesResponse = z.infer<typeof RalliesResponseSchema>;
+export type MechanicsResponse = z.infer<typeof MechanicsResponseSchema>;
 export type HealthResponse = z.infer<typeof HealthResponseSchema>;

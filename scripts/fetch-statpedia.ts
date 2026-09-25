@@ -19,6 +19,10 @@ export const TABS = [
   { name: 'Characters', gid: '2145745776', file: 'characters.csv' },
   { name: 'Vehicles', gid: '679558948', file: 'vehicles.csv' },
   { name: 'Surface Coverage', gid: '910105117', file: 'surface-coverage.csv' },
+  { name: 'Speed & Coins', gid: '1894354611', file: 'speed-coins.csv' },
+  { name: 'Acceleration', gid: '1141904571', file: 'acceleration.csv' },
+  { name: 'Mini-Turbo', gid: '1658694521', file: 'mini-turbo.csv' },
+  { name: 'Handling', gid: '1987061506', file: 'handling.csv' },
 ] as const;
 
 const exportUrl = (gid: string) =>

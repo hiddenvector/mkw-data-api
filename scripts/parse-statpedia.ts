@@ -14,14 +14,18 @@ import { pathToFileURL } from 'node:url';
 import { parse } from 'csv-parse/sync';
 import {
   CharactersResponseSchema,
+  MechanicsResponseSchema,
+  RalliesResponseSchema,
   TracksResponseSchema,
   VehiclesResponseSchema,
   type BaseStats,
   type Character,
+  type MechanicsResponse,
+  type Rally,
   type Track,
   type Vehicle,
 } from '../src/schemas';
-import { assertValidIds } from '../src/lib/validate';
+import { assertLevelsIndexed, assertValidIds } from '../src/lib/validate';
 import {
   assertHeader,
   cleanCell,
@@ -31,7 +35,10 @@ import {
   EXPECTED_HEADERS,
   matchesHeader,
   normalizeDisplayName,
+  parseDecimal,
   parseSurfaceCoverage,
+  readLevelTable,
+  requireDecimal,
   toId,
 } from '../src/lib/parser';
 
@@ -238,12 +245,7 @@ function validateTrack(track: Track): void {
     throw new Error(`Track '${track.name}': not in CUP_MAPPING (new track? add it)`);
   }
 
-  const total = Object.values(track.surfaceCoverage).reduce((a, b) => a + b, 0);
-  if (Math.abs(total - 100) > SURFACE_COVERAGE_TOLERANCE) {
-    throw new Error(
-      `Track '${track.name}': surface coverage sums to ${total.toFixed(1)}% (expected 100 ± ${SURFACE_COVERAGE_TOLERANCE})`,
-    );
-  }
+  assertCoverageSum(`Track '${track.name}'`, track.surfaceCoverage);
 }
 
 // ============================================================================
@@ -284,40 +286,38 @@ function parseVehicles(csvPath: string): Vehicle[] {
     },
   );
 }
-/** Section headings in the Surface Coverage tab (column 1) and whether we import them */
-const COVERAGE_SECTIONS: Record<string, boolean> = {
-  'Main Track': true,
-  // SNES legacy tracks: no cup data yet, so not imported
-  'Legacy Track': false,
-  // Knockout Tour rallies: not exposed yet
-  Rally: false,
-};
+/** Section headings in the Surface Coverage tab (column 1) */
+const SECTIONS = {
+  tracks: 'Main Track',
+  // SNES legacy tracks ("Legacy Track"): no cup data yet, so not imported
+  rallies: 'Rally',
+} as const;
+const KNOWN_SECTIONS = new Set(['Main Track', 'Legacy Track', 'Rally']);
 
 /** Column-1 labels that end a section */
 const SECTION_END = new Set(['Average', 'Weighted Average', 'Total']);
 
+/** Placeholder rows for rallies that haven't been released */
+const UNRELEASED = 'Not released yet';
+
 /**
- * Parse Tracks from the Surface Coverage CSV
+ * Read one section of the Surface Coverage CSV as (name, row) pairs.
  *
  * Structure:
  * - Sections start with a heading row ("Main Track", "Legacy Track", "Rally" in column 1)
  *   that is also the column header row, and end with "Average" summary rows
- * - Track name in column 2, coverage percentages in columns 5-9
+ * - Course name in column 2, coverage percentages in columns 5-9
  */
-function parseTracks(csvPath: string): Track[] {
+function readCoverageSection(csvPath: string, wanted: string): { name: string; row: CsvRow }[] {
   const rows = readCsv(csvPath);
-  assertHeader(
-    rows,
-    { [COL.SECTION]: 'Main Track', ...EXPECTED_HEADERS.coverage },
-    'Surface Coverage',
-  );
+  assertHeader(rows, { [COL.SECTION]: wanted, ...EXPECTED_HEADERS.coverage }, 'Surface Coverage');
 
-  const tracks: Track[] = [];
+  const entries: { name: string; row: CsvRow }[] = [];
   let section: string | null = null;
 
   for (const row of rows) {
     const heading = cleanCell(row[COL.SECTION]);
-    if (heading in COVERAGE_SECTIONS) {
+    if (KNOWN_SECTIONS.has(heading)) {
       if (!matchesHeader(row, EXPECTED_HEADERS.coverage)) {
         throw new Error(`Surface Coverage: unexpected column headers in '${heading}' section`);
       }
@@ -329,25 +329,193 @@ function parseTracks(csvPath: string): Track[] {
       continue;
     }
 
-    const trackName = cleanCell(row[COL.TRACK_NAME]);
-    if (!section || !COVERAGE_SECTIONS[section] || !trackName) continue;
+    const name = cleanCell(row[COL.TRACK_NAME]);
+    if (section === wanted && name) entries.push({ name, row });
+  }
 
-    const cup = CUP_MAPPING[trackName] ?? '';
+  return entries;
+}
+
+function assertCoverageSum(label: string, coverage: Record<string, number>): void {
+  const total = Object.values(coverage).reduce((a, b) => a + b, 0);
+  if (Math.abs(total - 100) > SURFACE_COVERAGE_TOLERANCE) {
+    throw new Error(
+      `${label}: surface coverage sums to ${total.toFixed(1)}% (expected 100 ± ${SURFACE_COVERAGE_TOLERANCE})`,
+    );
+  }
+}
+
+function parseTracks(csvPath: string): Track[] {
+  return readCoverageSection(csvPath, SECTIONS.tracks).map(({ name, row }) => {
+    const cup = CUP_MAPPING[name] ?? '';
     const surfaceCoverage = parseSurfaceCoverage(row);
     const track: Track = {
-      id: toId(trackName),
-      name: trackName,
+      id: toId(name),
+      name,
       cup,
       cupId: toId(cup),
       surfaceCoverage,
       terrainCoverage: computeTerrainCoverage(surfaceCoverage),
     };
-
     validateTrack(track);
-    tracks.push(track);
-  }
+    return track;
+  });
+}
 
-  return tracks;
+function parseRallies(csvPath: string): Rally[] {
+  return readCoverageSection(csvPath, SECTIONS.rallies)
+    .filter(({ name }) => name !== UNRELEASED)
+    .map(({ name, row }) => {
+      const { offRoad: _deprecated, ...surfaceCoverage } = parseSurfaceCoverage(row);
+      assertCoverageSum(`Rally '${name}'`, surfaceCoverage);
+      return {
+        id: toId(name),
+        name,
+        surfaceCoverage,
+        terrainCoverage: computeTerrainCoverage(surfaceCoverage),
+      };
+    });
+}
+
+// ============================================================================
+// Mechanics (per-level tables from the stat pages)
+// ============================================================================
+
+const MECHANICS_HEADERS = {
+  speed: { 1: 'Lv.', 2: 'On-Road / Off-Road', 6: 'Water (debuff)', 10: 'Gliding' },
+  coinCurve: { 1: 'Lv.', 2: 'Coin count' },
+  acceleration: { 1: 'Lv.', 2: 'Time saved per level', 4: 'Recovery time' },
+  miniTurbo: {
+    1: 'Lv.',
+    2: 'Mini-Turbo',
+    3: 'Super Mini-Turbo',
+    4: 'Ultra Mini-Turbo',
+    5: 'Charge Jump',
+    6: 'Super Charge Jump',
+    7: 'Ultra Charge Jump',
+  },
+  handling: { 1: 'Lv.', 2: 'On-Road', 4: 'Off-Road', 6: 'Water (debuff)' },
+} as const;
+
+/** Coin counts listed in the coin-curve table (0 and 20 are fixed: +0% and +5%) */
+const COIN_COLUMNS = Array.from({ length: 19 }, (_, i) => ({ coins: i + 1, col: i + 2 }));
+const MAX_COIN_BONUS_PERCENT = 5;
+
+/**
+ * Read a speed/handling style column pair (value + second value) until its first blank cell.
+ * Different surfaces have tables of different lengths side by side.
+ */
+function readColumnPair<T>(
+  table: CsvRow[],
+  cols: [number, number],
+  build: (level: number, a: number, b: number) => T,
+  label: string,
+): T[] {
+  const out: T[] = [];
+  for (const [level, row] of table.entries()) {
+    const a = parseDecimal(row[cols[0]], label);
+    if (a === null) break;
+    out.push(build(level, a, requireDecimal(row[cols[1]], label)));
+  }
+  return out;
+}
+
+function parseMechanics(csvDir: string): Omit<MechanicsResponse, 'dataVersion'> {
+  const read = (file: string) => readCsv(path.join(csvDir, file));
+
+  // Speed & Coins
+  const speedRows = read('speed-coins.csv');
+  const speedTable = readLevelTable(speedRows, MECHANICS_HEADERS.speed, 'Speed & Coins (speed)');
+  const speedColumn = (cols: [number, number], label: string) =>
+    readColumnPair(
+      speedTable,
+      cols,
+      (level, units, bonusPercent) => ({ level, units, bonusPercent }),
+      label,
+    );
+  const ground = speedColumn([2, 4], 'on-road/off-road speed');
+
+  assertHeader(
+    speedRows,
+    Object.fromEntries(COIN_COLUMNS.map(({ coins, col }) => [col, String(coins)])),
+    'Speed & Coins (coin counts)',
+  );
+  const coinCurve = readLevelTable(
+    speedRows,
+    MECHANICS_HEADERS.coinCurve,
+    'Speed & Coins (coin curve)',
+  ).map((row, level) => ({
+    level,
+    bonusPercentByCoins: [
+      0,
+      ...COIN_COLUMNS.map(({ col }) => requireDecimal(row[col], 'coin bonus')),
+      MAX_COIN_BONUS_PERCENT,
+    ],
+  }));
+
+  // Acceleration: recovery time columns (natural, charge jump)
+  const acceleration = readLevelTable(
+    read('acceleration.csv'),
+    MECHANICS_HEADERS.acceleration,
+    'Acceleration',
+  ).map((row, level) => ({
+    level,
+    recoveryTime: {
+      natural: requireDecimal(row[4], 'recovery time'),
+      chargeJump: parseDecimal(row[5], 'charge jump recovery time'),
+    },
+  }));
+
+  // Mini-Turbo: frames per tier
+  const miniTurbo = readLevelTable(
+    read('mini-turbo.csv'),
+    MECHANICS_HEADERS.miniTurbo,
+    'Mini-Turbo',
+  ).map((row, level) => {
+    const frames = (col: number) => safeParseInt(row[col], { row: level, col, rowData: row });
+    return {
+      level,
+      frames: {
+        miniTurbo: frames(2),
+        superMiniTurbo: frames(3),
+        ultraMiniTurbo: frames(4),
+        chargeJump: frames(5),
+        superChargeJump: frames(6),
+        ultraChargeJump: frames(7),
+      },
+    };
+  });
+
+  // Handling: angular velocity + period per surface
+  const handlingTable = readLevelTable(
+    read('handling.csv'),
+    MECHANICS_HEADERS.handling,
+    'Handling',
+  );
+  const handlingColumn = (cols: [number, number], label: string) =>
+    readColumnPair(
+      handlingTable,
+      cols,
+      (level, angularVelocity, periodSeconds) => ({ level, angularVelocity, periodSeconds }),
+      label,
+    );
+
+  return {
+    speed: {
+      road: ground,
+      rough: ground,
+      water: speedColumn([6, 8], 'water speed'),
+      gliding: speedColumn([10, 12], 'gliding speed'),
+    },
+    coinCurve,
+    acceleration,
+    miniTurbo,
+    handling: {
+      road: handlingColumn([2, 3], 'on-road handling'),
+      rough: handlingColumn([4, 5], 'off-road handling'),
+      water: handlingColumn([6, 7], 'water handling'),
+    },
+  };
 }
 
 // ============================================================================
@@ -355,17 +523,24 @@ function parseTracks(csvPath: string): Track[] {
 // ============================================================================
 
 type Dataset = {
-  label: 'characters' | 'vehicles' | 'tracks';
-  csv: string;
-  parse: (csvPath: string) => unknown[];
+  /** Output file: data/<label>.json */
+  label: string;
+  /** Source CSVs in scripts/csv/ */
+  csvs: string[];
+  /** Everything in the output file except dataVersion */
+  build: (csvDir: string) => Record<string, unknown>;
   validate: (payload: unknown) => void;
+  summary: (body: Record<string, unknown>) => string;
 };
+
+const count = (key: string) => (body: Record<string, unknown>) =>
+  `${(body[key] as unknown[]).length} ${key}`;
 
 const DATASETS: Dataset[] = [
   {
     label: 'characters',
-    csv: 'characters.csv',
-    parse: parseCharacters,
+    csvs: ['characters.csv'],
+    build: (dir) => ({ characters: parseCharacters(path.join(dir, 'characters.csv')) }),
     validate: (payload) => {
       const { characters } = CharactersResponseSchema.parse(payload);
       assertValidIds(
@@ -373,11 +548,12 @@ const DATASETS: Dataset[] = [
         characters.map((c) => c.id),
       );
     },
+    summary: count('characters'),
   },
   {
     label: 'vehicles',
-    csv: 'vehicles.csv',
-    parse: parseVehicles,
+    csvs: ['vehicles.csv'],
+    build: (dir) => ({ vehicles: parseVehicles(path.join(dir, 'vehicles.csv')) }),
     validate: (payload) => {
       const { vehicles } = VehiclesResponseSchema.parse(payload);
       assertValidIds(
@@ -390,11 +566,12 @@ const DATASETS: Dataset[] = [
         { unique: false },
       );
     },
+    summary: count('vehicles'),
   },
   {
     label: 'tracks',
-    csv: 'surface-coverage.csv',
-    parse: parseTracks,
+    csvs: ['surface-coverage.csv'],
+    build: (dir) => ({ tracks: parseTracks(path.join(dir, 'surface-coverage.csv')) }),
     validate: (payload) => {
       const { tracks } = TracksResponseSchema.parse(payload);
       assertValidIds(
@@ -402,11 +579,37 @@ const DATASETS: Dataset[] = [
         tracks.map((t) => t.id),
       );
     },
+    summary: count('tracks'),
+  },
+  {
+    label: 'rallies',
+    csvs: ['surface-coverage.csv'],
+    build: (dir) => ({ rallies: parseRallies(path.join(dir, 'surface-coverage.csv')) }),
+    validate: (payload) => {
+      const { rallies } = RalliesResponseSchema.parse(payload);
+      assertValidIds(
+        'rallies',
+        rallies.map((r) => r.id),
+      );
+    },
+    summary: count('rallies'),
+  },
+  {
+    label: 'mechanics',
+    csvs: ['speed-coins.csv', 'acceleration.csv', 'mini-turbo.csv', 'handling.csv'],
+    build: parseMechanics,
+    validate: (payload) => {
+      assertLevelsIndexed(MechanicsResponseSchema.parse(payload));
+    },
+    summary: (body) => {
+      const m = body as Omit<MechanicsResponse, 'dataVersion'>;
+      return `mechanics (speed 0-${m.speed.road.length - 1}, coin curve 0-${m.coinCurve.length - 1}, acceleration 0-${m.acceleration.length - 1}, mini-turbo 0-${m.miniTurbo.length - 1}, handling 0-${m.handling.road.length - 1})`;
+    },
   },
 ];
 
-const serialize = (dataVersion: string, label: string, items: unknown[]) =>
-  `${JSON.stringify({ dataVersion, [label]: items }, null, 2)}\n`;
+const serialize = (dataVersion: string, body: Record<string, unknown>) =>
+  `${JSON.stringify({ dataVersion, ...body }, null, 2)}\n`;
 
 function readExistingVersion(filePath: string): string | undefined {
   if (!fs.existsSync(filePath)) return undefined;
@@ -440,15 +643,16 @@ function main() {
 
   // Parse and validate everything before writing anything
   const parsed = DATASETS.map((dataset) => {
-    const csvPath = path.join(csvDir, dataset.csv);
-    if (!fs.existsSync(csvPath)) {
-      throw new Error(`Missing source CSV: scripts/csv/${dataset.csv}`);
+    for (const csv of dataset.csvs) {
+      if (!fs.existsSync(path.join(csvDir, csv))) {
+        throw new Error(`Missing source CSV: scripts/csv/${csv}`);
+      }
     }
     console.log(`📊 Parsing ${dataset.label}...`);
-    const items = dataset.parse(csvPath);
-    dataset.validate({ dataVersion: NEW_DATA_VERSION, [dataset.label]: items });
-    console.log(`   ✅ Parsed ${items.length} ${dataset.label}`);
-    return { ...dataset, items, filePath: path.join(dataDir, `${dataset.label}.json`) };
+    const body = dataset.build(csvDir);
+    dataset.validate({ dataVersion: NEW_DATA_VERSION, ...body });
+    console.log(`   ✅ Parsed ${dataset.summary(body)}`);
+    return { ...dataset, body, filePath: path.join(dataDir, `${dataset.label}.json`) };
   });
 
   // Keep the existing version if every file would be byte-identical under it
@@ -458,7 +662,7 @@ function main() {
     versions.size === 1 &&
     existingVersion !== undefined &&
     parsed.every(
-      (d) => fs.readFileSync(d.filePath, 'utf-8') === serialize(existingVersion, d.label, d.items),
+      (d) => fs.readFileSync(d.filePath, 'utf-8') === serialize(existingVersion, d.body),
     );
   const dataVersion = unchanged && !process.env.DATA_VERSION ? existingVersion : NEW_DATA_VERSION;
 
@@ -467,7 +671,7 @@ function main() {
   }
 
   for (const d of parsed) {
-    fs.writeFileSync(d.filePath, serialize(dataVersion, d.label, d.items));
+    fs.writeFileSync(d.filePath, serialize(dataVersion, d.body));
   }
   writeDataVersion(dataVersion);
 

@@ -17,3 +17,23 @@ export function assertValidIds(label: string, ids: string[], { unique = true } =
     }
   }
 }
+
+/**
+ * Throws unless every array of `{ level }` entries in the value (at any depth) has
+ * level === index, so clients can look levels up by index.
+ */
+export function assertLevelsIndexed(value: unknown, where = 'mechanics'): void {
+  if (Array.isArray(value)) {
+    value.forEach((entry, index) => {
+      if (entry && typeof entry === 'object' && 'level' in entry && entry.level !== index) {
+        throw new Error(
+          `${where}[${index}]: level ${String(entry.level)} is not at index ${index}`,
+        );
+      }
+    });
+    return;
+  }
+  if (value && typeof value === 'object') {
+    for (const [key, child] of Object.entries(value)) assertLevelsIndexed(child, `${where}.${key}`);
+  }
+}

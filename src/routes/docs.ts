@@ -9,13 +9,15 @@ Community-maintained data API for Mario Kart World stats, vehicles, and tracks.
 
 **Data Source:** [Mario Kart World Statpedia](https://docs.google.com/spreadsheets/d/1EQd2XYGlB3EFFNE-35hFLaBzJo4cipU9DZT4MRSjBlc/edit) by ItsManu001 and contributors (Chrop, Munskin, PartyMain, K1ngGr33n, HeWe015, Tuan, TotoShampoin, Katie, Bayzer, Jahordon, AprilShade, Naptec, kenbrisco97, Bento, theta_k).
 
-**Features:** terrain stats, track coverage, vehicle tag groupings, ETag caching.
+**Features:** terrain stats, track and rally coverage, stat mechanics, vehicle tag groupings, ETag caching.
 
 **How to use the stats:**
 - Stats are 0–13 in current data; higher is better. Speed includes \`gliding\`; handling has no gliding type.
 - Use \`surfaceCoverage\` for the full surface breakdown (road, rough, water, gliding, neutral).
 - Use \`terrainCoverage\` for weighting per-surface stats (road/rough/water rescaled to 100, excludes gliding and neutral).
 - IDs are slugs; fetch list endpoints to discover valid IDs.
+- \`/rallies\` has Knockout Tour rally coverage in the same shape as tracks.
+- \`/mechanics\` converts stat levels to in-game values. A combo's level is character stat + vehicle stat; every table is an array indexed by level (e.g. \`speed.road[level].units\`).
 
 **Data contract:**
 - \`dataVersion\` is the date of the last data import; use \`ETag\` for cache validation.
@@ -73,6 +75,11 @@ export function createDocsRoutes(app: OpenAPIHono<AppEnv>) {
           { name: 'Characters', description: 'Playable characters and their stats' },
           { name: 'Vehicles', description: 'Vehicles and their stats' },
           { name: 'Tracks', description: 'Race tracks and surface coverage data' },
+          { name: 'Rallies', description: 'Knockout Tour rallies and surface coverage data' },
+          {
+            name: 'Mechanics',
+            description: 'Stat level tables: what each combo stat level means in-game',
+          },
         ],
       });
       cached = { spec, etag: makeEtag(API_CONFIG.serviceVersion, spec) };

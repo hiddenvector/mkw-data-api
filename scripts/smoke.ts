@@ -23,6 +23,8 @@ import packageJson from '../package.json';
 import charactersData from '../data/characters.json';
 import vehiclesData from '../data/vehicles.json';
 import tracksData from '../data/tracks.json';
+import ralliesData from '../data/rallies.json';
+import mechanicsData from '../data/mechanics.json';
 import { DATA_VERSION } from '../src/data-version';
 
 const BASE_URL = (process.env.SMOKE_BASE_URL ?? 'https://hiddenvector.studio/mkw/api/v1').replace(
@@ -40,6 +42,7 @@ const expected = {
     characters: charactersData.characters.length,
     vehicles: vehiclesData.vehicles.length,
     tracks: tracksData.tracks.length,
+    rallies: ralliesData.rallies.length,
   },
   character: charactersData.characters[0],
   vehicle: vehiclesData.vehicles[0],
@@ -174,7 +177,7 @@ const checks: Array<[name: string, run: () => Promise<void>]> = [
       expectEqual(body.dataLoaded, expected.counts, 'dataLoaded');
     },
   ],
-  ...(['characters', 'vehicles', 'tracks'] as const).map(
+  ...(['characters', 'vehicles', 'tracks', 'rallies'] as const).map(
     (collection): [string, () => Promise<void>] => [
       `/${collection} serves ETag and revalidates to 304`,
       async () => {
@@ -242,6 +245,18 @@ const checks: Array<[name: string, run: () => Promise<void>]> = [
         0,
         'unknown cup',
       );
+    },
+  ],
+  [
+    '/mechanics matches the data file and revalidates to 304',
+    async () => {
+      const res = await get('/mechanics');
+      const body = await readJson(res, '/mechanics');
+      expectEqual(res.status, 200, 'status');
+      expectEqual(body, mechanicsData, 'body');
+      const etag = res.headers.get('etag') ?? '';
+      expect(isCurrentEtag(etag), `unexpected ETag ${etag}`);
+      expectEqual((await get('/mechanics', { 'If-None-Match': etag })).status, 304, '304 status');
     },
   ],
   [

@@ -7,11 +7,14 @@ import {
   EXPECTED_HEADERS,
   matchesHeader,
   normalizeDisplayName,
+  parseDecimal,
   parsePercent,
+  readLevelTable,
+  requireDecimal,
   parseSurfaceCoverage,
   toId,
 } from './parser';
-import { assertValidIds } from './validate';
+import { assertLevelsIndexed, assertValidIds } from './validate';
 
 describe('parse-statpedia helpers', () => {
   it('normalizes US display names', () => {
@@ -130,5 +133,63 @@ describe('assertValidIds', () => {
       'Duplicate IDs in things: a, b',
     );
     expect(() => assertValidIds('tags', ['a', 'a'], { unique: false })).not.toThrow();
+  });
+});
+
+describe('decimal cells', () => {
+  it('parses comma decimals and percents; blanks are null', () => {
+    expect(parseDecimal('100,312')).toBe(100.312);
+    expect(parseDecimal('0,490%')).toBe(0.49);
+    expect(parseDecimal(' ')).toBeNull();
+    expect(() => parseDecimal('N/A', 'speed')).toThrow("Invalid speed in CSV: 'N/A'");
+    expect(() => requireDecimal('', 'speed')).toThrow('Missing speed in CSV');
+  });
+});
+
+describe('readLevelTable', () => {
+  const header = { 1: 'Lv.', 2: 'Value' };
+  const rows = [
+    ['', 'Title'],
+    ['', 'Lv.', 'Value'],
+    ['', '', 'units'],
+    ['', '0', '1,5'],
+    ['', '1', '2,5'],
+    ['', 'Note'],
+    ['', '5', 'ignored'],
+  ];
+
+  it('returns consecutive level rows after the header, skipping sub-headers', () => {
+    expect(readLevelTable(rows, header, 'Sheet').map((r) => r[2])).toEqual(['1,5', '2,5']);
+  });
+
+  it('rejects gaps in levels', () => {
+    const gappy = [
+      ['', 'Lv.', 'Value'],
+      ['', '0', 'a'],
+      ['', '2', 'b'],
+    ];
+    expect(() => readLevelTable(gappy, header, 'Sheet')).toThrow(
+      'Sheet: expected level 1, found level 2',
+    );
+  });
+
+  it('fails when the header is missing', () => {
+    expect(() => readLevelTable([['', 'Level', 'Value']], header, 'Sheet')).toThrow(
+      /Sheet: header row not found/,
+    );
+  });
+});
+
+describe('assertLevelsIndexed', () => {
+  it('accepts nested level arrays indexed by position', () => {
+    expect(() =>
+      assertLevelsIndexed({ a: [{ level: 0 }, { level: 1 }], b: { c: [{ level: 0 }] } }),
+    ).not.toThrow();
+  });
+
+  it('names the first misplaced level', () => {
+    expect(() => assertLevelsIndexed({ b: { c: [{ level: 0 }, { level: 2 }] } })).toThrow(
+      'mechanics.b.c[1]: level 2 is not at index 1',
+    );
   });
 });

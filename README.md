@@ -28,6 +28,12 @@ curl https://hiddenvector.studio/mkw/api/v1/tracks
 
 # Get tracks by cup
 curl "https://hiddenvector.studio/mkw/api/v1/tracks?cup=mushroom-cup"
+
+# Get Knockout Tour rallies
+curl https://hiddenvector.studio/mkw/api/v1/rallies
+
+# Get stat mechanics (what each stat level means in-game)
+curl https://hiddenvector.studio/mkw/api/v1/mechanics
 ```
 
 ### Use IDs correctly
@@ -48,6 +54,9 @@ curl "https://hiddenvector.studio/mkw/api/v1/tracks?cup=mushroom-cup"
 | `GET /tracks`             | List all tracks               |
 | `GET /tracks/{id}`        | Get track by ID               |
 | `GET /tracks?cup={cup}`   | Get tracks by cup             |
+| `GET /rallies`            | List Knockout Tour rallies    |
+| `GET /rallies/{id}`       | Get rally by ID               |
+| `GET /mechanics`          | Stat level → in-game values   |
 | `GET /openapi.json`       | OpenAPI 3.1 specification     |
 | `GET /docs`               | Interactive API documentation |
 
@@ -80,6 +89,30 @@ normalizedScore = 5.76
 ```
 
 To include gliding in a speed score, weight `speed.gliding` by `surfaceCoverage.gliding` alongside the terrain terms.
+
+### Rallies
+
+`/rallies` has the released Knockout Tour rallies with the same `surfaceCoverage` and `terrainCoverage` as tracks (without the deprecated `offRoad`). Coverage covers the whole rally.
+
+### Mechanics
+
+`/mechanics` converts stat levels into in-game values, from the Statpedia's stat pages. A combo's level for a stat is the character's stat plus the vehicle's, and every table is an array indexed by level:
+
+```ts
+const level = character.speed.road + vehicle.speed.road;
+mechanics.speed.road[level].units; // base max speed (100 = level 0 on road)
+
+const coinLevel = character.coinCurve + vehicle.coinCurve;
+mechanics.coinCurve[coinLevel].bonusPercentByCoins[10]; // % speed bonus holding 10 coins
+```
+
+| Table                              | Per level                                                                                        |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `speed.{road,rough,water,gliding}` | `units` (speed units) and `bonusPercent` over level 0; water includes the 0.9x watercraft debuff |
+| `coinCurve`                        | `bonusPercentByCoins[0..20]`: total speed bonus by coins held (20 coins is always +5%)           |
+| `acceleration`                     | `recoveryTime.natural` / `.chargeJump`: seconds to reach max speed (estimates)                   |
+| `miniTurbo`                        | `frames` for each mini-turbo and charge-jump tier (rail and wall jumps match charge jumps)       |
+| `handling.{road,rough,water}`      | `angularVelocity` (rad/s) while drifting and `periodSeconds` for a full turn                     |
 
 ## Data Contract
 
@@ -137,7 +170,7 @@ Stats are sourced from the [Mario Kart World Statpedia](https://docs.google.com/
 Updates follow the Statpedia sheet; there is no fixed schedule. To import the latest version:
 
 ```bash
-npm run fetch-data     # download the Characters, Vehicles and Surface Coverage tabs into scripts/csv/
+npm run fetch-data     # download the Statpedia tabs we use into scripts/csv/
 npm run generate-data  # parse, validate, and write data/*.json (fails loudly if the sheet layout changed)
 ```
 
