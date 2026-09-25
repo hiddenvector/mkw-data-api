@@ -77,7 +77,43 @@ async function request(path: string, init: RequestInit = {}): Promise<Response> 
 
 const get = (path: string, headers: Record<string, string> = {}) => request(path, { headers });
 
-const getJson = async (path: string) => (await (await get(path)).json()) as Json;
+class CheckError extends Error {}
+
+/** Cloudflare challenged the request (Bot Fight Mode, a WAF rule…). Waiting won't clear it. */
+class ChallengedError extends Error {}
+
+/**
+ * Parses a JSON response, or throws an error describing what came back instead: status,
+ * content type, Cloudflare's mitigation header and ray ID, and the HTML page title.
+ */
+async function readJson(res: Response, path: string): Promise<Json> {
+  const contentType = res.headers.get('content-type') ?? '';
+  if (contentType.includes('application/json')) return (await res.json()) as Json;
+
+  const body = await res.text();
+  const title = /<title>([^<]*)<\/title>/i.exec(body)?.[1]?.trim();
+  const mitigated = res.headers.get('cf-mitigated');
+  const ray = res.headers.get('cf-ray');
+  const detail = [
+    `HTTP ${res.status}`,
+    contentType || 'no content-type',
+    mitigated && `cf-mitigated: ${mitigated}`,
+    ray && `cf-ray: ${ray}`,
+    title ? `page title "${title}"` : body && `body "${body.slice(0, 60).replace(/\s+/g, ' ')}"`,
+  ]
+    .filter(Boolean)
+    .join(', ');
+
+  const message = `${path}: expected JSON, got ${detail}`;
+  if (mitigated === 'challenge') {
+    throw new ChallengedError(
+      `${message}. Cloudflare challenged the request (e.g. Bot Fight Mode or a WAF rule), which automated clients can't pass. Check Security → Events for the ray ID.`,
+    );
+  }
+  throw new CheckError(message);
+}
+
+const getJson = async (path: string) => readJson(await get(path), path);
 
 /**
  * True if the ETag has the form "<serviceVersion>-<hash>" (optionally weak). The version is
@@ -88,8 +124,6 @@ function isCurrentEtag(etag: string): boolean {
   return match?.[1] === expected.serviceVersion;
 }
 const DATA_CACHE_CONTROL = 'public, max-age=3600, must-revalidate';
-
-class CheckError extends Error {}
 
 function expect(condition: unknown, detail: string): asserts condition {
   if (!condition) throw new CheckError(detail);
@@ -115,6 +149,8 @@ async function waitForVersion(): Promise<void> {
       if (health.serviceVersion === expected.serviceVersion) return;
       last = `serviceVersion ${String(health.serviceVersion)}`;
     } catch (err) {
+      // A challenge is a configuration problem, not propagation delay: fail now, not in 90s
+      if (err instanceof ChallengedError) throw err;
       last = err instanceof Error ? err.message : String(err);
     }
     await sleep(3000);
@@ -133,9 +169,9 @@ const checks: Array<[name: string, run: () => Promise<void>]> = [
     'health reports expected versions and counts',
     async () => {
       const res = await get('/health');
+      const body = await readJson(res, '/health');
       expectEqual(res.status, 200, 'status');
       expectEqual(res.headers.get('cache-control'), 'no-store', 'cache-control');
-      const body = (await res.json()) as Json;
       expectEqual(body.status, 'ok', 'status field');
       expectEqual(body.dataVersion, expected.dataVersion, 'dataVersion');
       expectEqual(body.dataLoaded, expected.counts, 'dataLoaded');
@@ -146,11 +182,11 @@ const checks: Array<[name: string, run: () => Promise<void>]> = [
       `/${collection} serves ETag and revalidates to 304`,
       async () => {
         const res = await get(`/${collection}`);
+        const body = await readJson(res, `/${collection}`);
         expectEqual(res.status, 200, 'status');
         expectEqual(res.headers.get('cache-control'), DATA_CACHE_CONTROL, 'cache-control');
         const etag = res.headers.get('etag') ?? '';
         expect(isCurrentEtag(etag), `unexpected ETag ${etag}`);
-        const body = (await res.json()) as Json;
         expectEqual((body[collection] as unknown[]).length, expected.counts[collection], 'count');
 
         const revalidated = await get(`/${collection}`, { 'If-None-Match': etag });
@@ -215,7 +251,7 @@ const checks: Array<[name: string, run: () => Promise<void>]> = [
     '/mechanics matches the data file and revalidates to 304',
     async () => {
       const res = await get('/mechanics');
-      const body = (await res.json()) as Json;
+      const body = await readJson(res, '/mechanics');
       expectEqual(res.status, 200, 'status');
       expectEqual(body, mechanicsData, 'body');
       const etag = res.headers.get('etag') ?? '';
@@ -232,9 +268,9 @@ const checks: Array<[name: string, run: () => Promise<void>]> = [
         ['/not-an-endpoint', 404, 'NOT_FOUND'],
       ] as const) {
         const res = await get(path);
+        const body = (await readJson(res, path)) as { error?: Json };
         expectEqual(res.status, status, `${path} status`);
         expectEqual(res.headers.get('cache-control'), 'no-store', `${path} cache-control`);
-        const body = (await res.json()) as { error?: Json };
         expectEqual(body.error?.code, code, `${path} error code`);
       }
     },

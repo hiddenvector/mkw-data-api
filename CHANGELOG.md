@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [1.3.0] - 2026-09-24
+## [1.3.0] - 2026-09-25
 
 ### Added
 
@@ -13,6 +13,10 @@ All notable changes to this project will be documented in this file.
 - `rallies` count in `/health` `dataLoaded`.
 - `npm run fetch-data` also downloads the Speed & Coins, Acceleration, Mini-Turbo and Handling tabs.
 - Tests checking that every character + vehicle combination falls inside each mechanics table, and that the tables reproduce the Statpedia Combo Builder.
+
+### Changed
+
+- The smoke test explains non-JSON responses (status, content type, Cloudflare `cf-mitigated` and ray ID, page title), and fails immediately when Cloudflare challenges the request instead of waiting out the version poll.
 
 ## [1.2.0] - 2026-09-24
 
